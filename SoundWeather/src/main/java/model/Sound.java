@@ -43,8 +43,9 @@ public class Sound {
 	@ManyToMany
 	@Column(name = "sound_fans")
 	private List<User> soundFans; //fans.size() == number of likes
-//	@Column(name = "sound_genres")
-	//private List<String> soundGenres;
+	@ManyToMany
+	@Column(name = "sound_genres")
+	private List<Genre> soundGenres;
 	
 	public int getSoundId() {
 		return soundId;
@@ -106,12 +107,12 @@ public class Sound {
 	public void setSoundFans(List<User> soundFans) {
 		this.soundFans = soundFans;
 	}
-	//public List<String> getSoundGenres() {
-	//	return soundGenres;
-	//}
-//	public void setSoundGenres(List<String> soundGenres) {
-//		this.soundGenres = soundGenres;
-//	}
+	public List<Genre> getSoundGenres() {
+		return soundGenres;
+	}
+	public void setSoundGenres(List<Genre> soundGenres) {
+		this.soundGenres = soundGenres;
+	}
 	
 	
 	

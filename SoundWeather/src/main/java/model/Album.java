@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -28,6 +29,11 @@ public class Album {
 	private List<Sound> albumTracks;
 	@Column(name = "album_cover")
 	private Byte[] albumCover; //(photo)
+	@ManyToMany
+	@Column(name = "album_genres")
+	private List<Genre> albumGenres;
+	
+	
 	
 	public int getAlbumId() {
 		return albumId;
@@ -58,6 +64,12 @@ public class Album {
 	}
 	public void setAlbumCover(Byte[] albumCover) {
 		this.albumCover = albumCover;
+	}
+	public List<Genre> getAlbumGenres() {
+		return albumGenres;
+	}
+	public void setAlbumGenres(List<Genre> albumGenres) {
+		this.albumGenres = albumGenres;
 	}
 	
 	

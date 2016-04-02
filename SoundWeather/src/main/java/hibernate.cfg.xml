@@ -35,10 +35,11 @@
         <property name="hbm2ddl.auto">create</property>
 
         <!-- Names the annotated entity class -->
-        <mapping class="model.Album"/>
-       	<mapping class="model.Comment"/>
-        <mapping class="model.Sound"/>
-        <mapping class="model.User"/>
+        <mapping class="com.example.model.Album"/>
+       	<mapping class="com.example.model.Comment"/>
+       	<mapping class="com.example.model.Genre"/>
+        <mapping class="com.example.model.Sound"/>
+        <mapping class="com.example.model.User"/>
         
 
     </session-factory>
