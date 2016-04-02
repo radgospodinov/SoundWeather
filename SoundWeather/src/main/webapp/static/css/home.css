@@ -1,4 +1,4 @@
-@CHARSET "utf-8";
+@CHARSET "ISO-8859-1";
 
 #body {
 	margin:0 auto; 
@@ -7,7 +7,7 @@
 }
 
 #header {
-	background-image:url("/images/background1.jpg");
+	background-image:url("background1.jpg");
 	width:1920px;
 	height:300px;
 }
@@ -15,7 +15,7 @@
 #logo {
 	position:absolute;
 	left:25px;
-	background-image:url("/images/logo.png");
+	background-image:url("logo.png");
 	width:250px;
 	height:100px;
 }
@@ -120,4 +120,64 @@ input[type=submit] {
     cursor:pointer;
     -webkit-border-radius:1px;
     border-radius:1px; 
+}
+
+
+
+
+
+#navcontainer {
+	background: #f0e7d7;
+	margin: 0 auto;
+	height:60px;
+}
+
+/* to stretch the container div to contain floated list */
+#navcontainer:after {
+	content: ".";
+	display: block;
+	line-height: 1px;
+	font-size: 1px;
+	clear: both;
+}
+
+ul#navlist {
+	list-style: none;
+	padding: 0;
+	margin: 0 auto;
+	width: 100%;
+}
+
+ul#navlist li {
+	display:block;
+	float:left;
+	width:20%;
+	margin: 0;
+	padding: 0;
+}
+
+ul#navlist li a {
+display: block;
+width: 100%;
+padding: 0.5em;
+border-width: 1px;
+border-color: #ffe #aaab9c #ccc #fff;
+border-style: solid;
+color: #777;
+text-decoration: none;
+background: #f7f2ea;
+height:40px;
+text-align:center;
+}
+
+#navcontainer>ul#navlist li a { 
+	width:auto; 
+}
+
+
+ul#navlist li a:hover, ul#navlist li#active a:hover
+{
+color: #800000;
+background: transparent;
+border-color: #aaab9c #fff #fff #ccc;
 }

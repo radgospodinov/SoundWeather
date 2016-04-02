@@ -1,19 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<!DOCTYPE html >
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link rel="stylesheet" type="text/css" href="<c:url value="/css/home.css" />">
-	<title>SoundWeather</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" href="home.css">
+	<title>Home</title>
 	</head>
 	
 	<body id="body">
 		
-		<div id="header" style="background-image:url(<c:url value="/images/background1.jpg"/>);">
-			<div id="logo" style="background-image:url(<c:url value="/images/logo.png"/>)"></div>
+		<div id="header">
+			<div id="logo"></div>
 			<div id="register">Register</div>
 			<div id="login">Login</div>
 			<div id="logout"></div>
@@ -26,7 +26,19 @@
 		
 		<div id="player"></div>
 		
-		<div id="buttons"></div>
+		<div id="user_navigation">
+	
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li><a href="#" id="current">UPLOAD</a></li>
+					<li><a href="#">SOUNDS</a></li>
+					<li><a href="#">ALBUMS</a></li>
+					<li><a href="#">FOLLOWING</a></li>
+					<li><a href="#">PROFILE</a></li>
+				</ul>
+			</div>
+		
+		</div>
 		
 		
 		
