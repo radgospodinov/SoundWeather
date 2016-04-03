@@ -33,7 +33,7 @@
 			onclick="loadJSP('home')"></div>
 		<div id="register" style="cursor: pointer;"
 			onclick="loadJSP('register')">Register</div>
-		<div id="login">Login</div>
+		<div id="login" style="cursor: pointer;" onclick="loadJSP('login')">Login</div>
 		<div id="logout"></div>
 		<div id="search">
 			<form action="SearchMethod" method="GET">
