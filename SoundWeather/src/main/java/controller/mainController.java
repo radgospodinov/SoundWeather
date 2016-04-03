@@ -11,6 +11,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.neo4j.cypher.internal.compiler.v2_1.planner.logical.steps.idSeekLeafPlanner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,6 +49,11 @@ public class mainController {
 		return "register";
 	}
 
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String initLoginPage() {
+		return "login";
+	}
+
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
 
@@ -59,9 +65,6 @@ public class mainController {
 		String email = request.getParameter("email");
 		String location = request.getParameter("location");
 		String gender = request.getParameter("gender");
-
-		System.out.println(username + ", " + password1 + ", " + password2 + ", " + birth_month + ", " + birth_year
-				+ ", " + email + ", " + location + ", " + gender);
 
 		JsonObject rv = new JsonObject();
 		if (!password1.equals(password2)) {
@@ -119,9 +122,29 @@ public class mainController {
 		} finally {
 			session.close();
 		}
-		request.getSession().setAttribute("loggedUser", user);  
+		request.getSession().setAttribute("loggedUser", user);
 		rv.addProperty("status", "ok");
 
+		return rv.toString();
+	}
+
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public @ResponseBody String loginForm(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		Session session = getSession();
+		System.out.println(username + " , " + password);
+		User user = (User) session.get(User.class, username);
+		session.close();
+		if (user == null || !user.comparePasswords(password)) {
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "Invalid credentials");
+			rv.addProperty("fld", "#username");
+			return rv.toString();
+		}
+		rv.addProperty("status", "ok");
+		request.getSession().setAttribute("loggedUser", user);
 		return rv.toString();
 	}
 
