@@ -10,6 +10,8 @@
 	href="<c:url value="/css/home.css"/>" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/main.css"/>" />
+<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/register.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
 <title>Home</title>
 

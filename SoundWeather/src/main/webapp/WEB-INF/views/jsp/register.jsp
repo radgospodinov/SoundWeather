@@ -88,7 +88,7 @@
 </head>
 
 
-<body>
+<body id="body">
 
 	<div id="login_notification">
 
@@ -98,7 +98,7 @@
 
 	</div>
 
-
+	<div id="form">
 
 	<input id="username" type="text" name="username"
 		placeholder="choose username" required />
@@ -117,14 +117,14 @@
 	<input id="location" type="text" name="location"
 		placeholder="enter location" required />
 	<br />
-	<p>Select your gender:</p>
+	  <!--<p>Select your gender:</p>-->
 	<select id="gender" name="gender">
 		<option value="Male" selected>Male</option>
 		<option value="Female">Female</option>
 		<option value="Other">Other</option>
 	</select>
 	<br />
-	<p>Select your birth month:</p>
+	<!--<p>Select your birth month:</p>-->
 	<select id="birth_month" name="birth_month">
 		<option value="January" selected>January</option>
 		<option value="February">February</option>
@@ -140,7 +140,7 @@
 		<option value="December">December</option>
 	</select>
 	<br />
-	<p>Select your birth year:</p>
+	<!--<p>Select your birth year:</p>-->
 	<select id="birth_year" name="birth_year">
 		<option value="2016">2016</option>
 		<option value="2015">2015</option>
@@ -244,10 +244,11 @@
 		<option value="1917">1917</option>
 		<option value="1916">1916</option>
 	</select>
+	<br/>
 	<input type="submit" value="Register" onclick="register()" />
 	<br />
-	<span id="match_message"></span>
-
+	<!--<span id="match_message"></span>-->
+	</div>
 
 </body>
 
