@@ -54,6 +54,7 @@
 				} else {
 					$("#login_message").text(data.msg);
 					$("#login_message").show();
+					$(data.fld).focus();
 
 				}
 
