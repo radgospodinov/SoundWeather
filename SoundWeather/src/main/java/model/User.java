@@ -104,7 +104,7 @@ public class User {
 	}
 
 	public boolean comparePasswords(String password) {
-		return this.password == getMD5Hash(password);
+		return this.password.equals(getMD5Hash(password));
 	}
 
 	public String getBirthYear() {
