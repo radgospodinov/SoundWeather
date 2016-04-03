@@ -102,7 +102,7 @@ public class mainController {
 			session.close();
 			return rv.toString();
 		}
-		User user = new User().setEmail(email).setUsername(username).setBirthMonth(birth_month).setBirthYear(birth_year)
+		User user = new User(username).setEmail(email).setBirthMonth(birth_month).setBirthYear(birth_year)
 				.setGender(gender).setPassword(password1);
 
 		Transaction tx = null;
