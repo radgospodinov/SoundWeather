@@ -244,7 +244,7 @@
 		<option value="1917">1917</option>
 		<option value="1916">1916</option>
 	</select>
-	<input type="submit" value="Login" onclick="register()" />
+	<input type="submit" value="Register" onclick="register()" />
 	<br />
 	<span id="match_message"></span>
 
