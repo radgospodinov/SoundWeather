@@ -17,17 +17,22 @@ public class Genre {
 	private int genreId;
 	@Column(name = "genre_name")
 	private String genreName;
+	
+	
+	
 	public int getGenreId() {
 		return genreId;
 	}
-	public void setGenreId(int genreId) {
+	public Genre setGenreId(int genreId) {
 		this.genreId = genreId;
+		return this;
 	}
 	public String getGenreName() {
 		return genreName;
 	}
-	public void setGenreName(String genreName) {
+	public Genre setGenreName(String genreName) {
 		this.genreName = genreName;
+		return this;
 	}
 	
 	

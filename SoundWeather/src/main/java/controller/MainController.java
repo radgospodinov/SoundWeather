@@ -1,13 +1,24 @@
 package controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Example;
 import org.hibernate.service.ServiceRegistry;
 import org.neo4j.cypher.internal.compiler.v2_1.planner.logical.steps.idSeekLeafPlanner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.google.gson.JsonObject;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+import model.Genre;
+import model.Sound;
 import model.User;
 
 @Controller
@@ -148,4 +162,104 @@ public class MainController {
 		return rv.toString();
 	}
 
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public void uploadForm(HttpServletRequest request) throws IOException, ServletException {
+		
+		//Get the author = loggedUser:
+		User author = (User) request.getSession().getAttribute("loggedUser");
+		
+		//Get the title:
+		String soundTitle = request.getParameter("sound_title");
+		
+		//Get the audio file:
+		InputStream is = request.getPart("uploaded_sound").getInputStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buffer = new byte[8192];
+			int bytesRead = 0;
+			while ((bytesRead = is.read(buffer)) > 0) {
+				baos.write(buffer, 0, bytesRead);
+			}
+		byte[] audioFile =  baos.toByteArray();
+		
+		//Get the cover photo:
+		is = request.getPart("sound_cover_photo").getInputStream();
+			baos = new ByteArrayOutputStream();
+			byte[] buffer2 = new byte[8192];
+			int bytesRead2 = 0;
+			while ((bytesRead2 = is.read(buffer2)) > 0) {
+				baos.write(buffer2, 0, bytesRead2);
+			}
+		byte[] coverPhoto =  baos.toByteArray();
+		
+		//Create Sound object:
+		Sound newSound = new Sound().setSoundTitle(soundTitle).setAudioFile(audioFile).setSoundCoverPhoto(coverPhoto).setSoundAuthor(author);
+		
+		//Get the genres and set them to the Sound object:
+		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
+		String[] genres = request.getParameterValues("genres");
+		if (genres != null) {
+			for (int i=0; i < genres.length; i++) {
+				String genre = genres[i];
+				Genre dummyGenre = new Genre().setGenreName(genre);
+				genreDummyObjects.add(dummyGenre);
+			}
+		
+		}
+		
+		
+		//Open hibernate session:
+		Session session = getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			//Fetch the Genre objects (we need the genre id in order to set the Song object properly):
+			Criteria criteria = session.createCriteria(Genre.class);
+			for (Genre gnr : genreDummyObjects) {
+				Example example = Example.create(gnr);
+				criteria.add(example);
+			}
+		
+			List<Genre> fetchedGenres = (List<Genre>) criteria.list();
+			
+			//Set the genres to the newSound:
+			newSound.getSoundGenres().addAll(fetchedGenres);
+			
+			//Hopefully save the newSound object:
+			session.save(newSound);
+		
+			//DO WE NEED TO ADD THE NEWSOUND TO THE AUTHOR?... hmmm?
+			
+			
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			session.close();
+		}
+		
+		
+		
+		//Write the audio byte[] into a file on the hd:
+		File soundFile = new File ("c:/upload/"+soundTitle+".mp3");
+		soundFile.createNewFile();
+	    FileOutputStream fos = new FileOutputStream(soundFile);
+	    fos.write(audioFile);
+	    
+	    
+	    //Write the picture byte[] into a file on the hd:
+		File photoFile = new File ("c:/upload/"+soundTitle+".jpg");
+		photoFile.createNewFile();
+		FileOutputStream fos2 = new FileOutputStream(photoFile);
+	    fos2.write(coverPhoto);
+	    
+	    fos.close();
+	    fos2.close();
+		is.close();
+		
+	}
+	
+	
 }
