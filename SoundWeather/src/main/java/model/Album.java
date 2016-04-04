@@ -30,7 +30,7 @@ public class Album {
 	@Column(name = "album_cover")
 	private Byte[] albumCover; //(photo)
 	@ManyToMany
-	@Column(name = "album_genres")
+	@Column(name = "album_genres") // mai tva beshe one-to-many pregledai
 	private List<Genre> albumGenres;
 	
 	

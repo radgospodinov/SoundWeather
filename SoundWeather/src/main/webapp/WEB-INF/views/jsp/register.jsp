@@ -6,7 +6,8 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="register.css">
+<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/register.css"/>" />
 <!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
 <title>Register</title>
 

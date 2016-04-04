@@ -69,6 +69,15 @@ public class User {
 	// public void setUserId(int userId) {
 	// this.userId = userId;
 	// }
+	public User() {
+		sounds = new ArrayList<>();
+		favorites = new ArrayList<>();
+		playlist = new ArrayList<>();
+		albums = new ArrayList<>();
+		followers = new ArrayList<>();
+		following = new ArrayList<>();
+		comments = new ArrayList<>(); 
+	}
 	
 	public User(String username) {
 		this.username=username;

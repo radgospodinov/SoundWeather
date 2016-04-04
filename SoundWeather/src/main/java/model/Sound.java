@@ -38,7 +38,7 @@ public class Sound {
 	@Column(name = "audio_file")
 	private Byte[] audioFile;
 	@OneToMany
-	@Column(name = "sound_comments")
+	@Column(name = "sound_comments") // mapped by -> comment
 	private List<Comment> soundComments;
 	@ManyToMany
 	@Column(name = "sound_fans")
