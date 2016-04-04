@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,53 +49,68 @@ public class Sound {
 	@Column(name = "sound_genres")
 	private List<Genre> soundGenres;
 	
+	public Sound () {
+		this.soundComments = new Vector<Comment>();
+		this.soundFans = new Vector<User>();
+		this.soundGenres = new ArrayList<Genre>();
+	}
+	
+	
 	public int getSoundId() {
 		return soundId;
 	}
-	public void setSoundId(int soundId) {
+	public Sound setSoundId(int soundId) {
 		this.soundId = soundId;
+		return this;
 	}
 	public String getSoundTitle() {
 		return soundTitle;
 	}
-	public void setSoundTitle(String soundTitle) {
+	public Sound setSoundTitle(String soundTitle) {
 		this.soundTitle = soundTitle;
+		return this;
 	}
 	public int getSoundViewCount() {
 		return soundViewCount;
 	}
-	public void setSoundViewCount(int soundViewCount) {
+	public Sound setSoundViewCount(int soundViewCount) {
 		this.soundViewCount = soundViewCount;
+		return this;
 	}
 	public double getSoundRating() {
 		return soundRating;
 	}
-	public void setSoundRating(double soundRating) {
+	public Sound setSoundRating(double soundRating) {
 		this.soundRating = soundRating;
+		return this;
 	}
 	public User getSoundAuthor() {
 		return soundAuthor;
 	}
-	public void setSoundAuthor(User soundAuthor) {
+	public Sound setSoundAuthor(User soundAuthor) {
 		this.soundAuthor = soundAuthor;
+		return this;
 	}
 	public Album getAlbum() {
 		return album;
 	}
-	public void setAlbum(Album album) {
+	public Sound setAlbum(Album album) {
 		this.album = album;
+		return this;
 	}
 	public byte[] getSoundCoverPhoto() {
 		return soundCoverPhoto;
 	}
-	public void setSoundCoverPhoto(byte[] soundCoverPhoto) {
+	public Sound setSoundCoverPhoto(byte[] soundCoverPhoto) {
 		this.soundCoverPhoto = soundCoverPhoto;
+		return this;
 	}
 	public byte[] getAudioFile() {
 		return audioFile;
 	}
-	public void setAudioFile(byte[] audioFile) {
+	public Sound setAudioFile(byte[] audioFile) {
 		this.audioFile = audioFile;
+		return this;
 	}
 	public List<Comment> getSoundComments() {
 		return soundComments;

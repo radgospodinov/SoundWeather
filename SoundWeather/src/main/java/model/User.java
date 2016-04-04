@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,13 +71,13 @@ public class User {
 	// this.userId = userId;
 	// }
 	public User() {
-		sounds = new ArrayList<>();
-		favorites = new ArrayList<>();
-		playlist = new ArrayList<>();
-		albums = new ArrayList<>();
-		followers = new ArrayList<>();
-		following = new ArrayList<>();
-		comments = new ArrayList<>(); 
+		sounds = new ArrayList<Sound>();
+		favorites = new ArrayList<Sound>();
+		playlist = new ArrayList<Sound>();
+		albums = new ArrayList<Album>();
+		followers = new Vector<User>();
+		following = new ArrayList<User>();
+		comments = new ArrayList<Comment>(); 
 	}
 	
 	public User(String username) {
