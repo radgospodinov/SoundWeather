@@ -60,6 +60,12 @@ public class MainController {
 		return ((SessionFactory) context.getAttribute("sf")).openSession();
 	}
 
+	@RequestMapping(value = "/upload", method = RequestMethod.GET)
+	public String loadUploadPage() {
+		return "upload";
+	}
+	
+	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
 

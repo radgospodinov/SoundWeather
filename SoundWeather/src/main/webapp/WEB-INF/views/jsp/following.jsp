@@ -32,7 +32,7 @@
    				<c:forEach var="followedUser" items="${sessionScope.loggedUser.following}">
    					<tr>
    						<td>
-   							<a onclick="loadJSP('register?username=${followedUser.username}')"><img alt="" src="${followedUser.userCoverPhoto}"></a> <!-- TODO: byte[] userCoverPhoto in User class  -->
+   							<a onclick="loadJSP('getOtherUser?username=${followedUser.username}')"><img alt="" src="${followedUser.userCoverPhoto}"></a> <!-- TODO: byte[] userCoverPhoto in User class  -->
    						</td>
    						<td>
    							<c:out value="${followedUser.username}"/>

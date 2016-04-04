@@ -5,6 +5,7 @@
 <!DOCTYPE html >
 <html>
 
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -129,14 +130,13 @@
 			<option value="pop2">pop</option>
 			<option value="black metal3">black metal</option>
 			<!--<c:forEach items="${applicationScope.genres}" var="genre">
+	
    					 <option value="${genre}"><c:out value="${genre}"/></option>
   				</c:forEach>-->
 		</select> <br /> <input type="hidden" name="author"
 			value="${sessionScope.loggedUser.username}" /> <input type="submit"
 			value="Upload sound" onclick="uploadFile()" />
-		<!-- 
-		</form>
-		-->
+
 	</div>
 </body>
 

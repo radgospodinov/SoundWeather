@@ -42,6 +42,12 @@
    							<c:out value="${sound.soundId}"/>
    						</td>
    						<td>
+   							<c:out value="${sound.soundViewCount}"/>
+   						</td>
+   						<td>
+   							<c:out value="${sound.soundFans.size()}"/>
+   						</td>
+   						<td>
    							<button id="sound_id_to_delete" value="${sound.soundId}" onclick="deleteSound()">Delete</button>
    						</td>
    						<td>
@@ -51,6 +57,7 @@
   								</c:forEach>
   							</select>
 						</td>
+					</tr>	
 				</c:forEach>
 			</table>
 		</div>

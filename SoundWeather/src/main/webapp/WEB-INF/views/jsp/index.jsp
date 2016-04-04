@@ -103,7 +103,6 @@
 
 		<div id="navcontainer">
 			<ul id="navlist">
-				<!--<li><a href="#" id="current" onclick="loadJSP('upload')">UPLOAD</a></li>-->
 				<li><a id="current" onclick="loadJSP('upload')">UPLOAD</a></li>
 				<li><a href="#">SOUNDS</a></li>
 				<li><a href="#">ALBUMS</a></li>

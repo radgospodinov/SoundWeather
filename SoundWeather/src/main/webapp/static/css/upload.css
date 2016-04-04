@@ -25,6 +25,20 @@ input {
 	text-align:center;
 }
 
+#sound_title {
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 300px;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+}
 input[type=submit] {
    	width:300px;
 	height:50px;
