@@ -7,7 +7,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="login.css">
+
 <title>Login</title>
 
 <script>
@@ -46,6 +46,7 @@
 
 <body>
 
+	<div id="login_space">
 	<div id="login_notification">
 		<h5 id="login_message" style="display: none; color: #ff6666">Wrong
 			username or password.</h5>
@@ -59,7 +60,7 @@
 		placeholder="enter spassword" />
 	<br />
 	<input type="submit" value="Login" onclick="login()" />
-
+	</div>
 </body>
 
 

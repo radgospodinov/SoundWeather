@@ -1,8 +1,8 @@
 @CHARSET "UTF-8";
 
-#body {
+#register_space {
 	margin:0 auto; 
-	background-color:#f7f2ea;
+	background:#f7f2ea;
 	font-family:Calibri, sans-serif;
 }
 
@@ -23,6 +23,30 @@ input {
 	background: #f0f0f0;
 	height:40px;
 	text-align:center;
+}
+
+#username, #email, #location, #user {
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 300px;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+}
+
+#login_space {
+	margin-top:50px;
+}
+
+#login_message {
+	margin-right:auto;
+	margin-left:auto;
 }
 
 input[type=submit] {

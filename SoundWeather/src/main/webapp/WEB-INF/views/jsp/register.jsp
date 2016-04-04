@@ -89,7 +89,7 @@
 </head>
 
 
-<body id="body">
+<body id="register_space">
 
 	<div id="login_notification">
 

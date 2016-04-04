@@ -1,5 +1,9 @@
 @CHARSET "utf-8";
 
+html {
+	background: #f7f2ea;
+}
+
 #body {
 	margin:0 auto; 
 	background:#fff;
