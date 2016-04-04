@@ -5,12 +5,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -26,8 +30,11 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.JsonObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
@@ -51,21 +58,6 @@ public class MainController {
 			context.setAttribute("sf", sFactory);
 		}
 		return ((SessionFactory) context.getAttribute("sf")).openSession();
-	}
-
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String initHomePage() {
-		return "playlists";
-	}
-
-	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public String initRegisterPage() {
-		return "register";
-	}
-
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String initLoginPage() {
-		return "login";
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -163,103 +155,108 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public void uploadForm(HttpServletRequest request) throws IOException, ServletException {
-		
-		//Get the author = loggedUser:
+	public @ResponseBody String uploadForm(MultipartHttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		// @RequestParam("mp3sound") MultipartFile mpfMp3Sound,
+		// @RequestParam("mp3cover") MultipartFile mpfMp3Cover,
+		// @RequestParam("mp3title") String mp3title,
+		// HttpServletRequest request
+
+		// Get the author = loggedUser:
 		User author = (User) request.getSession().getAttribute("loggedUser");
-		
-		//Get the title:
-		String soundTitle = request.getParameter("sound_title");
-		
-		//Get the audio file:
-		InputStream is = request.getPart("uploaded_sound").getInputStream();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buffer = new byte[8192];
-			int bytesRead = 0;
-			while ((bytesRead = is.read(buffer)) > 0) {
-				baos.write(buffer, 0, bytesRead);
-			}
-		byte[] audioFile =  baos.toByteArray();
-		
-		//Get the cover photo:
-		is = request.getPart("sound_cover_photo").getInputStream();
-			baos = new ByteArrayOutputStream();
-			byte[] buffer2 = new byte[8192];
-			int bytesRead2 = 0;
-			while ((bytesRead2 = is.read(buffer2)) > 0) {
-				baos.write(buffer2, 0, bytesRead2);
-			}
-		byte[] coverPhoto =  baos.toByteArray();
-		
-		//Create Sound object:
-		Sound newSound = new Sound().setSoundTitle(soundTitle).setAudioFile(audioFile).setSoundCoverPhoto(coverPhoto).setSoundAuthor(author);
-		
-		//Get the genres and set them to the Sound object:
+
+		// Get the title:
+		String soundTitle = request.getParameter("mp3title");
+		System.out.println("mp3title: " + soundTitle);
+
+		// Get the audio file:
+		MultipartFile mp3sound = request.getFile("mp3sound");
+		MultipartFile mp3cover = request.getFile("mp3cover");
+
+		byte[] audioFile = mp3sound.getBytes();
+
+		System.out.println("fileType sound: " + mp3sound.getContentType());
+		System.out.println("fileType cover: " + mp3cover.getContentType());
+		String fileName = author.getUsername() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+		// Get the cover photo:
+
+		byte[] coverPhoto = mp3cover.getBytes();
+
+		// Create Sound object:
+		Sound newSound = new Sound().setSoundTitle(soundTitle).setAudioFile(audioFile).setSoundCoverPhoto(coverPhoto)
+				.setSoundAuthor(author);
+
+		// Get the genres and set them to the Sound object:
 		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
-		String[] genres = request.getParameterValues("genres");
+		String[] genres = request.getParameterValues("mp3genres");
+
+		System.out.println(Arrays.toString(genres));
+
 		if (genres != null) {
-			for (int i=0; i < genres.length; i++) {
+			for (int i = 0; i < genres.length; i++) {
 				String genre = genres[i];
 				Genre dummyGenre = new Genre().setGenreName(genre);
 				genreDummyObjects.add(dummyGenre);
 			}
-		
+
 		}
-		
-		
-		//Open hibernate session:
-		Session session = getSession();
-		Transaction tx = null;
-		try {
-			tx = session.beginTransaction();
-			
-			//Fetch the Genre objects (we need the genre id in order to set the Song object properly):
-			Criteria criteria = session.createCriteria(Genre.class);
-			for (Genre gnr : genreDummyObjects) {
-				Example example = Example.create(gnr);
-				criteria.add(example);
-			}
-		
-			List<Genre> fetchedGenres = (List<Genre>) criteria.list();
-			
-			//Set the genres to the newSound:
-			newSound.getSoundGenres().addAll(fetchedGenres);
-			
-			//Hopefully save the newSound object:
-			session.save(newSound);
-		
-			//DO WE NEED TO ADD THE NEWSOUND TO THE AUTHOR?... hmmm?
-			
-			
-			tx.commit();
-		} catch (Exception e) {
-			if (tx != null) {
-				tx.rollback();
-			}
-		} finally {
-			session.close();
-		}
-		
-		
-		
-		//Write the audio byte[] into a file on the hd:
-		File soundFile = new File ("c:/upload/"+soundTitle+".mp3");
+		// TODO: Saving file paths to DB 
+		// // Open hibernate session:
+		// Session session = getSession();
+		// Transaction tx = null;
+		// try {
+		// tx = session.beginTransaction();
+		//
+		// // Fetch the Genre objects (we need the genre id in order to set the
+		// // Song object properly):
+		// Criteria criteria = session.createCriteria(Genre.class);
+		// for (Genre gnr : genreDummyObjects) {
+		// Example example = Example.create(gnr);
+		// criteria.add(example);
+		// }
+		//
+		// List<Genre> fetchedGenres = (List<Genre>) criteria.list();
+		//
+		// // Set the genres to the newSound:
+		// newSound.getSoundGenres().addAll(fetchedGenres);
+		//
+		// // Hopefully save the newSound object:
+		// session.save(newSound);
+		//
+		// // DO WE NEED TO ADD THE NEWSOUND TO THE AUTHOR?... hmmm?
+		//
+		// tx.commit();
+		// } catch (Exception e) {
+		// if (tx != null) {
+		// tx.rollback();
+		// }
+		// } finally {
+		// session.close();
+		// }
+
+		// Write the audio byte[] into a file on the hd:
+		String relativeWebPath = "/static/css/home.css";
+		String absoluteDiskPath = context.getRealPath(relativeWebPath);
+		System.out.println(absoluteDiskPath);
+		File soundFile = new File(context.getRealPath("/static/sounds/" + fileName + ".mp3"));
 		soundFile.createNewFile();
-	    FileOutputStream fos = new FileOutputStream(soundFile);
-	    fos.write(audioFile);
-	    
-	    
-	    //Write the picture byte[] into a file on the hd:
-		File photoFile = new File ("c:/upload/"+soundTitle+".jpg");
+		FileOutputStream fos = new FileOutputStream(soundFile);
+		fos.write(audioFile);
+
+		// Write the picture byte[] into a file on the hd:
+		File photoFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
 		photoFile.createNewFile();
 		FileOutputStream fos2 = new FileOutputStream(photoFile);
-	    fos2.write(coverPhoto);
-	    
-	    fos.close();
-	    fos2.close();
-		is.close();
-		
+		fos2.write(coverPhoto);
+
+		fos.close();
+		fos2.close();
+		// is.close();
+		JsonObject rv = new JsonObject();
+		rv.addProperty("status", "ok");
+		rv.addProperty("msg", "File was saved successfully!");
+		// TODO serve error msgs
+		return rv.toString();
 	}
-	
-	
+
 }
