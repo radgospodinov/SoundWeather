@@ -33,10 +33,10 @@ public class Sound {
 	@ManyToOne	
 	private Album album;
 	@Column(name = "sound_cover_photo")
-	private Byte[] soundCoverPhoto; //(photo)
+	private byte[] soundCoverPhoto; //(photo)
 	@Lob
 	@Column(name = "audio_file")
-	private Byte[] audioFile;
+	private byte[] audioFile;
 	@OneToMany
 	@Column(name = "sound_comments") // mapped by -> comment
 	private List<Comment> soundComments;
@@ -83,16 +83,16 @@ public class Sound {
 	public void setAlbum(Album album) {
 		this.album = album;
 	}
-	public Byte[] getSoundCoverPhoto() {
+	public byte[] getSoundCoverPhoto() {
 		return soundCoverPhoto;
 	}
-	public void setSoundCoverPhoto(Byte[] soundCoverPhoto) {
+	public void setSoundCoverPhoto(byte[] soundCoverPhoto) {
 		this.soundCoverPhoto = soundCoverPhoto;
 	}
-	public Byte[] getAudioFile() {
+	public byte[] getAudioFile() {
 		return audioFile;
 	}
-	public void setAudioFile(Byte[] audioFile) {
+	public void setAudioFile(byte[] audioFile) {
 		this.audioFile = audioFile;
 	}
 	public List<Comment> getSoundComments() {

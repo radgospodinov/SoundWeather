@@ -28,7 +28,7 @@ public class Album {
 	@OneToMany (fetch = FetchType.EAGER)
 	private List<Sound> albumTracks;
 	@Column(name = "album_cover")
-	private Byte[] albumCover; //(photo)
+	private byte[] albumCover; //(photo)
 	@ManyToMany
 	@Column(name = "album_genres") // mai tva beshe one-to-many pregledai
 	private List<Genre> albumGenres;
@@ -59,10 +59,10 @@ public class Album {
 	public void setAlbumTracks(List<Sound> albumTracks) {
 		this.albumTracks = albumTracks;
 	}
-	public Byte[] getAlbumCover() {
+	public byte[] getAlbumCover() {
 		return albumCover;
 	}
-	public void setAlbumCover(Byte[] albumCover) {
+	public void setAlbumCover(byte[] albumCover) {
 		this.albumCover = albumCover;
 	}
 	public List<Genre> getAlbumGenres() {
