@@ -6,7 +6,8 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	
+	<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/upload.css"/>" />
 		<title>Upload</title>
 	</head>
 
@@ -19,7 +20,7 @@
 			<input type="file" name="uploaded_sound"/> 
 				<br/>
 			<p>Enter sound title</p>
-			<input type="text" name="sound_title" placeholder="enter sound title"/> 
+			<input id="sound_title" type="text" name="sound_title" placeholder="enter sound title"/> 
 				<br/>
 			<p>Select cover photo</p>
 			<input type="file" name="sound_cover_photo"/> 

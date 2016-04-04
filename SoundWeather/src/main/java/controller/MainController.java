@@ -68,6 +68,12 @@ public class MainController {
 		return "login";
 	}
 
+	@RequestMapping(value = "/upload", method = RequestMethod.GET)
+	public String loadUploadPage() {
+		return "upload";
+	}
+	
+	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
 
