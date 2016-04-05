@@ -32,7 +32,7 @@ public class Sound {
 	@Column(name = "sound_view_count")
 	private int soundViewCount;
 	@Column(name = "sound_rating")
-	private double soundRating; //function of view-count and likes
+	private int soundRating; //function of view-count and likes
 	@ManyToOne
 	//@Column(name = "sound_author")
 	private User soundAuthor;
@@ -78,10 +78,10 @@ public class Sound {
 		this.soundViewCount = soundViewCount;
 		return this;
 	}
-	public double getSoundRating() {
+	public int getSoundRating() {
 		return soundRating;
 	}
-	public Sound setSoundRating(double soundRating) {
+	public Sound setSoundRating(int soundRating) {
 		this.soundRating = soundRating;
 		return this;
 	}
