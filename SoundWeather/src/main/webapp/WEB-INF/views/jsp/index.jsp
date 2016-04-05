@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html >
@@ -10,11 +11,11 @@
 	href="<c:url value="/css/home.css"/>" />
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/main.css"/>" />
- <link rel="stylesheet" type="text/css"
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/register.css"/>" />
-	<link rel="stylesheet" type="text/css"
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/upload.css"/>" />
-	<link rel="stylesheet" type="text/css"
+<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/playlists.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
 <title>Home</title>
@@ -23,6 +24,10 @@
 	function loadJSP(target) {
 		$('#sounds_space').load(target);
 	}
+
+	$(function() {
+		loadJSP('home');
+	});
 </script>
 
 
@@ -123,4 +128,12 @@
 
 </body>
 <script src="<c:url value="/script/jaudio.min.js"/>"></script>
+<script>
+// 	t.playlist = [];
+
+// 	$(".jAudio--controls").unbind();
+// 	$(".jAudio--playlist").unbind();
+
+// 	$(".jAudio--player").jAudio(t);
+</script>
 </html>
