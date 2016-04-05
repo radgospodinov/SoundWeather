@@ -80,7 +80,7 @@ public class MainController {
 			return rv.toString();
 		}
 
-		if (username.isEmpty() || password1.isEmpty() || password2.isEmpty() || email.isEmpty() || gender.isEmpty()) {
+		if (username.isEmpty() || password1.isEmpty() || password2.isEmpty() || email.isEmpty() || gender.isEmpty() || location.isEmpty()) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "Please, fill all the fields.");
 			rv.addProperty("fld", "#username");
@@ -108,8 +108,9 @@ public class MainController {
 			session.close();
 			return rv.toString();
 		}
+		
 		User user = new User(username).setEmail(email).setBirthMonth(birth_month).setBirthYear(birth_year)
-				.setGender(gender).setPassword(password1);
+				.setGender(gender).setPassword(password1).setLocation(location);
 
 		Transaction tx = null;
 		try {
@@ -196,38 +197,39 @@ public class MainController {
 
 		}
 		// TODO: Saving file paths to DB
-		// // Open hibernate session:
-		// Session session = getSession();
-		// Transaction tx = null;
-		// try {
-		// tx = session.beginTransaction();
-		//
-		// // Fetch the Genre objects (we need the genre id in order to set the
-		// // Song object properly):
-		// Criteria criteria = session.createCriteria(Genre.class);
-		// for (Genre gnr : genreDummyObjects) {
-		// Example example = Example.create(gnr);
-		// criteria.add(example);
-		// }
-		//
-		// List<Genre> fetchedGenres = (List<Genre>) criteria.list();
-		//
-		// // Set the genres to the newSound:
-		// newSound.getSoundGenres().addAll(fetchedGenres);
-		//
-		// // Hopefully save the newSound object:
-		// session.save(newSound);
-		//
-		// // DO WE NEED TO ADD THE NEWSOUND TO THE AUTHOR?... hmmm?
-		//
-		// tx.commit();
-		// } catch (Exception e) {
-		// if (tx != null) {
-		// tx.rollback();
-		// }
-		// } finally {
-		// session.close();
-		// }
+		// Open hibernate session:
+		Session session = getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+
+			// Fetch the Genre objects (we need the genre id in order to set the
+			// Song object properly):
+			Criteria criteria = session.createCriteria(Genre.class);
+			for (Genre gnr : genreDummyObjects) {
+				Example example = Example.create(gnr);
+				criteria.add(example);
+			}
+
+			List<Genre> fetchedGenres = (List<Genre>) criteria.list();
+
+			// Set the genres to the newSound:
+			newSound.addListOfGenres(fetchedGenres);
+
+			// Save uploaded sound to DB;
+			session.save(newSound);
+
+			// Set newSound to user and update it to DB
+			author.addSoundToSounds(newSound);
+			session.update(author);
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+		} finally {
+			session.close();
+		}
 
 		// Write the audio byte[] into a file on the hd:
 		String relativeWebPath = "/static/css/home.css";
