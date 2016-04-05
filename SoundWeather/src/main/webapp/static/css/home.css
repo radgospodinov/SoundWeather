@@ -79,33 +79,15 @@ html {
 }
 
 #weather_sounds {
-	margin-top:25px;
-	width: 100%;
-	height:300px;
-	margin-left:auto;
-	margin-right:auto;
-	background:#9fdfdf;
-	text-align:center;
+	
 }
 
 #trendy_sounds {
-	margin-top:25px;
-	width: 100%;
-	height:300px;
-	margin-left:auto;
-	margin-right:auto;
-	background:#9fdfdf;
-	text-align:center;
+	
 }
 
 #lastplayed_sounds {
-	margin-top:25px;
-	width: 100%;
-	height:300px;
-	margin-left:auto;
-	margin-right:auto;
-	background:#9fdfdf;
-	text-align:center;
+	
 }
 
 input[type=text] {
