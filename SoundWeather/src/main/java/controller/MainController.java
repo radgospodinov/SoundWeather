@@ -17,12 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
 import org.hibernate.service.ServiceRegistry;
 import org.neo4j.cypher.internal.compiler.v2_1.planner.logical.steps.idSeekLeafPlanner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,7 @@ import com.google.gson.JsonObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import model.Genre;
+import model.HibernateUtil;
 import model.Sound;
 import model.User;
 
@@ -48,17 +51,18 @@ public class MainController {
 	@Autowired
 	ServletContext context;
 
-	private Session getSession() {
-		if (context.getAttribute("sf") == null) {
-			Configuration configuration = new Configuration();
-			configuration.configure("hibernate.cfg.xml");
-			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-					.applySettings(configuration.getProperties()).build();
-			SessionFactory sFactory = new Configuration().configure().buildSessionFactory(serviceRegistry);
-			context.setAttribute("sf", sFactory);
-		}
-		return ((SessionFactory) context.getAttribute("sf")).openSession();
-	}
+	// private Session getSession() {
+	// if (context.getAttribute("sf") == null) {
+	// Configuration configuration = new Configuration();
+	// configuration.configure("hibernate.cfg.xml");
+	// ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+	// .applySettings(configuration.getProperties()).build();
+	// SessionFactory sFactory = new
+	// Configuration().configure().buildSessionFactory(serviceRegistry);
+	// context.setAttribute("sf", sFactory);
+	// }
+	// return ((SessionFactory) context.getAttribute("sf")).openSession();
+	// }
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
@@ -80,7 +84,8 @@ public class MainController {
 			return rv.toString();
 		}
 
-		if (username.isEmpty() || password1.isEmpty() || password2.isEmpty() || email.isEmpty() || gender.isEmpty() || location.isEmpty()) {
+		if (username.isEmpty() || password1.isEmpty() || password2.isEmpty() || email.isEmpty() || gender.isEmpty()
+				|| location.isEmpty()) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "Please, fill all the fields.");
 			rv.addProperty("fld", "#username");
@@ -100,7 +105,7 @@ public class MainController {
 		}
 		// TODO : strong password validation
 
-		Session session = getSession();
+		Session session = HibernateUtil.getSession();
 		if (session.get(User.class, username) != null) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "There is a user already registered with this username.");
@@ -108,7 +113,7 @@ public class MainController {
 			session.close();
 			return rv.toString();
 		}
-		
+
 		User user = new User(username).setEmail(email).setBirthMonth(birth_month).setBirthYear(birth_year)
 				.setGender(gender).setPassword(password1).setLocation(location);
 
@@ -140,7 +145,7 @@ public class MainController {
 		JsonObject rv = new JsonObject();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		Session session = getSession();
+		Session session = HibernateUtil.getSession();
 		System.out.println(username + " , " + password);
 		User user = (User) session.get(User.class, username);
 		session.close();
@@ -184,57 +189,52 @@ public class MainController {
 
 		// Get the genres and set them to the Sound object:
 		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
-		String[] genres = request.getParameterValues("mp3genres");
-
-		System.out.println(Arrays.toString(genres));
-
-		if (genres != null) {
-			for (int i = 0; i < genres.length; i++) {
-				String genre = genres[i];
-				Genre dummyGenre = new Genre().setGenreName(genre);
-				genreDummyObjects.add(dummyGenre);
-			}
-
-		}
+		String genresTmp = request.getParameter("mp3genres");
+		System.out.println("TMP="+genresTmp);
+		String[] genres = genresTmp.split(",");
+		System.out.println("array="+Arrays.toString(genres));
 		// TODO: Saving file paths to DB
 		// Open hibernate session:
-		Session session = getSession();
+		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
+		JsonObject rv = new JsonObject();
 		try {
 			tx = session.beginTransaction();
 
 			// Fetch the Genre objects (we need the genre id in order to set the
 			// Song object properly):
-			Criteria criteria = session.createCriteria(Genre.class);
-			for (Genre gnr : genreDummyObjects) {
-				Example example = Example.create(gnr);
-				criteria.add(example);
-			}
 
-			List<Genre> fetchedGenres = (List<Genre>) criteria.list();
+		
+		
 
 			// Set the genres to the newSound:
-			newSound.addListOfGenres(fetchedGenres);
-
+			for(String string : genres) {
+				Genre genre = (Genre) session.get(Genre.class, Integer.parseInt(string));
+				System.out.println("NAME OF GENRE : "+genre.getGenreName() + " ID: " + genre.getGenreId() + " STRING = " + string);
+				newSound.addGenre(genre);
+			}
 			// Save uploaded sound to DB;
 			session.save(newSound);
-
+			User user = (User) session.get(User.class, author.getUsername());
 			// Set newSound to user and update it to DB
-			author.addSoundToSounds(newSound);
-			session.update(author);
+			user.addSoundToSounds(newSound);
+			session.update(user);
 			tx.commit();
+			request.getSession().setAttribute("loggedUser", user);
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
 			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "We couldn't save your file, try again later!");
+			return rv.toString();
 		} finally {
 			session.close();
 		}
-
+			
 		// Write the audio byte[] into a file on the hd:
-		String relativeWebPath = "/static/css/home.css";
-		String absoluteDiskPath = context.getRealPath(relativeWebPath);
-		System.out.println(absoluteDiskPath);
+
 		File soundFile = new File(context.getRealPath("/static/sounds/" + fileName + ".mp3"));
 		soundFile.createNewFile();
 		FileOutputStream fos = new FileOutputStream(soundFile);
@@ -249,7 +249,6 @@ public class MainController {
 		fos.close();
 		fos2.close();
 		// is.close();
-		JsonObject rv = new JsonObject();
 		rv.addProperty("status", "ok");
 		rv.addProperty("msg", "File was saved successfully!");
 		// TODO serve error msgs
