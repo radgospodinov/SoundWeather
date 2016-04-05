@@ -1,127 +1,119 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html PUBLIC>
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" type="text/css" href="playlists.css">
-		<title>Playlists</title>
-		
-	</head>
-	
-	<body id="playlists_body">
-	
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="playlists.css">
+<title>Playlists</title>
+
+<script>
+	function addSongs(mp3File, jpegFile, soundTitle, soundAuthor, trackAlbum) {
+
+		$(".jAudio--controls").unbind();
+		$(".jAudio--playlist").unbind();
+		t.playlist.unshift({
+			file : mp3File,
+			thumb : jpegFile,
+			trackName : soundTitle,
+			trackArtist : soundAuthor,
+			trackAlbum : trackAlbum,
+		});
+		$('#btn-pause').data("action", "play");
+		$('#btn-pause').attr("id", "btn-play");
+		$('#btn-play').data("action", "play");
+		$('#btn-play').attr("id", "btn-play");
+		$(".jAudio--player").jAudio(t);
+		$('#btn-play').click();
+	};
+	function like(soundId){
+		$.post({
+			url : "likeSound",
+			data : {
+				id : soundId
+			},
+			dataType : "json",
+			success : function(data, textStatus, jqXHR) {
+				if (data.status == 'ok') {
+					$('#wLike'+data.id).text('Like ['+data.likes+']');
+					$('#tLike'+data.id).text('Like ['+data.likes+']');
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				alert("Something really bad happened " + textStatus + " - "
+						+ errorThrown);
+			}
+		});
+	};
+</script>
+
+
+</head>
+
+<body id="playlists_body">
+
 	<div>
-		
+
 		<!-- THE DUMMY STUFF -->
 		<div id="weather_sounds">
 			<h3 id="playlist_name">Weather sounds</h3>
 			<table id="playlist_table">
-   				<tr id="row_with_sounds">
-   				 <c:forEach var="i" begin="1" end="9">
-           				<td id="individual_sound">
-   							<div id="images_container">
-   								<a onclick="">
-   									<img id="sound_cover_photo" alt="Sound cover photo" src="<c:url value="/images/sound_cover.jpg"/>"/>
-   									<img id="play" src="<c:url value="/images/play.png"/>"/>
-   								</a>
-   							</div>
-   							
-   							<div id="sound_title">
-   								<c:out value="Sound Title ${i}"/>
-   							</div>
-   							
-   							<button id="like" value="Like" >Like</button>
-   						</td>
-   				</c:forEach>
+				<tr id="row_with_sounds">
+					<c:forEach var="wSound" items="${requestScope.weatherSounds}">
+						<td id="individual_sound">
+							<div id="images_container"
+								onclick="addSongs('sounds/${wSound.getFileName()}.mp3','covers/${wSound.getFileName()}.jpg','${wSound.getSoundTitle()}','${wSound.getSoundAuthor().getUsername()}','')">
+								<img id="sound_cover_photo" alt="Sound cover photo"
+									src="<c:url value="/covers/${wSound.getFileName()}.jpg"/>" height="150" width="150" />
+								<img id="play" src="<c:url value="/images/play.png"/>" />
+							</div>
+
+							<div id="sound_title">
+								<c:out value="Sound Title ${wSound.getSoundTitle()}" />
+							</div>
+
+							<button id="wLike${wSound.getSoundId()}" class="like" onclick="like('${wSound.getSoundId()}')">Like [${wSound.getSoundRating()}]</button>
+						</td>
+					</c:forEach>
 				</tr>
 			</table>
 		</div>
-		
-					
+
+
 		<div id="weather_sounds">
 			<h3 id="playlist_name">Trendy sounds</h3>
 			<table id="playlist_table">
-   				<tr id="row_with_sounds">
-   				 <c:forEach var="i" begin="1" end="9">
-           				<td id="individual_sound">
-   							<div id="images_container">
-   								<a onclick="">
-   									<img id="sound_cover_photo" alt="Sound cover photo" src="<c:url value="/images/sound_cover.jpg"/>"/>
-   									<img id="play" src="<c:url value="/images/play.png"/>"/>
-   								</a>
-   							</div>
-   							
-   							<div id="sound_title">
-   								<c:out value="Sound Title ${i}"/>
-   							</div>
-   							
-   							<button id="like" value="Like" >Like</button>
-   						</td>
-   				</c:forEach>
+				<tr id="row_with_sounds">
+					<c:forEach var="tSound" items="${requestScope.trendySounds}">
+						<td id="individual_sound">
+							<div id="images_container"
+								onclick="addSongs('sounds/${tSound.getFileName()}.mp3','covers/${tSound.getFileName()}.jpg','${tSound.getSoundTitle()}','${tSound.getSoundAuthor().getUsername()}','')">
+								<img id="sound_cover_photo" alt="Sound cover photo"
+									src="<c:url value="/covers/${tSound.getFileName()}.jpg"/>" height="150" width="150" />
+								<img id="play" src="<c:url value="/images/play.png"/>" />
+							</div>
+
+							<div id="sound_title">
+								<c:out value="Sound Title ${tSound.getSoundTitle()}" />
+							</div>
+
+							<button id="tLike${tSound.getSoundId()}" class="like" onclick="like('${tSound.getSoundId()}')">Like [${tSound.getSoundRating()}]</button>
+						</td>
+					</c:forEach>
 				</tr>
 			</table>
 		</div>
-		
-		
-			
-		<!-- THE REAL STUFF -->
-		<!--  <div id="weather_sounds">
-			<h3 id="playlist_name">Weather sounds</h3>
-			<table id="playlist_table">
-   				<tr id="row_with_sounds">
-   				<c:forEach var="weather_sound" items="">
-   					
-   						<td id="individual_sound">
-   						<div id="images_container">
-   							<a onclick="">
-   								<img id="sound_cover_photo" alt="" src="<c:url value=""/>">
-   								<img id="play" src="<c:url value="/images/play.png"/>"/>
-   							</a>
-   						</div>
-   							<div id="sound_title">
-   							<c:out value="Sound Title"/>
-   							</div>
-   							<button id="like" value="Like" >Like</button>
-   						</td>
-   											
-				</c:forEach>
-				</tr>
-			</table>
-		</div>
-		
-					
-		<!--  <div id="trendy_sounds">
-			<h3 id="playlist_name">Trendy sounds</h3>
-			<table id="playlist_table">
-   				<tr id="row_with_sounds">
-   				<c:forEach var="trendy_sound" items="">
-   					
-   						<td id="individual_sound">
-   						<div id="images_container">
-   							<a onclick="">
-   								<img id="sound_cover_photo" alt="" src="<c:url value=""/>">
-   								<img id="play" src="<c:url value="/images/play.png"/>"/>
-   							</a>
-   						</div>
-   							<div id="sound_title">
-   							<c:out value="Sound Title"/>
-   							</div>
-   							<button id="like" value="Like" >Like</button>
-   						</td>
-   											
-				</c:forEach>
-				</tr>
-			</table>
-		</div>
-				
+
+
+
 		
 		<!--  <div id="lastplayed_sounds">Lastplayed Sounds</div>-->
 
 	</div>
-	
-	</body>
-	
+
+</body>
+
 </html>
