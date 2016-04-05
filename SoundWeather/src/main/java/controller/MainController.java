@@ -48,6 +48,10 @@ import model.User;
 
 @Controller
 public class MainController {
+	
+	private static final int MAX_PASSWORD_LENGTH = 6;
+	private static final int MAX_USERNAME_LENGTH = 4;
+	
 	@Autowired
 	ServletContext context;
 
@@ -91,13 +95,13 @@ public class MainController {
 			rv.addProperty("fld", "#username");
 			return rv.toString();
 		}
-		if (username.length() <= 3) {
+		if (username.length() < MAX_USERNAME_LENGTH) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "Username too short.Username must be at least 4 characters");
 			rv.addProperty("fld", "#username");
 			return rv.toString();
 		}
-		if (password1.length() < 6) {
+		if (password1.length() < MAX_PASSWORD_LENGTH) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "Password too short.Username must be at least 6 characters");
 			rv.addProperty("fld", "#pass1");
