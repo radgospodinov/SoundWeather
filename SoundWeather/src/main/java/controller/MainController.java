@@ -26,6 +26,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
 import org.hibernate.service.ServiceRegistry;
+import org.neo4j.cypher.internal.compiler.v2_1.commands.expressions.ProjectedPath.singleOutgoingRelationshipProjector;
 import org.neo4j.cypher.internal.compiler.v2_1.planner.logical.steps.idSeekLeafPlanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -55,18 +56,7 @@ public class MainController {
 	@Autowired
 	ServletContext context;
 
-	// private Session getSession() {
-	// if (context.getAttribute("sf") == null) {
-	// Configuration configuration = new Configuration();
-	// configuration.configure("hibernate.cfg.xml");
-	// ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-	// .applySettings(configuration.getProperties()).build();
-	// SessionFactory sFactory = new
-	// Configuration().configure().buildSessionFactory(serviceRegistry);
-	// context.setAttribute("sf", sFactory);
-	// }
-	// return ((SessionFactory) context.getAttribute("sf")).openSession();
-	// }
+
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
@@ -259,4 +249,33 @@ public class MainController {
 		return rv.toString();
 	}
 
+	@RequestMapping(value = "/likeSound", method = RequestMethod.POST)
+	public @ResponseBody String likeSound(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("id"));
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			sound.setSoundRating(sound.getSoundRating()+1);
+			session.update(sound);
+			tx.commit();
+			rv.addProperty("status", "ok");
+			rv.addProperty("id", soundId);
+			rv.addProperty("likes", sound.getSoundRating());
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		
+		
+		return rv.toString();
+	}
 }
