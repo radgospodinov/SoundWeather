@@ -42,6 +42,8 @@ public class User {
 	@Column(name = "location")
 	private String location; // Play list to be generated according to the
 								// weather description for the location City
+	@Column(name = "avatar_file_name")
+	private String avatarName;
 	@ManyToMany
 	@JoinTable(name = "ownsounds_table")
 	private List<Sound> sounds;
@@ -78,6 +80,7 @@ public class User {
 		followers = new Vector<User>();
 		following = new ArrayList<User>();
 		comments = new ArrayList<Comment>(); 
+		avatarName = "defaultAvatar";
 	}
 	
 	public User(String username) {
@@ -89,6 +92,7 @@ public class User {
 		followers = new ArrayList<>();
 		following = new ArrayList<>();
 		comments = new ArrayList<>();
+		avatarName = "defaultAvatar";
 	}
 	
 	public String getUsername() {
@@ -228,6 +232,15 @@ public class User {
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	public String getAvatarName() {
+		return avatarName;
+	}
+
+	public User setAvatarName(String avatarName) {
+		this.avatarName = avatarName;
+		return this;
 	}
 
 }
