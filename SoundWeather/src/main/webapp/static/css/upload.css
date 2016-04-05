@@ -48,6 +48,7 @@ input[type=submit] {
     cursor:pointer;
     -webkit-border-radius:1px;
     border-radius:1px; 
+    font-weight:bold;
 }
 
 input[type=submit]:hover
@@ -93,6 +94,7 @@ option {
 
 p {
 	text-align:center;
+	font-weight:bold;
 }
 
 #upload_space {

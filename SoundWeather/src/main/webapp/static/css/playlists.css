@@ -21,6 +21,7 @@ html {
 
 #playlist_name {
 	padding-left:100px;
+	font-weight:bold;
 }
 
 #playlist_table {
@@ -33,6 +34,7 @@ html {
 
 #sound_title {
 	margin-left:25px;
+	font-weight:bold;
 		
 }
 
@@ -75,6 +77,7 @@ html {
 	height:30px;
 	text-align:center;
 	margin-left:45px;
+	font-weight:bold;
 }
 
 #like:hover {

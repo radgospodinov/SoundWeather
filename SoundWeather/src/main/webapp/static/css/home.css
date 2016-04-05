@@ -27,20 +27,24 @@ html {
 
 #register {
 	position:absolute;
-	right:0px;
-	background:#9fdfdf;
-	width:100px;
-	height:40px;
+	right:25px;
+	top:15px;
 	text-align:center;
+	text-transform:uppercase;
+	color:#000000;
+	font-weight:bold;
+	font-size:110%;
 }
 
 #login {
 	position:absolute;
-	right:150px;
-	background:#9fdfdf;
-	width:100px;
-	height:40px;
+	right:125px;
+	top:15px;
 	text-align:center;
+	text-transform:uppercase;
+	color:#000000;
+	font-weight:bold;
+	font-size:110%;
 }
 
 #search {
@@ -157,6 +161,7 @@ ul#navlist li a {
 	background: #f7f2ea;
 	height:40px;
 	text-align:center;
+	font-weight:bold;
 }
 
 #navcontainer>ul#navlist li a { 
