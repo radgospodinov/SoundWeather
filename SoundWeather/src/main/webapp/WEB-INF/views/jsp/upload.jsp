@@ -126,13 +126,12 @@
 			accept="image/*" /> <br />
 		<p>Hold down (ctrl) to select multiple genres</p>
 		<select id="genres" size="1" name="genres" multiple="multiple">
-			<option value="rock1">rock</option>
-			<option value="pop2">pop</option>
-			<option value="black metal3">black metal</option>
-			<!--<c:forEach items="${applicationScope.genres}" var="genre">
-	
-   					 <option value="${genre}"><c:out value="${genre}"/></option>
-  				</c:forEach>-->
+
+
+			<c:forEach items="${requestScope.genres}" var="genre">
+				<option value="${genre.getGenreId()}"><c:out
+						value="${genre.getGenreName()}" /></option>
+			</c:forEach>
 		</select> <br /> <input type="hidden" name="author"
 			value="${sessionScope.loggedUser.username}" /> <input type="submit"
 			value="Upload sound" onclick="uploadFile()" />
