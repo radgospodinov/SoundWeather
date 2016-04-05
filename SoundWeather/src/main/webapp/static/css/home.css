@@ -18,7 +18,8 @@ html {
 
 #logo {
 	position:absolute;
-	left:25px;
+	top:0px;
+	left:65px;
 	background-image:url("logo.png");
 	width:250px;
 	height:100px;

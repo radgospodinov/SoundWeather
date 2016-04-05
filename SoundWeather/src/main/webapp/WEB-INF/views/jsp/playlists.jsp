@@ -20,7 +20,7 @@
 			<h3 id="playlist_name">Weather sounds</h3>
 			<table id="playlist_table">
    				<tr id="row_with_sounds">
-   				 <c:forEach var="i" begin="1" end="6">
+   				 <c:forEach var="i" begin="1" end="9">
            				<td id="individual_sound">
    							<div id="images_container">
    								<a onclick="">
@@ -45,7 +45,7 @@
 			<h3 id="playlist_name">Trendy sounds</h3>
 			<table id="playlist_table">
    				<tr id="row_with_sounds">
-   				 <c:forEach var="i" begin="1" end="6">
+   				 <c:forEach var="i" begin="1" end="9">
            				<td id="individual_sound">
    							<div id="images_container">
    								<a onclick="">
