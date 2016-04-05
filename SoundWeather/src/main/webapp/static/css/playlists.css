@@ -5,6 +5,24 @@ html {
 	background: #f7f2ea;
 }
 
+
+.like {
+	cursor:pointer;
+	width: 70px;
+	height:20px;
+	padding: 0.5em;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #e8dac1;
+	height:30px;
+	text-align:center;
+	margin-left:45px;
+	font-weight:bold;
+}
+
 #playlists_body {
 	margin:0 auto; 
 	font-family:Calibri, sans-serif;
@@ -33,9 +51,10 @@ html {
 }
 
 #sound_title {
-	margin-left:25px;
+	text-align: center;
 	font-weight:bold;
-		
+	width: 170px;
+    height: 35px;
 }
 
 #individual_sound {
