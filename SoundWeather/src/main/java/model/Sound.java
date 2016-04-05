@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.mockito.internal.exceptions.util.ScenarioPrinter;
+
 @Entity
 @Table (name = "sounds")
 public class Sound {
@@ -34,11 +36,8 @@ public class Sound {
 	private User soundAuthor;
 	@ManyToOne	
 	private Album album;
-	@Column(name = "sound_cover_photo")
-	private byte[] soundCoverPhoto; //(photo)
-	@Lob
-	@Column(name = "audio_file")
-	private byte[] audioFile;
+	@Column(name = "file_name")
+	private String fileName;
 	@OneToMany
 	@Column(name = "sound_comments") // mapped by -> comment
 	private List<Comment> soundComments;
@@ -98,20 +97,6 @@ public class Sound {
 		this.album = album;
 		return this;
 	}
-	public byte[] getSoundCoverPhoto() {
-		return soundCoverPhoto;
-	}
-	public Sound setSoundCoverPhoto(byte[] soundCoverPhoto) {
-		this.soundCoverPhoto = soundCoverPhoto;
-		return this;
-	}
-	public byte[] getAudioFile() {
-		return audioFile;
-	}
-	public Sound setAudioFile(byte[] audioFile) {
-		this.audioFile = audioFile;
-		return this;
-	}
 	public List<Comment> getSoundComments() {
 		return soundComments;
 	}
@@ -129,6 +114,16 @@ public class Sound {
 	}
 	public void setSoundGenres(List<Genre> soundGenres) {
 		this.soundGenres = soundGenres;
+	}
+
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public Sound setFileName(String filesPath) {
+		this.fileName = filesPath;
+		return this;
 	}
 	
 	

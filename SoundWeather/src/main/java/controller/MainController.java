@@ -60,8 +60,6 @@ public class MainController {
 		return ((SessionFactory) context.getAttribute("sf")).openSession();
 	}
 
-	
-	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
 
@@ -159,34 +157,29 @@ public class MainController {
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public @ResponseBody String uploadForm(MultipartHttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		// @RequestParam("mp3sound") MultipartFile mpfMp3Sound,
-		// @RequestParam("mp3cover") MultipartFile mpfMp3Cover,
-		// @RequestParam("mp3title") String mp3title,
-		// HttpServletRequest request
 
 		// Get the author = loggedUser:
 		User author = (User) request.getSession().getAttribute("loggedUser");
+		String fileName = author.getUsername() + "_"
+				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 
 		// Get the title:
 		String soundTitle = request.getParameter("mp3title");
 		System.out.println("mp3title: " + soundTitle);
 
 		// Get the audio file:
+
 		MultipartFile mp3sound = request.getFile("mp3sound");
-		MultipartFile mp3cover = request.getFile("mp3cover");
-
 		byte[] audioFile = mp3sound.getBytes();
-
 		System.out.println("fileType sound: " + mp3sound.getContentType());
-		System.out.println("fileType cover: " + mp3cover.getContentType());
-		String fileName = author.getUsername() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 		// Get the cover photo:
 
+		MultipartFile mp3cover = request.getFile("mp3cover");
 		byte[] coverPhoto = mp3cover.getBytes();
+		System.out.println("fileType cover: " + mp3cover.getContentType());
 
 		// Create Sound object:
-		Sound newSound = new Sound().setSoundTitle(soundTitle).setAudioFile(audioFile).setSoundCoverPhoto(coverPhoto)
-				.setSoundAuthor(author);
+		Sound newSound = new Sound().setSoundTitle(soundTitle).setFileName(fileName).setSoundAuthor(author);
 
 		// Get the genres and set them to the Sound object:
 		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
@@ -202,7 +195,7 @@ public class MainController {
 			}
 
 		}
-		// TODO: Saving file paths to DB 
+		// TODO: Saving file paths to DB
 		// // Open hibernate session:
 		// Session session = getSession();
 		// Transaction tx = null;
