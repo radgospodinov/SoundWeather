@@ -17,6 +17,8 @@ import javax.persistence.Table;
 
 import org.mockito.internal.exceptions.util.ScenarioPrinter;
 
+import scala.collection.immutable.ListMap;
+
 @Entity
 @Table (name = "sounds")
 public class Sound {
@@ -109,13 +111,12 @@ public class Sound {
 	public void setSoundFans(List<User> soundFans) {
 		this.soundFans = soundFans;
 	}
-	public List<Genre> getSoundGenres() {
+	private List<Genre> getSoundGenres() {
 		return soundGenres;
 	}
 	public void setSoundGenres(List<Genre> soundGenres) {
 		this.soundGenres = soundGenres;
 	}
-
 
 	public String getFileName() {
 		return fileName;
@@ -124,6 +125,12 @@ public class Sound {
 	public Sound setFileName(String filesPath) {
 		this.fileName = filesPath;
 		return this;
+	}
+	public void addListOfGenres(List<Genre> genres) {
+		soundGenres.addAll(genres);
+	}
+	public void addGenre(Genre genre) {
+		soundGenres.add(genre);
 	}
 	
 	
