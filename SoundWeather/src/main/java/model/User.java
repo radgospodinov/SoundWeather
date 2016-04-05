@@ -79,12 +79,12 @@ public class User {
 		albums = new ArrayList<Album>();
 		followers = new Vector<User>();
 		following = new ArrayList<User>();
-		comments = new ArrayList<Comment>(); 
+		comments = new ArrayList<Comment>();
 		avatarName = "defaultAvatar";
 	}
-	
+
 	public User(String username) {
-		this.username=username;
+		this.username = username;
 		sounds = new ArrayList<>();
 		favorites = new ArrayList<>();
 		playlist = new ArrayList<>();
@@ -94,7 +94,7 @@ public class User {
 		comments = new ArrayList<>();
 		avatarName = "defaultAvatar";
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -125,12 +125,12 @@ public class User {
 	}
 
 	public User setPassword(String password) {
-		this.password = getMD5Hash(password+this.username);
+		this.password = getMD5Hash(password + this.username);
 		return this;
 	}
 
 	public boolean comparePasswords(String password) {
-		return this.password.equals(getMD5Hash(password+this.username));
+		return this.password.equals(getMD5Hash(password + this.username));
 	}
 
 	public String getBirthYear() {
@@ -178,7 +178,7 @@ public class User {
 		return this;
 	}
 
-	public List<Sound> getSounds() {
+	private List<Sound> getSounds() {
 		return sounds;
 	}
 
@@ -241,6 +241,10 @@ public class User {
 	public User setAvatarName(String avatarName) {
 		this.avatarName = avatarName;
 		return this;
+	}
+
+	public void addSoundToSounds(Sound sound) {
+		sounds.add(sound);
 	}
 
 }
