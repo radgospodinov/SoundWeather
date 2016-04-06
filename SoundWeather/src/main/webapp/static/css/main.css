@@ -2,9 +2,9 @@
 * {
   padding: 0;
   margin: 0;
-  font-weight: 500;
+  font-weight: 300;
   box-sizing: border-box;
-  font-family: Calibri, sans-serif;
+  font-family: "Open Sans";
   font-weight: 300;
   color: #888;
   outline: none;
@@ -24,13 +24,16 @@ body {
   font-size: 1rem;
 }
 
+html {
+  background: #383B44;
+}
 
 .jAudio--player {
   display: table;
   overflow: hidden;
-  background: #faf8f1;
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.6);
-  margin: 42px auto;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  margin: 100px auto;
   width: 352px;
 }
 .jAudio--player:after {
@@ -59,7 +62,7 @@ body {
 .jAudio--player .jAudio--controls {
   width: 100%;
   display: table;
-  background: #faf8f1;
+  background: #fafafa;
 }
 .jAudio--player .jAudio--controls:after {
   content: " ";
@@ -107,9 +110,9 @@ body {
   width: 50%;
   display: block;
   float: left;
-  color: #FF6666;
- 
-  font-size: 1rem;
+  color: #fff;
+  text-shadow: 0 1px 1px #000;
+  font-size: 0.9rem;
 }
 .jAudio--player .jAudio--time .jAudio--time-elapsed {
   text-align: left;
@@ -118,8 +121,8 @@ body {
   text-align: right;
 }
 .jAudio--player .jAudio--details * {
-  color: #FF6666;
- 
+  color: #fff;
+  text-shadow: 0 1px 1px #000;
   font-size: 1.2rem;
 }
 .jAudio--player .jAudio--details *:first-of-type {
@@ -157,14 +160,13 @@ body {
   background: #fff;
 }
 .jAudio--player .jAudio--playlist {
-  background: #faf8f1;
+  background: #fff;
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-item {
   display: block;
   width: 100%;
   padding: 1.33333rem 2rem;
   display: table;
-  
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-item:after {
   content: " ";
@@ -178,10 +180,9 @@ body {
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-item.active * {
   color: #fff;
-  font-size:15px;
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-item:not(.active):hover {
-  background: #ffd9d9;
+  background: #fafafa;
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-item:last-of-type {
   border: 0;
@@ -207,7 +208,7 @@ body {
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-meta-text h4 {
   font-size: 1rem;
-  color: #ff8080;
+  color: #000;
 }
 .jAudio--player .jAudio--playlist .jAudio--playlist-meta-text p {
   font-size: 0.8rem;
