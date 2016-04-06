@@ -3,12 +3,16 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.crypto.spec.RC2ParameterSpec;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.omg.PortableServer.POAPackage.WrongAdapter;
@@ -172,12 +176,18 @@ public class InitiController {
 		List<Sound> rv = null;
 
 		// TODO : SELECT TO BE MADE
-
-		// Session session = HibernateUtil.getSession();
-		// Criteria c = session.createCriteria(Sound.class);
-		// c.addOrder(Order.desc("soundRating"));
-		// c.setMaxResults(MAX_SOUNDS_PER_ROW);
-		// session.close();
+		String hql = "FROM Sound as s WHERE exists(from Genre as g where g.genreId ="+genreId +" and s.soundId=g.genreId)";
+		Session session = HibernateUtil.getSession();
+		Query query = session.createQuery(hql);
+		 
+		
+//		Criteria c = session.createCriteria(Sound.class,"sound");
+//		 c.setMaxResults(MAX_SOUNDS_PER_ROW);
+//		 DetachedCriteria genreCriteria = DetachedCriteria.forClass(Genre.class,"genre");
+//		 rv = c.list();
+//		 
+		 rv = query.list();
+		 session.close();
 		return rv;
 	}
 
@@ -187,6 +197,7 @@ public class InitiController {
 		Criteria c = session.createCriteria(Sound.class);
 		c.addOrder(Order.desc("soundRating"));
 		c.setMaxResults(MAX_SOUNDS_PER_ROW);
+		rv = c.list();
 		session.close();
 		return rv;
 	}
