@@ -48,6 +48,24 @@
 			}
 		});
 	};
+	function fav(soundId){
+		$.post({
+			url : "favSound",
+			data : {
+				id : soundId
+			},
+			dataType : "json",
+			success : function(data, textStatus, jqXHR) {
+				if (data.status == 'ok') {
+// 					surce cvqt se smenq
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				alert("Something really bad happened " + textStatus + " - "
+						+ errorThrown);
+			}
+		});
+	};
 </script>
 
 
@@ -59,7 +77,18 @@
 
 		<!-- THE DUMMY STUFF -->
 		<div id="weather_sounds">
-			<h3 id="playlist_name">Weather sounds</h3>
+			<h3 id="playlist_name">Sound forecast for 
+			
+			<c:if test="${sessionScope.loggedUser == null}">
+				<c:out value="Sofia"/>
+			
+			</c:if>
+			
+			<c:out value="${sessionScope.loggedUser.location}"/>
+			
+			
+			
+			</h3>
 			<table id="playlist_table">
 				<tr id="row_with_sounds">
 					<c:forEach var="wSound" items="${requestScope.weatherSounds}">
@@ -76,6 +105,8 @@
 							</div>
 
 							<button id="wLike${wSound.getSoundId()}" class="like" onclick="like('${wSound.getSoundId()}')">Like [${wSound.getSoundRating()}]</button>
+							<button id="wFav${wSound.getSoundId()}" class="like" onclick="fav('${wSound.getSoundId()}')">Favorite </button>
+							
 						</td>
 					</c:forEach>
 				</tr>

@@ -258,9 +258,58 @@ public class MainController {
 		try {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
+			User u = (User) request.getSession().getAttribute("loggedUser");
+			u = (User) session.get(User.class, u.getUsername());
+			for(Sound s : u.getPlaylist()) {
+				if(s.getSoundId() == sound.getSoundId() ) {
+					throw new IllegalArgumentException("Sound already liked");
+				}
+			}
 			sound.setSoundRating(sound.getSoundRating()+1);
+			u.addSoundToLiked(sound);
 			session.update(sound);
+			session.update(u);
 			tx.commit();
+			request.getSession().setAttribute("loggedUser", u);
+			rv.addProperty("status", "ok");
+			rv.addProperty("id", soundId);
+			rv.addProperty("likes", sound.getSoundRating());
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		
+		
+		return rv.toString();
+	}
+	@RequestMapping(value = "/favSound", method = RequestMethod.POST)
+	public @ResponseBody String favSound(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("id"));
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			User u = (User) request.getSession().getAttribute("loggedUser");
+			u = (User) session.get(User.class, u.getUsername());
+			for(Sound s : u.getFavorites()) {
+				if(s.getSoundId() == sound.getSoundId() ) {
+					throw new IllegalArgumentException("Sound already favourited");
+				}
+			}
+			sound.addFan(u);
+			u.addSoundToFavorites(sound);
+			session.update(sound);
+			session.update(u);
+			tx.commit();
+			request.getSession().setAttribute("loggedUser", u);
 			rv.addProperty("status", "ok");
 			rv.addProperty("id", soundId);
 			rv.addProperty("likes", sound.getSoundRating());

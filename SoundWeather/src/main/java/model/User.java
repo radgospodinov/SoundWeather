@@ -247,4 +247,12 @@ public class User {
 		sounds.add(sound);
 	}
 
+	public void addSoundToLiked(Sound sound) {
+		playlist.add(sound);
+	}
+
+	public void addSoundToFavorites(Sound sound) {
+		favorites.add(sound);
+	}
+
 }

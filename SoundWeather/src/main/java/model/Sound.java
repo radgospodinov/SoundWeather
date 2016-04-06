@@ -133,7 +133,9 @@ public class Sound {
 		soundGenres.add(genre);
 	}
 	
-	
+	public void addFan(User u) {
+		soundFans.add(u);
+	}
 	
 	
 	

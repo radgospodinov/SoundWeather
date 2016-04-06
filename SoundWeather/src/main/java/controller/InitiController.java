@@ -15,6 +15,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.omg.PortableServer.POAPackage.WrongAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -176,18 +177,21 @@ public class InitiController {
 		List<Sound> rv = null;
 
 		// TODO : SELECT TO BE MADE
-		String hql = "FROM Sound as s WHERE exists(from Genre as g where g.genreId ="+genreId +" and s.soundId=g.genreId)";
+		String hql = "FROM Sound as s WHERE exists(from Genre as g where g.genreId =" + genreId
+				+ " and s.soundId=g.genreId)";
 		Session session = HibernateUtil.getSession();
 		Query query = session.createQuery(hql);
-		 
-		
-//		Criteria c = session.createCriteria(Sound.class,"sound");
-//		 c.setMaxResults(MAX_SOUNDS_PER_ROW);
-//		 DetachedCriteria genreCriteria = DetachedCriteria.forClass(Genre.class,"genre");
-//		 rv = c.list();
-//		 
-		 rv = query.list();
-		 session.close();
+
+		Criteria c = session.createCriteria(Sound.class);
+		c.createAlias("soundGenres", "genre");
+		c.setMaxResults(MAX_SOUNDS_PER_ROW);
+		c.add(Restrictions.eq("genre.genreId", genreId));
+		// DetachedCriteria genreCriteria =
+		// DetachedCriteria.forClass(Genre.class,"genre");
+		rv = c.list();
+		//
+		// rv = query.list();
+		session.close();
 		return rv;
 	}
 
