@@ -108,6 +108,24 @@ public class InitiController {
 	@RequestMapping(value = "/albums", method = RequestMethod.GET)
 	public String initAlbums(HttpServletRequest request) {
 		request.setAttribute("genres", getAllGenres());
+		User u = (User) request.getSession().getAttribute("loggedUser");
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User user = (User) session.get(User.class, u.getUsername());
+			user.getAlbums().size();
+			request.setAttribute("albums", user.getAlbums());
+			tx.commit();
+
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
 		return "albums";
 	}
 
