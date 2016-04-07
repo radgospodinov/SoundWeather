@@ -13,29 +13,61 @@
 	
 	 <script type="text/javascript">
 		function getSelectedPage(searchWord, areSounds) {
-		 	var page = document.getElementById("page").value;
+			var genre =  document.getElementById("genres").value;
+			var page = document.getElementById("page").value;
+			var areAlbums = document.getElementById("are_albums").value;
+			var areUsers = document.getElementById("are_users").value;
+			
+			
 			if(searchWord.length == 0) {
 			return;
 			}
-			$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds});
+			
+			if(areAlbums != null && areAlbums == true) {
+				$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_albums : areAlbums, search_genre : genre});
+
+			} else {
+				if (areUsers != null && areUsers == true) {
+					$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_users : areUsers, search_genre : genre});
+
+				} else {
+					$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
+
+				}
+			}
+			
+			
+			
+			//$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
 		};
   	</script>
 	
 	 <script type="text/javascript">
   		 function getGenreResults(searchWord, areSounds) {
   		 	var genre =  document.getElementById("genres").value;
-  		 		//alert(genre);
-  			var page = document.getElementById("page").value;
+  		 	var areAlbums = document.getElementById("are_albums").value;
+  		 	//alert(genre);
+  			//var page = document.getElementById("page").value;
   			if(searchWord.length == 0) {
   				return;
   			}
-  			$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
+  			//alert(genre);
+  			if (areAlbums != null && areAlbums == true) {
+  			
+  				$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_albums : areAlbums, search_genre : genre});
+
+  			} else {
+  	  			$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : areSounds, search_genre : genre});
+
+  			}
+  			
+  			//$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : areSounds, search_genre : genre});
   		};
     </script>
 	
  	<script type="text/javascript">
 	 function getUserResults(searchWord) {
-		// var page = document.getElementById("page").value;
+		 //var page = document.getElementById("page").value;
 	 	if(searchWord.length == 0) {
 			return;
 		}
@@ -54,6 +86,20 @@
 		$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : true});
 	};
    	</script>
+	
+	<script type="text/javascript">
+	 function getAlbumResults(searchWord) {
+		// var page = document.getElementById("page").value;
+	 	
+		if(searchWord.length == 0) {
+			return;
+		}
+	 	//alert(searchWord);
+		$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_albums : true, search_genre : "All"});
+	};
+   	</script>
+	
+	
 	
 	 <script type="text/javascript">
   	 function getUserProfile(username) {
@@ -101,8 +147,10 @@
 			<h3 id="search_word">RESULTS FOR "<c:out value="${requestScope.search_word}"/>" : <c:out value="${requestScope.number_of_results}"/></h3>
 			<button id="sound_results" onclick="getSoundResults('${requestScope.search_word}')">Filter sounds</button>
 			<button id="user_results" onclick="getUserResults('${requestScope.search_word}')">Filter users</button>
+			<button id="album_results" onclick="getAlbumResults('${requestScope.search_word}')">Filter albums</button>
 			<select id="genres" size="1" name="genres" onchange="getGenreResults('${requestScope.search_word}','${requestScope.are_sounds}')">
 				<h3>Filter by genre</h3>
+				<option value="All" selected><c:out value="All" /></option>
 				<c:forEach items="${requestScope.genres}" var="genre"> <!-- Maybe a good idea to init the genres in the application scope... ? -->
 					<c:choose>
 						<c:when test="${genre.getGenreName().equals(requestScope.genre_filter)}">
@@ -117,8 +165,11 @@
 		</select>
 		</div>
 		
-		
-		
+		<input id="are_albums" type="hidden" value="${requestScope.are_albums}">
+		<input id="are_users" type="hidden" value="${requestScope.are_users}">
+		<!--<c:out value="Albums: ${requestScope.are_albums}"></c:out>
+			<c:out value="Sounds: ${requestScope.are_sounds}"></c:out>
+				<c:out value="Users: ${requestScope.are_users}"></c:out>-->
 		<!-- DEPENDING ON WEATHER WE ARE GETTING Sound OR User RESULT LIST -->
 		<c:choose>
 		<c:when test="${requestScope.are_sounds == true}">
@@ -177,6 +228,33 @@
 	</c:otherwise>
 	
 	</c:choose>
+	
+	
+	<c:if test="${requestScope.are_albums}">
+		<div id="search_results">
+			<h3>Albums</h3>
+			<table id="results_table">
+				<tr id="row_with_results">
+					<c:forEach var="result" items="${requestScope.result_list}">
+						<td id="one_result">
+							<div id="photos" >
+								<a onclick="getAlbum(${result.albumId})"><img id="album_cover_photo" alt="Album cover photo" src="<c:url value="${result.albumCover}"/>" height="150" width="150" /></a>
+							</div>
+
+							<div id="username">
+								<c:out value="${result.albumTitle}" />
+							</div>
+													
+						</td>
+					</c:forEach>
+				</tr>
+			</table>
+		</div>
+	
+	</c:if>
+	
+	
+	
 	
 	
 	<c:if test="${requestScope.result_list.size() != 0}">

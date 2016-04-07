@@ -17,7 +17,7 @@
 	margin-left:20px;
 }
 
-#user_results, #sound_results, #genres {
+#user_results, #sound_results, #album_results, #genres {
 	height:35px;
 	width:140px;
 	font-weight:bold;
@@ -34,7 +34,7 @@
 	
 }
 
-#user_results:hover, #sound_results:hover, #genres:hover {
+#user_results:hover, #sound_results:hover, #album_results:hover, #genres:hover {
 	color: #800000;
 	background: transparent;
 	border-color: #aaab9c #fff #fff #ccc;

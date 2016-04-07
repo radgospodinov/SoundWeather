@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import model.Album;
 import model.Genre;
 import model.HibernateUtil;
 import model.Sound;
@@ -39,6 +40,14 @@ public class SearchController {
 		Integer page = Integer.parseInt(pageString);
 		boolean areSounds = request.getParameter("are_sounds") != null;
 		boolean areUsers = request.getParameter("are_users") != null;
+		boolean areAlbums = request.getParameter("are_albums") != null;
+		
+		for(int i = 0; i< 10; i++) {
+			System.out.println(areSounds);
+		}
+		
+		
+		
 		String genre = request.getParameter("search_genre");
 
 		Session session = HibernateUtil.getSession();
@@ -50,7 +59,7 @@ public class SearchController {
 		
 		
 		//IF WE NEED ALL GENRES:
-		if (areSounds && genre == null) {
+		if (areSounds && (genre == null || genre.equalsIgnoreCase("All"))) {
 			// Getting the number of results:
 			try {
 				session.beginTransaction();
@@ -103,7 +112,7 @@ public class SearchController {
 		
 		
 		//FILTERED BY GENRE:
-		if (areSounds && genre != null) {
+		if (areSounds && !genre.equalsIgnoreCase("All") && !areAlbums) {
 			
 			// Getting the number of results:
 			try {
@@ -155,8 +164,108 @@ public class SearchController {
 			request.setAttribute("genres", genres);
 			return "search";
 		}
-
 		
+		//WHEN WE SEARCH ALBUMS
+				if (areAlbums && genre.equalsIgnoreCase("All")) {
+					
+				// Getting the number of results:
+					try {
+						session.beginTransaction();
+						Criteria criteria = session.createCriteria(Album.class);
+						criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
+						criteria.setProjection(Projections.rowCount());
+						numberOfResults =  (Long) criteria.uniqueResult(); 
+						session.getTransaction().commit();
+									
+					} catch (HibernateException e) {
+						session.getTransaction().rollback();
+					}
+
+					//Determining the number of pages:
+					int numberOfPages = (int) (numberOfResults / MAX_RESULTS_PER_PAGE);
+						if (numberOfResults % MAX_RESULTS_PER_PAGE != 0) {
+							numberOfPages += 1;
+					}
+					
+					// Getting one page of results according to the requested page:
+					List<Album> searchResults = null;
+						try {
+							session.beginTransaction();
+							Criteria criteria = session.createCriteria(Album.class);
+							criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
+							criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+							criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
+							searchResults = (List<Album>) criteria.list();		
+							
+						} catch (HibernateException e) {
+							session.getTransaction().rollback();
+						} finally {
+							session.close();
+						}
+					request.setAttribute("genre_filter", genre);
+					request.setAttribute("are_albums", areAlbums);
+					request.setAttribute("number_of_results", numberOfResults);
+					request.setAttribute("search_word", searchWord);
+					request.setAttribute("number_of_pages", numberOfPages);
+					request.setAttribute("current_page", page);
+					request.setAttribute("result_list", searchResults);
+				//	request.setAttribute("are_sounds", areSounds);
+					request.setAttribute("genres", genres);
+					return "search";
+				}
+				
+				//WHEN WE SEARCH ALBUMS BY GENRE
+				if (areAlbums && !genre.equalsIgnoreCase("All")) {
+					
+					// Getting the number of results:
+						try {
+							session.beginTransaction();
+							Criteria criteria = session.createCriteria(Album.class);
+							criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
+							criteria.setProjection(Projections.rowCount());
+							criteria.createAlias("albumGenres", "genre");
+							criteria.add(Restrictions.eq("genre.genreName", genre));
+							numberOfResults =  (Long) criteria.uniqueResult(); 
+							session.getTransaction().commit();
+										
+						} catch (HibernateException e) {
+							session.getTransaction().rollback();
+						}
+
+						//Determining the number of pages:
+						int numberOfPages = (int) (numberOfResults / MAX_RESULTS_PER_PAGE);
+							if (numberOfResults % MAX_RESULTS_PER_PAGE != 0) {
+								numberOfPages += 1;
+						}
+						
+						// Getting one page of results according to the requested page:
+						List<Album> searchResults = null;
+							try {
+								session.beginTransaction();
+								Criteria criteria = session.createCriteria(Album.class);
+								criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
+								criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+								criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
+								criteria.createAlias("albumGenres", "genre");
+								criteria.add(Restrictions.eq("genre.genreName", genre));
+								searchResults = (List<Album>) criteria.list();		
+								
+							} catch (HibernateException e) {
+								session.getTransaction().rollback();
+							} finally {
+								session.close();
+							}
+						request.setAttribute("genre_filter", genre);
+						request.setAttribute("are_albums", areAlbums);
+						request.setAttribute("number_of_results", numberOfResults);
+						request.setAttribute("search_word", searchWord);
+						request.setAttribute("number_of_pages", numberOfPages);
+						request.setAttribute("current_page", page);
+						request.setAttribute("result_list", searchResults);
+					//	request.setAttribute("are_sounds", areSounds);
+						request.setAttribute("genres", genres);
+						return "search";
+					}
 		
 		//WHEN WE SEARCH USERS
 		if (areUsers) {
@@ -195,7 +304,7 @@ public class SearchController {
 				} finally {
 					session.close();
 				}
-				
+			request.setAttribute("are_users", areUsers);
 			request.setAttribute("number_of_results", numberOfResults);
 			request.setAttribute("search_word", searchWord);
 			request.setAttribute("number_of_pages", numberOfPages);
