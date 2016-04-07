@@ -198,10 +198,6 @@ public class MainController {
 
 			// Fetch the Genre objects (we need the genre id in order to set the
 			// Song object properly):
-
-		
-		
-
 			// Set the genres to the newSound:
 			for(String string : genres) {
 				Genre genre = (Genre) session.get(Genre.class, Integer.parseInt(string));

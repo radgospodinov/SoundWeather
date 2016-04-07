@@ -110,6 +110,41 @@ public class SoundController {
 		rv.addProperty("status", "ok");
 		return rv.toString();
 	}
+	
+	@RequestMapping(value = "/removeSoundFromAlbum", method = RequestMethod.POST)
+	public @ResponseBody String removeSoundFromAlbum(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("soundId"));
+		int albumId = Integer.parseInt(request.getParameter("albumId"));
+		
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			Album album = (Album) session.get(Album.class, albumId);
+			album.removeSound(sound);
+			session.update(album);
+			session.update(sound);
+			tx.commit();
+			
+		} catch (Exception e) {
+			if(tx!=null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		}
+		finally {
+			session.close();
+		}
+		rv.addProperty("status", "ok");
+		rv.addProperty("id", "#sound"+soundId);
+		
+		return rv.toString();
+	}
+	
 
 	@RequestMapping(value = "/createAlbum", method = RequestMethod.POST)
 	public @ResponseBody String createAlbum(MultipartHttpServletRequest request) {
@@ -174,6 +209,118 @@ public class SoundController {
 			}
 		}
 		rv.addProperty("status", "ok");
+		return rv.toString();
+	}
+
+	@RequestMapping(value = "/deleteAlbum", method = RequestMethod.POST)
+	public @ResponseBody String deleteAlbum(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int id = Integer.parseInt(request.getParameter("id"));
+		User user = (User) request.getSession().getAttribute("loggedUser");
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User u = (User) session.get(User.class, user.getUsername());
+			for (Album album : u.getAlbums()) {
+				if (album.getAlbumId() == id) {
+					u.removeAlbumFromAlbums(album);
+					break;
+				}
+			}
+			session.update(u);
+			Album album = (Album) session.get(Album.class, id);
+			session.delete(album);
+			request.getSession().setAttribute("loggedUser", u);
+			tx.commit();
+
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		rv.addProperty("status", "ok");
+		rv.addProperty("id", "#album" + id);
+		return rv.toString();
+	}
+
+	@RequestMapping(value = "/updateAlbum", method = RequestMethod.POST)
+	public @ResponseBody String updateAlbum(MultipartHttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		// getting Album params
+		User user = (User) request.getSession().getAttribute("loggedUser");
+		String fileName = user.getUsername() + "_"
+				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+		String title = request.getParameter("albumTitle");
+		String genresTmp = request.getParameter("albumGenres");
+		int albumId = Integer.parseInt(request.getParameter("albumId"));
+		String[] genresS = genresTmp.split(",");
+		MultipartFile albumCover = request.getFile("albumCover");
+		byte[] coverPhoto = null;
+		try {
+			coverPhoto = albumCover.getBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		}
+		// saving album to DB
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User author = (User) session.get(User.class, user.getUsername());
+			Album album = (Album) session.get(Album.class, albumId);
+			// for (String string : genresS) {
+			// for(Genre genres : album.getAlbumGenres()) {
+			// if(Integer.parseInt(string) != genres.getGenreId()) {
+			// TODO: GENRE LOGIKA
+			// }
+			// }
+			// Genre genre = (Genre) session.get(Genre.class,
+			// Integer.parseInt(string));
+			// album.addGenre(genre);
+			// }
+			album.setAlbumTitle(title).setFileName(fileName);
+			session.save(album);
+			session.update(author);
+			tx.commit();
+			rv.addProperty("status", "ok");
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		// TODO save cover to server's file system
+		FileOutputStream fos = null;
+		File coverFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
+		try {
+			coverFile.createNewFile();
+			fos = new FileOutputStream(coverFile);
+			fos.write(coverPhoto);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		rv.addProperty("status", "ok");
+		rv.addProperty("id", albumId);
+		rv.addProperty("newName", title);
+		rv.addProperty("newFilePath", "/covers/" + fileName);
 		return rv.toString();
 	}
 

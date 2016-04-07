@@ -263,4 +263,9 @@ public class User {
 	public void addAlbum(Album album) {
 		albums.add(album);
 	}
+
+	public void removeAlbumFromAlbums(Album album) {
+		albums.remove(album);
+		
+	}
 }

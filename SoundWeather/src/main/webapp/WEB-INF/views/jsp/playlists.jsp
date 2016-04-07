@@ -101,7 +101,7 @@
 							</div>
 
 							<div id="sound_title">
-								<c:out value="Sound Title ${wSound.getSoundTitle()}" />
+								<c:out value="${wSound.getSoundTitle()}" />
 							</div>
 
 							<button id="wLike${wSound.getSoundId()}" class="like" onclick="like('${wSound.getSoundId()}')">Like [${wSound.getSoundRating()}]</button>
