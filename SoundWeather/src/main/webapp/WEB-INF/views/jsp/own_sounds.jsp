@@ -29,6 +29,26 @@
 					}
 				});
 			};
+			function addSoundToAlbum(soundId,albumId){
+				$.post({
+					url : "addSoundToAlbum",
+					data : {
+						soundId : soundId,
+						albumId : albumId
+					},
+					dataType : "json",
+					success : function(data, textStatus, jqXHR) {
+						
+						if (data.status == 'ok') {
+							// TODO controller method + result to be made
+						}
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+						alert("Something really bad happened " + textStatus + " - "
+								+ errorThrown);
+					}
+				});
+			};
 			</script>
 					
 	</head>
@@ -57,10 +77,10 @@
    						<td>
    							<select id="add_to_album" name="album" >
 								<c:forEach items="${requestScope.albums}" var="album">
-   					 				<option value="${album.albumId}"><c:out value="${album.albumTitle}"/></option>
-   					 				<button id="sound_id_to_delete" onclick="addToAlbum()">Add to album</button>
+   					 				<option  value="${album.albumId}"><c:out value="${album.albumTitle}"/></option>
   								</c:forEach>
   							</select>
+   					 				<button id="sound_id_to_delete" onclick="addSoundToAlbum(${sound.getSoundId()},$('#add_to_album').val())">Add to album</button>
 						</td>
 					</tr>	
 				</c:forEach>
