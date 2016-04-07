@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,6 @@ import model.Genre;
 import model.HibernateUtil;
 import model.Sound;
 import model.User;
-import scala.languageFeature.reflectiveCalls;
 
 @Controller
 public class SoundController {
@@ -82,8 +82,37 @@ public class SoundController {
 		return rv.toString();
 	}
 
+	@RequestMapping(value = "/addSoundToAlbum", method = RequestMethod.POST)
+	public @ResponseBody String addSoundToAlbum(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("soundId"));
+		int albumId = Integer.parseInt(request.getParameter("albumId"));
+
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			Album album = (Album) session.get(Album.class, albumId);
+			album.addSound(sound);
+			session.update(album);
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		rv.addProperty("status", "ok");
+		return rv.toString();
+	}
+
 	@RequestMapping(value = "/createAlbum", method = RequestMethod.POST)
-	public @ResponseBody String createAlbum(MultipartHttpServletRequest request) throws IOException {
+	public @ResponseBody String createAlbum(MultipartHttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		// getting Album params
 		User user = (User) request.getSession().getAttribute("loggedUser");
@@ -92,7 +121,7 @@ public class SoundController {
 		String title = request.getParameter("albumTitle");
 		String genresTmp = request.getParameter("albumGenres");
 		String[] genres = genresTmp.split(",");
-
+		System.out.println(Arrays.toString(genres));
 		MultipartFile albumCover = request.getFile("albumCover");
 		byte[] coverPhoto = null;
 		try {
@@ -131,10 +160,20 @@ public class SoundController {
 		// TODO save cover to server's file system
 		FileOutputStream fos = null;
 		File coverFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
-		coverFile.createNewFile();
-		fos = new FileOutputStream(coverFile);
-		fos.write(coverPhoto);
-		fos.close();
+		try {
+			coverFile.createNewFile();
+			fos = new FileOutputStream(coverFile);
+			fos.write(coverPhoto);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		rv.addProperty("status", "ok");
 		return rv.toString();
 	}
 
