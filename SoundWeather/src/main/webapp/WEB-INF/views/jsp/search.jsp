@@ -154,11 +154,11 @@
 	
 		
 		<div id="filters">
-			<h3 id="search_word">Results for "<c:out value="${sessionScope.search_word}.jpg"/>"</h3>
-			<button id="user_results" onclick="getUserResults('${sessionScope.search_word}','${sessionScope.are_sounds}')">Filter by users</button>
+			<h3 id="search_word">Results for "<c:out value="${requestScope.search_word}.jpg"/>"</h3>
+			<button id="user_results" onclick="getUserResults('${requestScope.search_word}','${requestScope.are_sounds}')">Filter by users</button>
 			<h4>Filter by genre</h4>
-			<select id="genres" size="1" name="genres" onchange="getGenreResults('${sessionScope.search_word}','${sessionScope.are_sounds}')">
-				<c:forEach items="${applicationScope.genres}" var="genre"> <!-- Maybe a good idea to init the genres in the application scope... ? -->
+			<select id="genres" size="1" name="genres" onchange="getGenreResults('${requestScope.search_word}','${requestScope.are_sounds}')">
+				<c:forEach items="${requestScope.genres}" var="genre"> <!-- Maybe a good idea to init the genres in the application scope... ? -->
 					<option value="${genre.getGenreId()}"><c:out value="${genre.getGenreName()}" /></option>
 			</c:forEach>
 		</select>
@@ -168,13 +168,13 @@
 		
 		<!-- DEPENDING ON WEATHER WE ARE GETTING Sound OR User RESULT LIST -->
 		<c:choose>
-		<c:when test="${sessionScope.are_sounds == true}">
+		<c:when test="${requestScope.are_sounds == true}">
 		
 			<div id="search_results">
 			
 			<table id="results_table">
 				<tr id="row_with_results">
-					<c:forEach var="result" items="${sessionScope.result_list}">
+					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
 							<div id="photos"
 								onclick="addSongs('sounds/${result.getFileName()}.mp3','covers/${result.getFileName()}.jpg','${result.getSoundTitle()}','${result.getSoundAuthor().getUsername()}','')">
@@ -204,7 +204,7 @@
 			
 			<table id="results_table">
 				<tr id="row_with_results">
-					<c:forEach var="result" items="${sessionScope.result_list}">
+					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
 							<div id="photos" >
 								<a onclick="getUserProfile(${result.username})"><img id="user_cover_photo" alt="User cover photo" src="<c:url value="${result.avatarName}"/>" height="150" width="150" /></a>
@@ -226,9 +226,9 @@
 	</c:choose>
 	
 	<div id="pages">
-			<select id="page" onchange="getSelectedPage('${sessionScope.search_word}','${sessionScope.are_sounds}','${sessionScope.search_genre})">
-				<c:forEach var="page" begin="1" end="${sessionScope.number_of_pages}" step="1">
-					<c:if test="${page == sessionScope.current_page}">
+			<select id="page" onchange="getSelectedPage('${requestScope.search_word}','${requestScope.are_sounds}','${requestScope.search_genre})">
+				<c:forEach var="page" begin="1" end="${requestScope.number_of_pages}" step="1">
+					<c:if test="${page == requestScope.current_page}">
 						<option value="page" selected><c:out value="page"></c:out></option>
 					</c:if>
 					
