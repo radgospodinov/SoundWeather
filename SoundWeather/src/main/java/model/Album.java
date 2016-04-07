@@ -71,6 +71,10 @@ public class Album {
 	public void setAlbumGenres(List<Genre> albumGenres) {
 		this.albumGenres = albumGenres;
 	}
+	public void removeSound(Sound sound) {
+		albumTracks.remove(sound);
+		
+	}
 	
 	
 	

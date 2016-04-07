@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.JsonObject;
 
+import model.Album;
 import model.HibernateUtil;
 import model.Sound;
 import model.User;
@@ -33,6 +34,14 @@ public class SoundController {
 				if (sound.getSoundId() == id) {
 					u.removeSoundFromSounds(sound);
 					break;
+				}
+			}
+			for(Album album : u.getAlbums()){
+				for(Sound sound : album.getAlbumTracks()) {
+					if(sound.getSoundId()== id) {
+						album.removeSound(sound);
+						break;
+					}
 				}
 			}
 			session.update(u);
