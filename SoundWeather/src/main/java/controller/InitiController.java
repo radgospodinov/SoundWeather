@@ -42,6 +42,7 @@ public class InitiController {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String initIndexPage() {
 		initGenres();
+	
 
 		return "index";
 	}
@@ -177,20 +178,12 @@ public class InitiController {
 		List<Sound> rv = null;
 
 		// TODO : SELECT TO BE MADE
-		String hql = "FROM Sound as s WHERE exists(from Genre as g where g.genreId =" + genreId
-				+ " and s.soundId=g.genreId)";
 		Session session = HibernateUtil.getSession();
-		Query query = session.createQuery(hql);
-
 		Criteria c = session.createCriteria(Sound.class);
 		c.createAlias("soundGenres", "genre");
 		c.setMaxResults(MAX_SOUNDS_PER_ROW);
 		c.add(Restrictions.eq("genre.genreId", genreId));
-		// DetachedCriteria genreCriteria =
-		// DetachedCriteria.forClass(Genre.class,"genre");
 		rv = c.list();
-		//
-		// rv = query.list();
 		session.close();
 		return rv;
 	}
