@@ -23,8 +23,16 @@
 <script type="text/javascript">
 	function loadJSP(target) {
 		$('#sounds_space').load(target);
-	}
+	};
 
+	function search() {
+		if($('#searchText').val().trim().length == 0) {
+			return;
+		}
+		$('#sounds_space').load('search', {search_word : $('#searchText').val().trim(),requested_page : 1,are_sounds : true});
+// 		alert($('#searchText').val());
+	};
+	
 	$(function() {
 		loadJSP('home');
 	});
@@ -47,8 +55,8 @@
 		<div id="login" style="cursor: pointer;" onclick="loadJSP('login')">Login</div>
 		<div id="logout"></div>
 		<div id="search">
-			<form action="SearchMethod" method="GET">
-				<input type="text" name="search_word" placeholder="explore sounds">
+			<form action="javascript:search()" >
+				<input type="text" id="searchText" placeholder="explore sounds">
 			</form>
 		</div>
 	</div>
