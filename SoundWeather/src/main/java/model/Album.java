@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -32,6 +33,12 @@ public class Album {
 	@ManyToMany
 	@Column(name = "album_genres") // mai tva beshe one-to-many pregledai
 	private List<Genre> albumGenres;
+	
+	
+	public Album() {
+		albumGenres = new ArrayList<>();
+		albumTracks = new ArrayList<>();
+	}
 
 	public int getAlbumId() {
 		return albumId;
@@ -91,6 +98,11 @@ public class Album {
 
 	public void addGenre(Genre genre) {
 		albumGenres.add(genre);
+	}
+
+	public void addSound(Sound sound) {
+		albumTracks.add(sound);
+		
 	}
 
 }
