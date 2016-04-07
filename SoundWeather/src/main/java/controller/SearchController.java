@@ -76,7 +76,7 @@ public class SearchController {
 				session.beginTransaction();
 				Criteria criteria = session.createCriteria(Sound.class);
 				criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-				criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE - 1);
+				criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
 				criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
 				searchResults = (List<Sound>) criteria.list();		
 				
@@ -132,7 +132,7 @@ public class SearchController {
 					session.beginTransaction();
 					Criteria criteria = session.createCriteria(Sound.class);
 					criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE - 1);
+					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
 					criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
 					criteria.createAlias("soundGenres", "genre");
 					criteria.add(Restrictions.eq("genre.genreName", genre));
@@ -186,7 +186,7 @@ public class SearchController {
 					session.beginTransaction();
 					Criteria criteria = session.createCriteria(User.class);
 					criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE - 1);
+					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
 					criteria.add(Restrictions.like("username", "%" + searchWord + "%"));
 					searchResults = (List<User>) criteria.list();		
 					

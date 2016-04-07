@@ -12,79 +12,54 @@
 	</head>
 	
 	 <script type="text/javascript">
-	
-	 
-	 function getSelectedPage(searchWord, areSounds) {
-		 	
-		 var page = document.getElementById("page").value;
-	
-		 if(searchWord.length == 0) {
-				return;
+		function getSelectedPage(searchWord, areSounds) {
+		 	var page = document.getElementById("page").value;
+			if(searchWord.length == 0) {
+			return;
 			}
 			$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds});
-			
 		};
-
-  </script>
+  	</script>
 	
 	 <script type="text/javascript">
-
-	 
-  	 function getGenreResults(searchWord, areSounds) {
-  		 		var genre =  document.getElementById("genres").value;
-  		 		alert(genre);
-  			 var page = document.getElementById("page").value;
-  		
-  			 if(searchWord.length == 0) {
-  					return;
-  				}
-  				$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
-  				
+  		 function getGenreResults(searchWord, areSounds) {
+  		 	var genre =  document.getElementById("genres").value;
+  		 		//alert(genre);
+  			var page = document.getElementById("page").value;
+  			if(searchWord.length == 0) {
+  				return;
+  			}
+  			$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
   		};
-    		
-   	
-
-  </script>
+    </script>
 	
-	
-
- <script type="text/javascript">
-
- function getUserResults(searchWord) {
-	// var page = document.getElementById("page").value;
-	 
-	 if(searchWord.length == 0) {
+ 	<script type="text/javascript">
+	 function getUserResults(searchWord) {
+		// var page = document.getElementById("page").value;
+	 	if(searchWord.length == 0) {
 			return;
 		}
-	 alert(searchWord);
+	 	//alert(searchWord);
 		$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_users : true});
+	};
+   	</script>
 	
-};
- 
-  </script>
+	<script type="text/javascript">
+	 function getSoundResults(searchWord) {
+		// var page = document.getElementById("page").value;
+	 	if(searchWord.length == 0) {
+			return;
+		}
+	 	//alert(searchWord);
+		$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : true});
+	};
+   	</script>
 	
 	 <script type="text/javascript">
-
   	 function getUserProfile(username) {
-    		   		
-    		$.ajax({
-    			url : 'getUser',
-    			data : 
-    				{
-    				user_name : username}
-    				type : 'POST',
-    				dataType : 'json'
-    					,
-    			success : 
-    				
-    				
-    					,
-    			error : 
-    		});
-    		
+    	 	    		
    	 }
-
-  </script>
+	</script>
 	
 	
 	<!-- Pagination idea:
@@ -123,11 +98,11 @@
 	
 		
 		<div id="filters">
-			<h3 id="search_word">Results for "<c:out value="${requestScope.search_word}"/>" : "<c:out value="${requestScope.number_of_results}"/>"</h3>
-			<button id="user_results" onclick="getUserResults('${requestScope.search_word}')">Filter by users</button>
-			
-			<h4>Filter by genre</h4>
+			<h3 id="search_word">RESULTS FOR "<c:out value="${requestScope.search_word}"/>" : <c:out value="${requestScope.number_of_results}"/></h3>
+			<button id="sound_results" onclick="getSoundResults('${requestScope.search_word}')">Filter sounds</button>
+			<button id="user_results" onclick="getUserResults('${requestScope.search_word}')">Filter users</button>
 			<select id="genres" size="1" name="genres" onchange="getGenreResults('${requestScope.search_word}','${requestScope.are_sounds}')">
+				<h3>Filter by genre</h3>
 				<c:forEach items="${requestScope.genres}" var="genre"> <!-- Maybe a good idea to init the genres in the application scope... ? -->
 					<c:choose>
 						<c:when test="${genre.getGenreName().equals(requestScope.genre_filter)}">
@@ -203,6 +178,8 @@
 	
 	</c:choose>
 	
+	
+	<c:if test="${requestScope.result_list.size() != 0}">
 	<div id="pages">
 			<select id="page" onchange="getSelectedPage('${requestScope.search_word}','${requestScope.are_sounds}')">
 				<c:forEach var="page" begin="1" end="${requestScope.number_of_pages}" step="1">
@@ -229,7 +206,7 @@
 	
 	
 	</div>
-	
+	</c:if>
 	
 	
 	</body>
