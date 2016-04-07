@@ -59,7 +59,7 @@ border-color: #aaab9c #fff #fff #ccc;
 }
 
 
-select {
+select#genres {
 	margin-right:auto;
 	margin-left:auto;
 	display: block;
@@ -76,7 +76,7 @@ select {
 	
 }
 
-option {
+select#genres option {
 	margin-right:auto;
 	margin-left:auto;
 	display: block;
