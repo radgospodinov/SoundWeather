@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.JsonObject;
 
+import model.Album;
 import model.Genre;
 import model.HibernateUtil;
 import model.Sound;
@@ -43,35 +44,12 @@ public class InitiController {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String initIndexPage() {
 		initGenres();
-	
 
 		return "index";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String initHomePage(HttpServletRequest request) {
-
-		// TESTS!
-		// ArrayList<Sound> wokringSounds = null;
-		// Transaction tx = null;
-		// Session session = HibernateUtil.getSession();
-		// try {
-		// tx = session.beginTransaction();
-		//
-		// Criteria criteria = session.createCriteria(Sound.class);
-		// wokringSounds = (ArrayList<Sound>) criteria.list();
-		// for (Sound sound : wokringSounds) {
-		// System.out.println(sound.getSoundAuthor().getUsername());
-		// }
-		//
-		// tx.commit();
-		// } catch (Exception e) {
-		// if (tx != null) {
-		// tx.rollback();
-		// }
-		// } finally {
-		// session.close();
-		// }
 
 		String location = "Sofia";
 		if (request.getSession().getAttribute("loggedUser") != null) {
@@ -106,27 +84,30 @@ public class InitiController {
 	public String initOwnSounds(HttpServletRequest request) {
 		Session session = HibernateUtil.getSession();
 		User u = (User) request.getSession().getAttribute("loggedUser");
-		
+
 		try {
 			session.beginTransaction();
-			u.getSounds();
-			
-			session.getTransaction().commit();	
-			
+			User tmp = (User) session.get(User.class, u.getUsername());
+
+			for (Sound sound : tmp.getSounds()) {
+				sound.getSoundFans().size();
+				sound.getSoundComments().size();
+			}
+			tmp.getAlbums().size();
+
+			request.setAttribute("sounds", tmp.getSounds());
+			request.setAttribute("albums", tmp.getAlbums());
+			session.getTransaction().commit();
 		} catch (HibernateException e) {
+			e.printStackTrace();
 			session.getTransaction().rollback();
 		} finally {
 			session.close();
 		}
-		
-		
-		
-		
+
 		return "own_sounds";
 	}
-	
-	
-	
+
 	private void initGenres() {
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
