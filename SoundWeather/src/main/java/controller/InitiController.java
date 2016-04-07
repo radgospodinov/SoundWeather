@@ -101,6 +101,13 @@ public class InitiController {
 		return "upload";
 	}
 
+	@RequestMapping(value = "/own_sounds", method = RequestMethod.GET)
+	public String initOwnSounds() {
+		return "own_sounds";
+	}
+	
+	
+	
 	private void initGenres() {
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;

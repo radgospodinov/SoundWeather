@@ -118,8 +118,8 @@
 
 		<div id="navcontainer">
 			<ul id="navlist">
-				<li><a id="current" onclick="loadJSP('upload')">UPLOAD</a></li>
-				<li><a href="#">SOUNDS</a></li>
+				<li><a id="current" style="cursor: pointer;" onclick="loadJSP('upload')">UPLOAD</a></li>
+				<li><a style="cursor: pointer;" onclick="loadJSP('own_sounds')">SOUNDS</a></li>
 				<li><a href="#">ALBUMS</a></li>
 				<li><a href="#">FOLLOWING</a></li>
 				<li><a href="#">PROFILE</a></li>
