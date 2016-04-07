@@ -30,7 +30,7 @@
 	<body>
 		<div id="own_sounds">
 			<table class="myProfileTeamNameList">
-   				<c:forEach var="sound" items="${sessionScope.user.sounds}">
+   				<c:forEach var="sound" items="${sessionScope.loggedUser.sounds}">
    					<tr>
    						<td>
    							<img alt="" src="${sound.soundCoverPhoto}">

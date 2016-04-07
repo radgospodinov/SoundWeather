@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -102,7 +103,25 @@ public class InitiController {
 	}
 
 	@RequestMapping(value = "/own_sounds", method = RequestMethod.GET)
-	public String initOwnSounds() {
+	public String initOwnSounds(HttpServletRequest request) {
+		Session session = HibernateUtil.getSession();
+		User u = (User) request.getSession().getAttribute("loggedUser");
+		
+		try {
+			session.beginTransaction();
+			u.getSounds();
+			
+			session.getTransaction().commit();	
+			
+		} catch (HibernateException e) {
+			session.getTransaction().rollback();
+		} finally {
+			session.close();
+		}
+		
+		
+		
+		
 		return "own_sounds";
 	}
 	

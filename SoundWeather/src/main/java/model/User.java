@@ -178,7 +178,7 @@ public class User {
 		return this;
 	}
 
-	private List<Sound> getSounds() {
+	public List<Sound> getSounds() {
 		return sounds;
 	}
 
