@@ -17,6 +17,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 @Entity
@@ -254,5 +256,7 @@ public class User {
 	public void addSoundToFavorites(Sound sound) {
 		favorites.add(sound);
 	}
-
+	public void removeSoundFromSounds(Sound sound) {
+		sounds.remove(sound);
+	}
 }
