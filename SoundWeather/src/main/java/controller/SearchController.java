@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,84 +35,118 @@ public class SearchController {
 
 		String searchWord = request.getParameter("search_word");
 		String pageString = request.getParameter("requested_page");
-		int page = Integer.parseInt(pageString);
+		
+		Integer page = Integer.parseInt(pageString);
 		boolean areSounds = request.getParameter("are_sounds") != null;
+		boolean areUsers = request.getParameter("are_users") != null;
 		String genre = request.getParameter("search_genre");
 
 		Session session = HibernateUtil.getSession();
 		// get genres from db
 		Criteria genreCriteria = session.createCriteria(Genre.class);
 		ArrayList<Genre> genres = (ArrayList<Genre>) genreCriteria.list();
+		Long numberOfResults = (long) 0;
 		
+		
+		
+		//IF WE NEED ALL GENRES:
 		if (areSounds && genre == null) {
-			List<Sound> soundSearchResults = null;
-
 			// Getting the number of results:
 			try {
 				session.beginTransaction();
 				Criteria criteria = session.createCriteria(Sound.class);
+				criteria.setProjection(Projections.rowCount());
 				criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
-				soundSearchResults = (List<Sound>) criteria.list();
+				numberOfResults =  (Long) criteria.uniqueResult(); 
 				session.getTransaction().commit();
-
+				
 			} catch (HibernateException e) {
 				session.getTransaction().rollback();
 			}
 
-			int numberOfPages = soundSearchResults.size() / MAX_RESULTS_PER_PAGE;
-			if (soundSearchResults.size() % MAX_RESULTS_PER_PAGE != 0) {
-				numberOfPages += 1;
-			}
-
+			//Determining the number of pages:
+			int numberOfPages = (int) (numberOfResults / MAX_RESULTS_PER_PAGE);
+				if (numberOfResults % MAX_RESULTS_PER_PAGE != 0) {
+					numberOfPages += 1;
+				}
+						
 			// Getting one page of results according to the requested page:
-			List<Sound> searchResults = new ArrayList<Sound>();
-
-			for (int i = ((page - 1) * MAX_RESULTS_PER_PAGE); i <= (page * MAX_RESULTS_PER_PAGE)
-					&& i < soundSearchResults.size(); i++) {
-				searchResults.add(soundSearchResults.get(i));
-			}
-
-			// Putting stuff in the Session and returning the search.jsp:
-			request.setAttribute("search_word", searchWord);
-			request.setAttribute("number_of_pages", numberOfPages);
-			request.setAttribute("current_page", page);
-			request.setAttribute("result_list", searchResults);
-			request.setAttribute("are_sounds", areSounds);
-			request.setAttribute("genres", genres);
-			return "search";
-		}
-
-		if (areSounds && genre != null) {
-			List<Sound> soundSearchResults = null;
-
-			// Getting the number of results:
+			List<Sound> searchResults = null;
 			try {
 				session.beginTransaction();
 				Criteria criteria = session.createCriteria(Sound.class);
+				criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
+				criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE - 1);
 				criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
-
-				criteria.createAlias("soundGenres", "genre");
-				criteria.add(Restrictions.eq("genre.genreName", genre));
-
-				soundSearchResults = (List<Sound>) criteria.list();
-				session.getTransaction().commit();
-
+				searchResults = (List<Sound>) criteria.list();		
+				
 			} catch (HibernateException e) {
 				session.getTransaction().rollback();
 			} finally {
 				session.close();
 			}
+			
+			// Putting stuff in the request and returning the search.jsp:
+			request.setAttribute("number_of_results", numberOfResults);
+			request.setAttribute("search_word", searchWord);
+			request.setAttribute("number_of_pages", numberOfPages);
+			request.setAttribute("current_page", page);
+			request.setAttribute("result_list", searchResults);
+			request.setAttribute("are_sounds", areSounds);
+			request.setAttribute("genres", genres);
+			System.out.println(pageString);
+			System.out.println(areSounds);
+			return "search";
+		}
 
-			int numberOfPages = soundSearchResults.size();
-
-			// Getting one page of results according to the requested page:
-			List<Sound> searchResults = new ArrayList<Sound>();
-
-			for (int i = ((page - 1) * MAX_RESULTS_PER_PAGE); i <= (page * MAX_RESULTS_PER_PAGE)
-					&& i < soundSearchResults.size(); i++) {
-				searchResults.add(soundSearchResults.get(i));
+		
+		
+		
+		//FILTERED BY GENRE:
+		if (areSounds && genre != null) {
+			
+			// Getting the number of results:
+			try {
+				session.beginTransaction();
+				Criteria criteria = session.createCriteria(Sound.class);
+				criteria.setProjection(Projections.rowCount());
+				criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
+				criteria.createAlias("soundGenres", "genre");
+				criteria.add(Restrictions.eq("genre.genreName", genre));
+				numberOfResults =  (Long) criteria.uniqueResult(); 
+				session.getTransaction().commit();
+				
+			} catch (HibernateException e) {
+				session.getTransaction().rollback();
 			}
 
+			//Determining the number of pages:
+			int numberOfPages = (int) (numberOfResults / MAX_RESULTS_PER_PAGE);
+				if (numberOfResults % MAX_RESULTS_PER_PAGE != 0) {
+					numberOfPages += 1;
+				}
+			
+			// Getting one page of results according to the requested page:
+				List<Sound> searchResults = null;
+				try {
+					session.beginTransaction();
+					Criteria criteria = session.createCriteria(Sound.class);
+					criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
+					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE - 1);
+					criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
+					criteria.createAlias("soundGenres", "genre");
+					criteria.add(Restrictions.eq("genre.genreName", genre));
+					searchResults = (List<Sound>) criteria.list();		
+					
+				} catch (HibernateException e) {
+					session.getTransaction().rollback();
+				} finally {
+					session.close();
+				}
+							
+			// Putting stuff in the request and returning the search.jsp:
+			request.setAttribute("genre_filter", genre);
+			request.setAttribute("number_of_results", numberOfResults);
 			request.setAttribute("search_word", searchWord);
 			request.setAttribute("number_of_pages", numberOfPages);
 			request.setAttribute("current_page", page);
@@ -121,39 +156,55 @@ public class SearchController {
 			return "search";
 		}
 
-		// If are not sounds but users:
-		List<User> userSearchResults = null;
-
+		
+		
+		//WHEN WE SEARCH USERS
+		if (areUsers) {
+			
 		// Getting the number of results:
-		try {
-			session.beginTransaction();
-			Criteria criteria = session.createCriteria(User.class);
-			criteria.add(Restrictions.like("username", "%" + searchWord + "%"));
-			userSearchResults = (List<User>) criteria.list();
-			session.getTransaction().commit();
+			try {
+				session.beginTransaction();
+				Criteria criteria = session.createCriteria(User.class);
+				criteria.add(Restrictions.like("username", "%" + searchWord + "%"));
+				criteria.setProjection(Projections.rowCount());
+				numberOfResults =  (Long) criteria.uniqueResult(); 
+				session.getTransaction().commit();
+							
+			} catch (HibernateException e) {
+				session.getTransaction().rollback();
+			}
 
-		} catch (HibernateException e) {
-			session.getTransaction().rollback();
-		} finally {
-			session.close();
+			//Determining the number of pages:
+			int numberOfPages = (int) (numberOfResults / MAX_RESULTS_PER_PAGE);
+				if (numberOfResults % MAX_RESULTS_PER_PAGE != 0) {
+					numberOfPages += 1;
+			}
+			
+			// Getting one page of results according to the requested page:
+			List<User> searchResults = null;
+				try {
+					session.beginTransaction();
+					Criteria criteria = session.createCriteria(User.class);
+					criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
+					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE - 1);
+					criteria.add(Restrictions.like("username", "%" + searchWord + "%"));
+					searchResults = (List<User>) criteria.list();		
+					
+				} catch (HibernateException e) {
+					session.getTransaction().rollback();
+				} finally {
+					session.close();
+				}
+				
+			request.setAttribute("number_of_results", numberOfResults);
+			request.setAttribute("search_word", searchWord);
+			request.setAttribute("number_of_pages", numberOfPages);
+			request.setAttribute("current_page", page);
+			request.setAttribute("result_list", searchResults);
+			request.setAttribute("are_sounds", areSounds);
+			request.setAttribute("genres", genres);
+			return "search";
 		}
-
-		int numberOfPages = userSearchResults.size();
-
-		// Getting one page of results according to the requested page:
-		List<User> searchResults = new ArrayList<User>();
-
-		for (int i = ((page - 1) * MAX_RESULTS_PER_PAGE); i <= (page * MAX_RESULTS_PER_PAGE)
-				&& i < userSearchResults.size(); i++) {
-			searchResults.add(userSearchResults.get(i));
-		}
-
-		request.setAttribute("search_word", searchWord);
-		request.setAttribute("number_of_pages", numberOfPages);
-		request.setAttribute("current_page", page);
-		request.setAttribute("result_list", searchResults);
-		request.setAttribute("are_sounds", areSounds);
-		request.setAttribute("genres", genres);
 		return "search";
 
 	}

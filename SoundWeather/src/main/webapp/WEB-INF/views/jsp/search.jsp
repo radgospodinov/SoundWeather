@@ -12,58 +12,37 @@
 	</head>
 	
 	 <script type="text/javascript">
-
-  	 function getSelectedPage(searchWord, areSounds, searchGenre) {
-    		var selectBox = document.getElementById("page");
-    		var page = selectBox.options[selectBox.selectedIndex].value;
+	
+	 
+	 function getSelectedPage(searchWord, areSounds) {
+		 	
+		 var page = document.getElementById("page").value;
+	
+		 if(searchWord.length == 0) {
+				return;
+			}
+			$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds});
 			
-    		
-    		$.ajax({
-    			url : 'search',
-    			data : 
-    				{
-    				requested_page : page,
-    				search_word : searchWord,
-    				are_sounds = areSounds,
-    				search_genre : searchGenre} 
-    		//if search_genre == null it means that we are requesting User results or generic Sound result 
-    		//(depending on the value of are_sounds)
-    				type : 'POST',
-    				dataType : 'json'
-    					,
-    			success : 
-    				
-    				
-    					,
-    			error : 
-    		});
-    		
-   	 }
+		};
 
   </script>
 	
 	 <script type="text/javascript">
 
-  	 function getGenreResults(searchWord, areSounds)) {
-    		   		
-    		$.ajax({
-    			url : 'search',
-    			data : 
-    				{
-    				requested_page : 1,
-    				search_word : searchWord,
-    				are_sounds = areSounds}
-    				type : 'POST',
-    				dataType : 'json'
-    					,
-    			success : 
-    				
-    				
-    					,
-    			error : 
-    		});
+	 
+  	 function getGenreResults(searchWord, areSounds) {
+  		 		var genre =  document.getElementById("genres").value;
+  		 		alert(genre);
+  			 var page = document.getElementById("page").value;
+  		
+  			 if(searchWord.length == 0) {
+  					return;
+  				}
+  				$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
+  				
+  		};
     		
-   	 }
+   	
 
   </script>
 	
@@ -71,27 +50,17 @@
 
  <script type="text/javascript">
 
-  	 function getUserResults(searchWord, areSounds)) {
-    		   		
-    		$.ajax({
-    			url : 'search',
-    			data : 
-    				{
-    				requested_page : 1,
-    				search_word : searchWord,
-    				are_sounds = areSounds}
-    				type : 'POST',
-    				dataType : 'json'
-    					,
-    			success : 
-    				
-    				
-    					,
-    			error : 
-    		});
-    		
-   	 }
-
+ function getUserResults(searchWord) {
+	// var page = document.getElementById("page").value;
+	 
+	 if(searchWord.length == 0) {
+			return;
+		}
+	 alert(searchWord);
+		$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_users : true});
+	
+};
+ 
   </script>
 	
 	 <script type="text/javascript">
@@ -154,12 +123,21 @@
 	
 		
 		<div id="filters">
-			<h3 id="search_word">Results for "<c:out value="${requestScope.search_word}.jpg"/>"</h3>
-			<button id="user_results" onclick="getUserResults('${requestScope.search_word}','${requestScope.are_sounds}')">Filter by users</button>
+			<h3 id="search_word">Results for "<c:out value="${requestScope.search_word}"/>" : "<c:out value="${requestScope.number_of_results}"/>"</h3>
+			<button id="user_results" onclick="getUserResults('${requestScope.search_word}')">Filter by users</button>
+			
 			<h4>Filter by genre</h4>
 			<select id="genres" size="1" name="genres" onchange="getGenreResults('${requestScope.search_word}','${requestScope.are_sounds}')">
 				<c:forEach items="${requestScope.genres}" var="genre"> <!-- Maybe a good idea to init the genres in the application scope... ? -->
-					<option value="${genre.getGenreId()}"><c:out value="${genre.getGenreName()}" /></option>
+					<c:choose>
+						<c:when test="${genre.getGenreName().equals(requestScope.genre_filter)}">
+							<option value="${genre.getGenreName()}" selected><c:out value="${genre.getGenreName()}" /></option>
+						</c:when>
+						<c:otherwise>
+							<option value="${genre.getGenreName()}"><c:out value="${genre.getGenreName()}" /></option>
+						</c:otherwise>
+					</c:choose>
+					<!--  <option value="${genre.getGenreName()}"><c:out value="${genre.getGenreName()}" /></option>-->
 			</c:forEach>
 		</select>
 		</div>
@@ -184,7 +162,7 @@
 							</div>
 
 							<div id="sound_title">
-								<c:out value="Sound Title ${result.getSoundTitle()}" />
+								<c:out value="${result.getSoundTitle()}" />
 							</div>
 
 							<button id="wLike${result.getSoundId()}" class="like" onclick="like('${result.getSoundId()}')">Like [${result.getSoundRating()}]</button>
@@ -226,13 +204,22 @@
 	</c:choose>
 	
 	<div id="pages">
-			<select id="page" onchange="getSelectedPage('${requestScope.search_word}','${requestScope.are_sounds}','${requestScope.search_genre})">
+			<select id="page" onchange="getSelectedPage('${requestScope.search_word}','${requestScope.are_sounds}')">
 				<c:forEach var="page" begin="1" end="${requestScope.number_of_pages}" step="1">
-					<c:if test="${page == requestScope.current_page}">
-						<option value="page" selected><c:out value="page"></c:out></option>
-					</c:if>
 					
-					<option value="page"><c:out value="page"></c:out></option>
+					<c:choose>
+						<c:when test="${page eq requestScope.current_page}">
+							<option selected><c:out value="${page}"></c:out></option>
+						</c:when>
+						<c:otherwise>
+							<option value="${page}"><c:out value="${page}"></c:out></option>
+						</c:otherwise>
+					</c:choose>
+					
+					<!--<c:if test="${page eq requestScope.current_page}">
+						<option selected><c:out value="${page}"></c:out></option>
+					</c:if>					
+					<option value="${page}"><c:out value="${page}"></c:out></option>-->
 					
 				</c:forEach>
 				
