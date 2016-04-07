@@ -259,4 +259,8 @@ public class User {
 	public void removeSoundFromSounds(Sound sound) {
 		sounds.remove(sound);
 	}
+
+	public void addAlbum(Album album) {
+		albums.add(album);
+	}
 }
