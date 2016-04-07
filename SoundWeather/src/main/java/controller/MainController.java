@@ -254,33 +254,26 @@ public class MainController {
 	public @ResponseBody String likeSound(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		int soundId = Integer.parseInt(request.getParameter("id"));
-		System.out.println("timestamp 1 :"+new Timestamp(System.currentTimeMillis()));
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			System.out.println("timestamp 2 :"+new Timestamp(System.currentTimeMillis()));
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 			
 			User u = (User) request.getSession().getAttribute("loggedUser");
 			
 			u = (User) session.get(User.class, u.getUsername());
-			System.out.println("timestamp 3 :"+new Timestamp(System.currentTimeMillis()));
 			for(Sound s : u.getPlaylist()) {
 				if(s.getSoundId() == sound.getSoundId() ) {
 					throw new IllegalArgumentException("Sound already liked");
 				}
 			}
-			System.out.println("timestamp 4 :"+new Timestamp(System.currentTimeMillis()));
 			sound.setSoundRating(sound.getSoundRating()+1);
 			
 			u.addSoundToLiked(sound);
 			session.update(sound);
-			System.out.println("timestamp 5 :"+new Timestamp(System.currentTimeMillis()));
 			session.update(u);
-			System.out.println("timestamp 6 :"+new Timestamp(System.currentTimeMillis()));
 			tx.commit();
-			System.out.println("timestamp 7 :"+new Timestamp(System.currentTimeMillis()));
 			request.getSession().setAttribute("loggedUser", u);
 			rv.addProperty("status", "ok");
 			rv.addProperty("id", soundId);
