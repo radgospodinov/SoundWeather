@@ -65,6 +65,7 @@
    						<td>
    							<c:forEach var="album_sound" items="${album.albumTracks}">
 								<a id="song_from_album" onclick="loadJSP('sound?soundId=${album_sound.soundId}')"><c:out value="${album_sound.soundTitle}"/></a>
+								<button id="remove_sound_from_album" value="Remove" onclick="deleteSound(${album_sound.soundId})">Remove</button>
 								<br>
 							</c:forEach>
    						</td>
