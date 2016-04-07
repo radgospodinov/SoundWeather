@@ -73,10 +73,7 @@ public class InitiController {
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
 	public String initUploadPage(HttpServletRequest request) {
 
-		Session session = HibernateUtil.getSession();
-		Criteria criteria = session.createCriteria(Genre.class);
-		ArrayList<Genre> genres = (ArrayList<Genre>) criteria.list();
-		request.setAttribute("genres", genres);
+		request.setAttribute("genres", getAllGenres());
 		return "upload";
 	}
 
@@ -106,6 +103,12 @@ public class InitiController {
 		}
 
 		return "own_sounds";
+	}
+
+	@RequestMapping(value = "/albums", method = RequestMethod.GET)
+	public String initAlbums(HttpServletRequest request) {
+		request.setAttribute("genres", getAllGenres());
+		return "albums";
 	}
 
 	private void initGenres() {
@@ -206,4 +209,11 @@ public class InitiController {
 		return rv;
 	}
 
+	private List<Genre> getAllGenres() {
+		List<Genre> rv = null;
+		Session session = HibernateUtil.getSession();
+		Criteria criteria = session.createCriteria(Genre.class);
+		rv = criteria.list();
+		return rv;
+	}
 }
