@@ -96,8 +96,8 @@
 			enctype : 'multipart/form-data',
 			success : function(data) {
 				if (data.status == 'ok') {
-					$('#avatar').val('');
 					$('#userAvatar').attr('src', data.img);
+					$('#avatar').val('');
 					$('#pass1').val('');
 					$('#pass2').val('');
 					$('#email').val('');
@@ -121,7 +121,6 @@
 		});
 
 	}
-
 </script>
 
 
@@ -132,7 +131,9 @@
 	<div id="my_profile">
 		<table>
 			<tr>
-				<td><img id="userAvatar" alt="" src="/covers/${user.avatarName}"  height="150" width="150" ></td>
+				<td><img id="userAvatar" alt=""
+					src="<c:url value="/covers/${user.avatarName}.jpg"/>" height="150"
+					width="150"></td>
 				<td><c:out value="${user.username}" /></td>
 				<td><c:out value="${user.location}" /></td>
 			</tr>

@@ -218,7 +218,8 @@ public class MainController {
 		}
 		request.getSession().setAttribute("loggedUser", user);
 		rv.addProperty("status", "ok");
-		rv.addProperty("img", "/covers/" + fileName);
+		String img = "data:image/gif;base64," + Base64.encode(avatar);
+		rv.addProperty("img", img);
 
 		return rv.toString();
 	}
