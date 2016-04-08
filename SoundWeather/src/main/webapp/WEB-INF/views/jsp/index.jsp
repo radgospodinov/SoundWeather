@@ -53,18 +53,21 @@
 
 	<div id="header"
 		style="background-image:url(<c:url value="/images/background1.jpg"/>);">
+		
 		<div id="logo"
 			style="background-image:url(<c:url value="/images/logo.png"/>);"
 			onclick="loadJSP('home')"></div>
-		<div id="register" style="cursor: pointer;"
-			onclick="loadJSP('register')">Register</div>
-		<div id="login" style="cursor: pointer;" onclick="loadJSP('login')">Login</div>
-		<div id="logout"></div>
+		
+			<div id="register" style="cursor: pointer;" onclick="loadJSP('register')">Register</div>
+			<div id="login" style="cursor: pointer;" onclick="loadJSP('login')">Login</div>
+			<div id="logout"></div>
+				
 		<div id="search">
 			<form action="javascript:search()" >
 				<input type="text" id="searchText" placeholder="explore sounds">
 			</form>
 		</div>
+		
 	</div>
 
 	<div id="player">
