@@ -43,13 +43,10 @@
 		};
   	</script>
 	<script>
-  $(function() {
-    $("button")
-      .button()
-      .click(function( event ) {
-        event.preventDefault();
-      });
-  });
+	 /*  $(function() {
+          $( "#user_results, #album_results, #sound_results" ).button();
+          
+       }); */
   </script>
 	 <script type="text/javascript">
   		 function getGenreResults(searchWord, areSounds) {
