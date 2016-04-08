@@ -46,22 +46,22 @@
    				
    					<tr>
    						<td>
-   							<img alt="" src="${requestScope.selected_sound.soundCoverPhoto}">
+   							<img alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>">
    						</td>
    						<td>
-   							<c:out value="${requestScope.selected_sound.soundTitle}"/>
+   							<c:out value="${requestScope.sound.soundTitle}"/>
    						</td>
-   						<td id=@songid${sound.soundId }Songid>
-   							<c:out value="${requestScope.selected_sound.soundId}"/>
-   						</td>
-   						<td>
-   							<c:out value="${requestScope.selected_sound.soundViewCount}"/>
+   						<td id="songid">
+   							<c:out value="${requestScope.sound.soundId}"/>
    						</td>
    						<td>
-   							<c:out value="${requestScope.selected_sound.soundFans.size()}"/>
+   							<c:out value="${requestScope.sound.soundViewCount}"/>
    						</td>
    						<td>
-   							<button id="add_to_favorites" value="${requestScope.selected_sound.soundId}" >Add to favorites</button>
+   							<c:out value="${requestScope.sound.soundRating}"/>
+   						</td>
+   						<td>
+   							<button id="add_to_favorites" value="${requestScope.sound.soundId}" >Add to favorites</button>
    						</td>
    						
 					</tr>	
@@ -71,10 +71,10 @@
 		
 		<div id="sound_comments">
 			<table >
-   				<c:forEach var="comment" items="${requestScope.selected_sound.soundComments}">
+   				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
-   							<a onclick="loadJSP('getOtherUser?username=${comment.commentAuthor.username}')"><img alt="" src="${comment.commentAuthor.coverPhoto}"></a>
+   							<a onclick="loadJSP('getOtherUser?username=${comment.commentAuthor.username}')"><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
    						</td>
    						<td>
    							<c:out value="${comment.commentPostingDateTime}"/>

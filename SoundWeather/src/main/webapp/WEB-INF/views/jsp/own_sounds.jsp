@@ -50,7 +50,13 @@
 				});
 			};
 			</script>
-					
+				<script type="text/javascript">
+					 function getSound(sound_id) {
+		 			
+	 				alert(sound_id);
+					$('#sounds_space').load('sound', {soundId : sound_id});
+					};
+   	</script>	
 	</head>
 
 
@@ -65,7 +71,7 @@
    						<td>
    							
    							<a class="own_sound_title" id="song_from_album" href=""
-								onclick="loadJSP('sound?soundId=${sound.soundId}')"><c:out
+								onclick="getSound('${sound.soundId}')"><c:out
 									value="${sound.soundTitle}" /></a>
    						
    						
