@@ -257,9 +257,9 @@ public class SoundController {
 		String fileName = user.getUsername() + "_"
 				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 		String title = request.getParameter("albumTitle");
-		String genresTmp = request.getParameter("albumGenres");
+		//String genresTmp = request.getParameter("albumGenres");
 		int albumId = Integer.parseInt(request.getParameter("albumId"));
-		String[] genresS = genresTmp.split(",");
+	//	String[] genresS = genresTmp.split(",");
 		MultipartFile albumCover = request.getFile("albumCover");
 		byte[] coverPhoto = null;
 		try {
@@ -290,7 +290,6 @@ public class SoundController {
 			session.save(album);
 			session.update(author);
 			tx.commit();
-			rv.addProperty("status", "ok");
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();

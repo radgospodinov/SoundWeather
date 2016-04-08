@@ -83,38 +83,39 @@
 				
 			}
 			
-			// NEEDS MORE TWEAKS - currently broken
-			$('#updateAlbumCover').change(
-					function() {
-						var file = this.files[0];
-						updateAlbumCover = file;
-						name = file.name;
-						size = file.size;
-
-						type = file.type;
-						updateCoverOk = false;
-						if (file.name.length < 1) {
-						} else if (file.size > 1000000) {
-							alert("File is to big");
-						} else if (file.type != 'image/png' && file.type != 'image/jpg'
-								&& file.type != 'image/gif'
-								&& file.type != 'image/jpeg') {
-							alert("File doesnt match png, jpg or gif");
-						} else {
-							updateCoverOk = true;
-						}
-					});
+			
+			
 			
 			function updateAlbum(albumId) {
-				if (!updateCoverOk || $('#updateAlbumTitle').val() == "") {
-					alert("please enter valid input");
-					$('#update_album').focus();
+				
+				
+				var file = $('#file'+albumId)[0].files[0];
+				updateAlbumCover = file;
+				name = file.name;
+				size = file.size;
+				type = file.type;
+				if (file.name.length < 1) {
+					alert("Please choose album cover");
+					return;
+				} else if (file.size > 1000000) {
+					alert("File is to big");
+					return;
+				} else if (file.type != 'image/png' && file.type != 'image/jpg'
+						&& file.type != 'image/gif'
+						&& file.type != 'image/jpeg') {
+					alert("File doesnt match png, jpg or gif");
+					return;
+				}				
+				
+				if ($('#updateTitle'+albumId).val() == "") {
+					alert("please enter valid title");
+					$('#updaetTitle'+albumId).focus();
 					return;
 				}
 				var form = new FormData();
 			
 				form.append("albumCover", updateAlbumCover);
-				form.append('albumTitle', $('#updateAlbumTitle').val());
+				form.append('albumTitle', $('#updateTitle'+albumId).val());
 				form.append('albumId', albumId);
 		//		form.append('albumGenres', $('#genres').val());    -- TO BE ADDED IN JSP MAYBE?
 
@@ -263,10 +264,13 @@
 						<div id="update_album">
 							
 							<input type="text" name="update_album_title"
-								placeholder="change album title" id="updateAlbumTitle" /> 
+								placeholder="change album title" id="updateTitle${album.albumId}" /> 
+								
 						
 							<input type="file" name="update_cover_photo"
-								id="updateAlbumCover" accept="image/*" /> <input
+								id="file${album.albumId}" accept="image/*" />
+								
+								 <input
 								type="submit" value="Update album"
 								onclick="updateAlbum(${album.albumId})" />
 						</div>
