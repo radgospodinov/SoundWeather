@@ -218,7 +218,7 @@ public class MainController {
 		}
 		request.getSession().setAttribute("loggedUser", user);
 		rv.addProperty("status", "ok");
-		rv.addProperty("img", "/covers/"+fileName);
+		rv.addProperty("img", "/covers/" + fileName);
 
 		return rv.toString();
 	}
