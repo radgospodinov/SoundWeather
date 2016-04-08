@@ -2,7 +2,7 @@
 
 #filters {
 	margin-top:50px;
-	margin-bottom:100px;
+	margin-bottom:60px;
 	margin-left:40px;
 }
 
@@ -15,9 +15,10 @@
 
 #search_results {
 	margin-left:20px;
+	margin-bottom:40px;
 }
 
-#user_results, #sound_results, #album_results, #genres {
+#user_results, #sound_results, #album_results, #filter_genres {
 	height:35px;
 	width:140px;
 	font-weight:bold;
@@ -34,7 +35,7 @@
 	
 }
 
-#user_results:hover, #sound_results:hover, #album_results:hover, #genres:hover {
+#user_results:hover, #sound_results:hover, #album_results:hover, #filter_genres:hover {
 	color: #800000;
 	background: transparent;
 	border-color: #aaab9c #fff #fff #ccc;
@@ -44,17 +45,19 @@
 	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
-#genres {
+#filter_genres {
 	position:absolute;
-	height:35px;
+	height:40px;
 	width:140px;
 	font-weight:bold;
+	margin-left:3px;
 	
 }
 
 
 #page {
-	
+	margin-right:auto;
+	margin-left:auto;
 	height:40px;
 	width:60px;
 	font-weight:bold;

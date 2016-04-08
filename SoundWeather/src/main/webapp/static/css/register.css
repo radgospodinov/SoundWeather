@@ -70,7 +70,7 @@ border-color: #aaab9c #fff #fff #ccc;
 }
 
 
-select {
+#gender, #birth_month, #birth_year {
 	margin-right:auto;
 	margin-left:auto;
 	display: block;

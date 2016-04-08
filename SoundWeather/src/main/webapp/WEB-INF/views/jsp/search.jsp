@@ -13,7 +13,7 @@
 	
 	 <script type="text/javascript">
 		function getSelectedPage(searchWord, areSounds) {
-			var genre =  document.getElementById("genres").value;
+			var genre =  document.getElementById("filter_genres").value;
 			var page = document.getElementById("page").value;
 			var areAlbums = document.getElementById("are_albums").value;
 			var areUsers = document.getElementById("are_users").value;
@@ -44,7 +44,7 @@
 	
 	 <script type="text/javascript">
   		 function getGenreResults(searchWord, areSounds) {
-  		 	var genre =  document.getElementById("genres").value;
+  		 	var genre =  document.getElementById("filter_genres").value;
   		 	var areAlbums = document.getElementById("are_albums").value;
   		 	//alert(genre);
   			//var page = document.getElementById("page").value;
@@ -145,10 +145,11 @@
 		
 		<div id="filters">
 			<h3 id="search_word">RESULTS FOR "<c:out value="${requestScope.search_word}"/>" : <c:out value="${requestScope.number_of_results}"/></h3>
-			<button id="sound_results" onclick="getSoundResults('${requestScope.search_word}')">Filter sounds</button>
+			
 			<button id="user_results" onclick="getUserResults('${requestScope.search_word}')">Filter users</button>
 			<button id="album_results" onclick="getAlbumResults('${requestScope.search_word}')">Filter albums</button>
-			<select id="genres" size="1" name="genres" onchange="getGenreResults('${requestScope.search_word}','${requestScope.are_sounds}')">
+			<button id="sound_results" onclick="getSoundResults('${requestScope.search_word}')">Filter sounds</button>
+			<select id="filter_genres" size="1" name="genres" onchange="getGenreResults('${requestScope.search_word}','${requestScope.are_sounds}')">
 				<h3>Filter by genre</h3>
 				<option value="All" selected><c:out value="All" /></option>
 				<c:forEach items="${requestScope.genres}" var="genre"> <!-- Maybe a good idea to init the genres in the application scope... ? -->

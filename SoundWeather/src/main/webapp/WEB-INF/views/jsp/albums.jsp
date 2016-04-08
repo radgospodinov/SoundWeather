@@ -214,7 +214,7 @@
 		<input type="text" name="new_album_title"
 			placeholder="enter album title" id="albumTitle" /> <br />
 		<p>Select album cover</p>
-		<select id="genres" size="1" name="genres" multiple="multiple">
+		<select class="select_album_genres" id="genres" size="1" name="genres" multiple="multiple">
 
 
 			<c:forEach items="${requestScope.genres}" var="genre">
@@ -233,22 +233,32 @@
 		<table>
 			<c:forEach var="album" items="${requestScope.albums}">
 				<tr class="one_album" id="album${album.albumId}"  >   <!-- class="individual_album" AKO IMA NUJDA OT STYLING -->
-					<td><img id="cover${album.albumId}" src="/covers/${album.fileName}" height="150" width="150" > 
-					<div id="title${album.albumId}">
-						<c:out value="${album.albumTitle}" />
-					</div>
+					
+					
+					<td>
+						
+						<img id="cover${album.albumId}" src="/covers/${album.fileName}" height="150" width="150" > 
+						<div class="album_title" id="title${album.albumId}">
+							<b><c:out value="${album.albumTitle}" /></b>
+						</div>
 					</td>
-					<td><c:forEach var="album_sound" items="${album.albumTracks}" varStatus="status">
+					
+					<td>
+						<c:forEach var="album_sound" items="${album.albumTracks}" varStatus="status">
 							<div id="sound${album_sound.soundId}">
-							<a id="song_from_album" href=""
+							
+								<a id="song_from_album" href=""
 								onclick="loadJSP('sound?soundId=${album_sound.soundId}')"><c:out
 									value="${status.count}" /> : <c:out
 									value="${album_sound.soundTitle}" /></a>
+								
 							<button id="remove_sound_from_album" value="Remove"
 								onclick="deleteSound(${album_sound.soundId},${album.albumId})">Remove</button>
-							<br>
+								
 							</div>
-						</c:forEach></td>
+						</c:forEach>
+						</td>
+						
 					<td>
 						<div id="update_album">
 							
