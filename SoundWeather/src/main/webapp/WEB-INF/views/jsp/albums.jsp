@@ -8,7 +8,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="albums.css">
+
 <title>Albums</title>
 
 
@@ -232,16 +232,17 @@
 	<div id="own_albums">
 		<table>
 			<c:forEach var="album" items="${requestScope.albums}">
-				<tr id="album${album.albumId}"  >   <!-- class="individual_album" AKO IMA NUJDA OT STYLING -->
+				<tr class="one_album" id="album${album.albumId}"  >   <!-- class="individual_album" AKO IMA NUJDA OT STYLING -->
 					<td><img id="cover${album.albumId}" src="/covers/${album.fileName}" height="150" width="150" > 
 					<div id="title${album.albumId}">
 						<c:out value="${album.albumTitle}" />
 					</div>
 					</td>
-					<td><c:forEach var="album_sound" items="${album.albumTracks}">
+					<td><c:forEach var="album_sound" items="${album.albumTracks}" varStatus="status">
 							<div id="sound${album_sound.soundId}">
-							<a id="song_from_album"
+							<a id="song_from_album" href=""
 								onclick="loadJSP('sound?soundId=${album_sound.soundId}')"><c:out
+									value="${status.count}" /> : <c:out
 									value="${album_sound.soundTitle}" /></a>
 							<button id="remove_sound_from_album" value="Remove"
 								onclick="deleteSound(${album_sound.soundId},${album.albumId})">Remove</button>
@@ -250,10 +251,10 @@
 						</c:forEach></td>
 					<td>
 						<div id="update_album">
-							<p>Enter new title</p>
+							
 							<input type="text" name="update_album_title"
-								placeholder="change album title" id="updateAlbumTitle" /> <br />
-							<p>Select new cover</p>
+								placeholder="change album title" id="updateAlbumTitle" /> 
+						
 							<input type="file" name="update_cover_photo"
 								id="updateAlbumCover" accept="image/*" /> <input
 								type="submit" value="Update album"
@@ -264,7 +265,7 @@
 
 					<td>
 						<button id="album_to_delete" value="Delete"
-							onclick="deleteAlbum(${album.albumId})">Delete</button>
+							onclick="deleteAlbum(${album.albumId})">Delete album</button>
 					</td>
 
 				</tr>

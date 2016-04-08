@@ -1,0 +1,96 @@
+@CHARSET "UTF-8";
+
+
+
+#create_new_album {
+	margin-top:50px;
+}
+
+
+#own_albums {
+	margin-top:50px;
+}
+
+input {
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 300px;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+}
+
+#album_title {
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 300px;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+}
+
+tr.one_album {
+	margin-top:50px;
+}
+
+#update_album input[type=text] {
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 300px;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+}
+
+#own_albums table {
+	border-spacing:40px 70px;
+}
+
+
+#album_to_delete {
+	height:35px;
+	width:140px;
+	font-weight:bold;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	height:40px;
+	text-align:center;
+	font-weight:bold;
+}
+
+#album_to_delete:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+
+#song_from_album {
+	text-decoration: none;
+	cursor:pointer;
+}
+
+
+

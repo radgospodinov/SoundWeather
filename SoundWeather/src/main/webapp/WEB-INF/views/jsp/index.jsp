@@ -19,6 +19,8 @@
 	href="<c:url value="/css/playlists.css"/>" />
 	<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/search.css"/>" />
+	<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/albums.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
 <title>Home</title>
 
