@@ -51,6 +51,8 @@
 </script>
 
 <script>
+	var avatarOk = false;
+	var avatar = null;
 	$('#avatar').change(
 			function() {
 				var file = this.files[0];
@@ -147,7 +149,7 @@
 
 	<div id="form">
 		<p>Select cover photo</p>
-		<input type="file" name="user_cover_photo" id="user_cover"
+		<input type="file" name="user_cover_photo" id="avatar"
 			accept="image/*" /> <br /> <input id="pass1" type="password"
 			name="password1" placeholder="choose new password"
 			onkeyup="checkPass(); return false;" required /> <br /> <input
