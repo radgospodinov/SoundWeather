@@ -51,6 +51,7 @@
 </script>
 
 <script>
+var avatarOk = false;
 	$('#avatar').change(
 			function() {
 				var file = this.files[0];
