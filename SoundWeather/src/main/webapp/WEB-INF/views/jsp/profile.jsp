@@ -87,7 +87,7 @@
 		form.append('location', $("#location").val());
 
 		$.ajax({
-			url : 'updateProfile',
+			url : 'updateUser',
 			data : form,
 			processData : false,
 			contentType : false,
@@ -97,6 +97,7 @@
 			success : function(data) {
 				if (data.status == 'ok') {
 					$('#avatar').val('');
+					$('#userAvatar').attr('src', data.img);
 					$('#pass1').val('');
 					$('#pass2').val('');
 					$('#email').val('');
@@ -131,7 +132,7 @@
 	<div id="my_profile">
 		<table>
 			<tr>
-				<td><img alt="" src="/covers/${user.avatarName}"></td>
+				<td><img id="userAvatar" alt="" src="/covers/${user.avatarName}"  height="150" width="150" ></td>
 				<td><c:out value="${user.username}" /></td>
 				<td><c:out value="${user.location}" /></td>
 			</tr>
