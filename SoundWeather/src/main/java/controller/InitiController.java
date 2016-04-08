@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import com.google.gson.JsonObject;
 
 import model.Album;
+import model.Comment;
 import model.Genre;
 import model.HibernateUtil;
 import model.Sound;
@@ -142,6 +143,37 @@ public class InitiController {
 		return "albums";
 	}
 
+	
+	@RequestMapping(value = "/sound", method = RequestMethod.GET)
+	public String initSound(HttpServletRequest request) {
+	
+		int soundId = Integer.parseInt(request.getParameter("soundId"));
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			List<Comment> comments = sound.getSoundComments();
+			
+			System.out.println(comments.size());
+			
+					
+			request.setAttribute("sound", sound);
+			tx.commit();
+
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return "sound";
+	}
+	
+	
+	
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String initProfile(HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute("loggedUser");
@@ -260,4 +292,5 @@ public class InitiController {
 		rv = criteria.list();
 		return rv;
 	}
+	
 }
