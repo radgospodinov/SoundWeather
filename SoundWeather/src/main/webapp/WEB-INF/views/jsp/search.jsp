@@ -42,7 +42,15 @@
 			//$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
 		};
   	</script>
-	
+	<script>
+  $(function() {
+    $("button")
+      .button()
+      .click(function( event ) {
+        event.preventDefault();
+      });
+  });
+  </script>
 	 <script type="text/javascript">
   		 function getGenreResults(searchWord, areSounds) {
   		 	var genre =  document.getElementById("filter_genres").value;
