@@ -1,0 +1,80 @@
+@CHARSET "UTF-8";
+
+
+
+#own_sounds {
+	
+	margin-top:50px;
+	margin-left:50px;
+}
+
+.own_sound_cover_photo {
+	cursor:pointer;
+	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	
+}
+
+.table_with_own_sounds {
+	
+	border-spacing:40px 25px;
+}
+
+.own_sound_title {
+	font-weight:bold;
+	font-size:15px;
+	color: #800000;
+	
+}
+
+#sound_id_to_delete {
+	height:40px;
+	width:140px;
+	font-weight:bold;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	text-align:center;
+	font-weight:bold;
+}
+
+#sound_id_to_delete:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+
+#add_to_album {
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 140px;
+	padding: 0.5em;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+	font-weight:bold;
+	cursor:pointer;
+}
+
+.own_sound_fans {
+	font-weight:bold;
+	font-size:15px;
+}
+
+.fans_heart {
+	height:15px;
+	width:15px;
+}
+
+
+
+}

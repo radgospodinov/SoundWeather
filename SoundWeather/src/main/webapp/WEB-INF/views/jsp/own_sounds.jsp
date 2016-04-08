@@ -56,20 +56,29 @@
 
 	<body>
 		<div id="own_sounds">
-			<table class="myProfileTeamNameList">
+			<table class="table_with_own_sounds">
    				<c:forEach var="sound" items="${requestScope.sounds}">
    					<tr id="s${sound.getSoundId()}">
    						<td>
-   							<img alt="" src="<c:url value="/covers/${sound.getFileName()}.jpg"/>" height="150" width="150" >
+   							<img class="own_sound_cover_photo" alt="" src="<c:url value="/covers/${sound.getFileName()}.jpg"/>" height="150" width="150" onclick="addSongs('sounds/${sound.getFileName()}.mp3','covers/${sound.getFileName()}.jpg','${sound.getSoundTitle()}','${sound.getSoundAuthor().getUsername()}','')">
    						</td>
    						<td>
-   							<c:out value="${sound.soundTitle}"/>
+   							
+   							<a class="own_sound_title" id="song_from_album" href=""
+								onclick="loadJSP('sound?soundId=${sound.soundId}')"><c:out
+									value="${sound.soundTitle}" /></a>
+   						
+   						
+   						
+   						
+   						
    						</td>
-   						<td>
+   					<!--  <td>
    							<c:out value="${sound.soundViewCount}"/>
-   						</td>
+   						</td>-->	
    						<td>
-   							<c:out value="${sound.soundFans.size()}"/>
+   							<b class="own_sound_fans"><c:out value="${sound.soundFans.size()}"/></b>
+   							<img class="fans_heart" src="<c:url value="/images/heart.png"/>">
    						</td>
    						<td>
    							<button id="sound_id_to_delete" onclick="deleteSound(${sound.getSoundId()})">Delete</button>
@@ -80,7 +89,10 @@
    					 				<option  value="${album.albumId}"><c:out value="${album.albumTitle}"/></option>
   								</c:forEach>
   							</select>
-   					 				<button id="sound_id_to_delete" onclick="addSoundToAlbum(${sound.getSoundId()},$('#add_to_album').val())">Add to album</button>
+						</td>
+						<td>
+						   <button id="sound_id_to_delete" onclick="addSoundToAlbum(${sound.getSoundId()},$('#add_to_album').val())">Add to album</button>
+						
 						</td>
 					</tr>	
 				</c:forEach>
