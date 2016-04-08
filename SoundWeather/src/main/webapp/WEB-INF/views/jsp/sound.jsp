@@ -7,10 +7,10 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" type="text/css" href="<c:url value="/css/other_user.css"/>" />
+		
 		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
 		<title>Other user</title>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		
 			
 			
 			<script>
@@ -74,7 +74,7 @@
    				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
-   							<a onclick="loadJSP('getOtherUser?username=${comment.commentAuthor.username}')"><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   							<a onclick=""><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
    						</td>
    						<td>
    							<c:out value="${comment.commentPostingDateTime}"/>
