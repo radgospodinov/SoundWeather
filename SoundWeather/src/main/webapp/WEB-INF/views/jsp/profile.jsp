@@ -73,14 +73,14 @@
 				}
 			});
 	function updateUser() {
-		if (!avatarOk) {
+		if (!avatarOk && $('#avatar')[0].files.length > 0) {
 			alert("Invalid avatar");
 			$('#avatar').focus();
 			return;
 		}
 		var form = new FormData();
 
-		form.append("avatar", avatar);
+		form.append("avatar", $('#avatar')[0].files[0]);
 		form.append('password1', $("#pass1").val());
 		form.append('password2', $("#pass2").val());
 		form.append('email', $("#email").val());
@@ -96,12 +96,15 @@
 			enctype : 'multipart/form-data',
 			success : function(data) {
 				if (data.status == 'ok') {
+					if(data.img){
 					$('#userAvatar').attr('src', data.img);
+					}
 					$('#avatar').val('');
 					$('#pass1').val('');
 					$('#pass2').val('');
 					$('#email').val('');
 					$('#location').val('');
+					$('#userLocation').text(data.newLoc);
 
 					avatarOk = false;
 					$('#pass1').focus();
@@ -135,7 +138,7 @@
 					src="<c:url value="/covers/${user.avatarName}.jpg"/>" height="150"
 					width="150"></td>
 				<td><c:out value="${user.username}" /></td>
-				<td><c:out value="${user.location}" /></td>
+				<td id="userLocation"><c:out value="${user.location}" /></td>
 			</tr>
 		</table>
 	</div>

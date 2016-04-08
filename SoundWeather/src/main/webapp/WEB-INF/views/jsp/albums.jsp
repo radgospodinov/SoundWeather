@@ -131,7 +131,7 @@
 						if (data.status == 'ok') {
 							$('#updateAlbumTitle').val('');
 							$('#updateAlbumCover').val('');
-							$('#title'+data.id).text(data.newName);
+							$('#title'+data.id).html(data.newName.bold());
 							$('#cover'+data.id).attr('src', data.newFilePath);
 						//	$('#genres').val('');             -- TO BE ADDED IN JSP MAYBE?
 							
@@ -238,7 +238,7 @@
 					
 					<td>
 						
-						<img id="cover${album.albumId}" src="/covers/${album.fileName}" height="150" width="150" > 
+						<img id="cover${album.albumId}" src="<c:url value="/covers/${album.fileName}.jpg"/>" height="150" width="150" > 
 						<div class="album_title" id="title${album.albumId}">
 							<b><c:out value="${album.albumTitle}" /></b>
 						</div>

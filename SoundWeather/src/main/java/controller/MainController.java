@@ -146,7 +146,7 @@ public class MainController {
 
 		MultipartFile avatarTmp = request.getFile("avatar");
 		byte[] avatar = null;
-		if (!avatarTmp.isEmpty()) {
+		if (avatarTmp != null && !avatarTmp.isEmpty()) {
 			try {
 				avatar = avatarTmp.getBytes();
 			} catch (IOException e1) {
@@ -183,7 +183,7 @@ public class MainController {
 			if (!location.isEmpty()) {
 				currentUser.setLocation(location);
 			}
-			if (!avatarTmp.isEmpty()) {
+			if (avatarTmp != null && !avatarTmp.isEmpty()) {
 				currentUser.setAvatarName(fileName);
 			}
 			session.update(currentUser);
@@ -201,26 +201,30 @@ public class MainController {
 		} finally {
 			session.close();
 		}
-		File avatarFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
-		FileOutputStream fos = null;
-		try {
-			avatarFile.createNewFile();
-			fos = new FileOutputStream(avatarFile);
-			fos.write(avatar);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
+
+		if (avatarTmp != null && !avatarTmp.isEmpty()) {
+
+			File avatarFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
+			FileOutputStream fos = null;
 			try {
-				fos.close();
+				avatarFile.createNewFile();
+				fos = new FileOutputStream(avatarFile);
+				fos.write(avatar);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+			String img = "data:image/gif;base64," + Base64.encode(avatar);
+			rv.addProperty("img", img);
 		}
 		request.getSession().setAttribute("loggedUser", user);
 		rv.addProperty("status", "ok");
-		String img = "data:image/gif;base64," + Base64.encode(avatar);
-		rv.addProperty("img", img);
-
+		rv.addProperty("newLoc", user.getLocation());
 		return rv.toString();
 	}
 

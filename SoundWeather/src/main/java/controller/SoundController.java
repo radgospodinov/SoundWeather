@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.JsonObject;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import model.Album;
 import model.Genre;
@@ -316,10 +317,11 @@ public class SoundController {
 				e.printStackTrace();
 			}
 		}
+		String img ="data:image/gif;base64," +Base64.encode(coverPhoto);
 		rv.addProperty("status", "ok");
 		rv.addProperty("id", albumId);
 		rv.addProperty("newName", title);
-		rv.addProperty("newFilePath", "/covers/" + fileName);
+		rv.addProperty("newFilePath", img);
 		return rv.toString();
 	}
 
