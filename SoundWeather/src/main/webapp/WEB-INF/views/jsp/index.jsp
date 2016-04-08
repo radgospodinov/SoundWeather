@@ -123,8 +123,8 @@
 				<li><a id="current" style="cursor: pointer;" onclick="loadJSP('upload')">UPLOAD</a></li>
 				<li><a style="cursor: pointer;" onclick="loadJSP('own_sounds')">SOUNDS</a></li>
 				<li><a style="cursor: pointer;" onclick="loadJSP('albums')">ALBUMS</a></li>
-				<li><a href="#">FOLLOWING</a></li>
-				<li><a href="#">PROFILE</a></li>
+				<li><a style="cursor: pointer;" onclick="loadJSP('following')">FOLLOWING</a></li>
+				<li><a style="cursor: pointer;" onclick="loadJSP('profile')">PROFILE</a></li>
 			</ul>
 		</div>
 

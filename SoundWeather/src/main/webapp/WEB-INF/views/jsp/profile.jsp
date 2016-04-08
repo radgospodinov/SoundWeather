@@ -87,13 +87,13 @@
 			<table>
    				<tr>
    					<td>
-   						<img alt="" src="${sessionScope.loggedUser.coverPhoto}">
+   						<img alt="" src="/covers/${user.avatarName}">
    					</td>
    					<td>
-   						<c:out value="${sessionScope.loggedUser.username}"/>
+   						<c:out value="${user.username}"/>
    					</td>
    					<td>
-   						<c:out value="${sessionScope.loggedUser.location}"/>
+   						<c:out value="${user.location}"/>
    					</td>
    				</tr>		
 			</table>

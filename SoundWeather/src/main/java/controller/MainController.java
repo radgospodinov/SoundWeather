@@ -134,6 +134,14 @@ public class MainController {
 
 		return rv.toString();
 	}
+	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+	public @ResponseBody String updateUser(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		
+		
+		return rv.toString();
+	}
+
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String loginForm(HttpServletRequest request) {

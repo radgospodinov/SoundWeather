@@ -17,6 +17,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.loader.plan.exec.process.spi.ReturnReader;
 import org.omg.PortableServer.POAPackage.WrongAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -127,6 +128,19 @@ public class InitiController {
 			session.close();
 		}
 		return "albums";
+	}
+
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	public String initProfile(HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute("loggedUser");
+		
+		request.setAttribute("user", user);
+		return "profile";
+	}
+	@RequestMapping(value = "/following", method = RequestMethod.GET)
+	public String initFollowing(HttpServletRequest request) {
+        // TODO list of following users to be initialised
+		return "following";
 	}
 
 	private void initGenres() {
