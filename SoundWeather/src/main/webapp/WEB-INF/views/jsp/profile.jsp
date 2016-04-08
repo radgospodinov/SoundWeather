@@ -1,18 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html >
 
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" type="text/css" href="<c:url value="/css/profile.css"/>" />
-		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
-		<title>Profile</title>
-		
-			
-		<script>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/profile.css"/>" />
+<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
+<title>Profile</title>
+
+
+<script>
 	function checkPass() {
 
 		var pass1 = document.getElementById('pass1');
@@ -49,92 +51,119 @@
 </script>
 
 <script>
-	function updateUser() {
-		$.post({
-			url : "updateProfile",
-			data : {
-				password1 : $("#pass1").val(),
-				password2 : $("#pass2").val(),
-				email : $("#email").val(),
-				location : $("#location").val(),
-				
-				
-				
-			},
-			dataType : "json",
-			success : function(data, textStatus, jqXHR) {
-				if (data.status != 'ok') {
-					$("#update_message").text(data.msg);
-					$("#update_message").show();
-					$(data.fld).focus();
+	$('#avatar').change(
+			function() {
+				var file = this.files[0];
+				avatar = file;
+				name = file.name;
+				size = file.size;
+				type = file.type;
+				avatarOk = false;
+				if (file.name.length < 1) {
+				} else if (file.size > 1000000) {
+					alert("File is to big");
+				} else if (file.type != 'image/png' && file.type != 'image/jpg'
+						&& file.type != 'image/gif'
+						&& file.type != 'image/jpeg') {
+					alert("File doesnt match png, jpg or gif");
+				} else {
+					avatarOk = true;
 				}
+			});
+	function updateUser() {
+		if (!avatarOk) {
+			alert("Invalid avatar");
+			$('#avatar').focus();
+			return;
+		}
+		var form = new FormData();
+
+		form.append("avatar", avatar);
+		form.append('password1', $("#pass1").val());
+		form.append('password2', $("#pass2").val());
+		form.append('email', $("#email").val());
+		form.append('location', $("#location").val());
+
+		$.ajax({
+			url : 'updateProfile',
+			data : form,
+			processData : false,
+			contentType : false,
+			type : 'POST',
+			dataType : 'json',
+			enctype : 'multipart/form-data',
+			success : function(data) {
+				if (data.status == 'ok') {
+					$('#avatar').val('');
+					$('#pass1').val('');
+					$('#pass2').val('');
+					$('#email').val('');
+					$('#location').val('');
+
+					avatarOk = false;
+					$('#pass1').focus();
+					//					$('#upload_message').text(data.msg);
+					//					$('#upload_message').css('color', goodColor);
+					//					$('#upload_message').show();
+					return;
+				}
+				//				$('#upload_message').text(data.msg);
+				//				$('#upload_message').css('color', badColor);
+				//				$('#upload_message').show();
 
 			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				alert("Something really bad happened " + textStatus + " - "
-						+ errorThrown);
+			error : function(err) {
+				alert(err);
 			}
 		});
-	};
+
+	}
+
 </script>
 
 
-	</head>
-	
-	<body>
-	
-		<div id="my_profile">
-			<table>
-   				<tr>
-   					<td>
-   						<img alt="" src="/covers/${user.avatarName}">
-   					</td>
-   					<td>
-   						<c:out value="${user.username}"/>
-   					</td>
-   					<td>
-   						<c:out value="${user.location}"/>
-   					</td>
-   				</tr>		
-			</table>
-		</div>
-	
-	
-	
+</head>
+
+<body>
+
+	<div id="my_profile">
+		<table>
+			<tr>
+				<td><img alt="" src="/covers/${user.avatarName}"></td>
+				<td><c:out value="${user.username}" /></td>
+				<td><c:out value="${user.location}" /></td>
+			</tr>
+		</table>
+	</div>
+
+
+
 	<div id="update_notification">
 
-		<h5 id="update_message" style="display: none;color:#ff6666 ">Problem updating. /// Please, fill all the
-			fields.</h5>
+		<h5 id="update_message" style="display: none; color: #ff6666">Problem
+			updating. /// Please, fill all the fields.</h5>
 
 	</div>
 
 	<div id="form">
-	<p>Select cover photo</p>
-	<input type="file" name="user_cover_photo" id="user_cover"
-		accept="image/*" /> 
-	<br />
-	<input id="pass1" type="password" name="password1"
-		placeholder="choose new password" onkeyup="checkPass(); return false;"
-		required />
-	<br />
-	<input id="pass2" type="password" name="password2"
-		placeholder="re-enter new password" onkeyup="checkPass(); return false;"
-		required />
-	<br />
-	<input id="email" type="text" name="email" placeholder="enter new email"
-		onkeyup="validateEmail(); return false;" required />
-	<br />
-	<input id="location" type="text" name="location"
-		placeholder="enter new location" required />
-	<br />
-	
-	<input type="submit" value="Update" onclick="updateUser()" />
-	<br />
-	<!--<span id="update_message"></span>-->
+		<p>Select cover photo</p>
+		<input type="file" name="user_cover_photo" id="user_cover"
+			accept="image/*" /> <br /> <input id="pass1" type="password"
+			name="password1" placeholder="choose new password"
+			onkeyup="checkPass(); return false;" required /> <br /> <input
+			id="pass2" type="password" name="password2"
+			placeholder="re-enter new password"
+			onkeyup="checkPass(); return false;" required /> <br /> <input
+			id="email" type="text" name="email" placeholder="enter new email"
+			onkeyup="validateEmail(); return false;" required /> <br /> <input
+			id="location" type="text" name="location"
+			placeholder="enter new location" required /> <br /> <input
+			type="submit" value="Update" onclick="updateUser()" /> <br />
+		<!--<span id="update_message"></span>-->
 	</div>
 
 
 
-	</body>
-	
+</body>
+
 </html>

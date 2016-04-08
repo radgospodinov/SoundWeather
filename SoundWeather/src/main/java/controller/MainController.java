@@ -50,18 +50,17 @@ import model.User;
 
 @Controller
 public class MainController {
-	
+
 	private static final int MAX_PASSWORD_LENGTH = 6;
 	private static final int MAX_USERNAME_LENGTH = 4;
-	
+
 	@Autowired
 	ServletContext context;
-
-
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public @ResponseBody String registerForm(HttpServletRequest request) {
 
+		JsonObject rv = new JsonObject();
 		String username = request.getParameter("username");
 		String password1 = request.getParameter("password1");
 		String password2 = request.getParameter("password2");
@@ -71,7 +70,6 @@ public class MainController {
 		String location = request.getParameter("location");
 		String gender = request.getParameter("gender");
 
-		JsonObject rv = new JsonObject();
 		if (!password1.equals(password2)) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "Password doesn't match");
@@ -134,14 +132,95 @@ public class MainController {
 
 		return rv.toString();
 	}
+
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-	public @ResponseBody String updateUser(HttpServletRequest request) {
+	public @ResponseBody String updateUser(MultipartHttpServletRequest request) {
 		JsonObject rv = new JsonObject();
-		
-		
+		User user = (User) request.getSession().getAttribute("loggedUser");
+		String password1 = request.getParameter("password1");
+		String password2 = request.getParameter("password2");
+		String email = request.getParameter("email");
+		String location = request.getParameter("location");
+		String fileName = user.getUsername() + "_"
+				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+
+		MultipartFile avatarTmp = request.getFile("avatar");
+		byte[] avatar = null;
+		if (!avatarTmp.isEmpty()) {
+			try {
+				avatar = avatarTmp.getBytes();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		if (!password1.equals(password2)) {
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "Password doesn't match");
+			rv.addProperty("fld", "#pass1");
+			return rv.toString();
+		}
+
+		if (!password1.isEmpty() && password1.length() < MAX_PASSWORD_LENGTH) {
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "Password too short.Username must be at least 6 characters");
+			rv.addProperty("fld", "#pass1");
+			return rv.toString();
+		}
+		// TODO : strong password validation
+
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User currentUser = (User) session.get(User.class, user.getUsername());
+			if (!password1.isEmpty()) {
+				currentUser.setPassword(password1);
+			}
+			if (!email.isEmpty()) {
+				currentUser.setEmail(email);
+			}
+			if (!location.isEmpty()) {
+				currentUser.setLocation(location);
+			}
+			if (!avatarTmp.isEmpty()) {
+				currentUser.setAvatarName(fileName);
+			}
+			session.update(currentUser);
+			user = currentUser;
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "Something went wrong when we tried to save you.");
+			rv.addProperty("fld", "#username");
+			e.printStackTrace();
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		File avatarFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
+		FileOutputStream fos = null;
+		try {
+			avatarFile.createNewFile();
+			fos = new FileOutputStream(avatarFile);
+			fos.write(avatar);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		request.getSession().setAttribute("loggedUser", user);
+		rv.addProperty("status", "ok");
+
 		return rv.toString();
 	}
-
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String loginForm(HttpServletRequest request) {
@@ -193,9 +272,9 @@ public class MainController {
 		// Get the genres and set them to the Sound object:
 		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
 		String genresTmp = request.getParameter("mp3genres");
-		System.out.println("TMP="+genresTmp);
+		System.out.println("TMP=" + genresTmp);
 		String[] genres = genresTmp.split(",");
-		System.out.println("array="+Arrays.toString(genres));
+		System.out.println("array=" + Arrays.toString(genres));
 		// TODO: Saving file paths to DB
 		// Open hibernate session:
 		Session session = HibernateUtil.getSession();
@@ -207,9 +286,10 @@ public class MainController {
 			// Fetch the Genre objects (we need the genre id in order to set the
 			// Song object properly):
 			// Set the genres to the newSound:
-			for(String string : genres) {
+			for (String string : genres) {
 				Genre genre = (Genre) session.get(Genre.class, Integer.parseInt(string));
-				System.out.println("NAME OF GENRE : "+genre.getGenreName() + " ID: " + genre.getGenreId() + " STRING = " + string);
+				System.out.println("NAME OF GENRE : " + genre.getGenreName() + " ID: " + genre.getGenreId()
+						+ " STRING = " + string);
 				newSound.addGenre(genre);
 			}
 			// Save uploaded sound to DB;
@@ -231,7 +311,7 @@ public class MainController {
 		} finally {
 			session.close();
 		}
-			
+
 		// Write the audio byte[] into a file on the hd:
 
 		File soundFile = new File(context.getRealPath("/static/sounds/" + fileName + ".mp3"));
@@ -263,17 +343,17 @@ public class MainController {
 		try {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
-			
+
 			User u = (User) request.getSession().getAttribute("loggedUser");
-			
+
 			u = (User) session.get(User.class, u.getUsername());
-			for(Sound s : u.getPlaylist()) {
-				if(s.getSoundId() == sound.getSoundId() ) {
+			for (Sound s : u.getPlaylist()) {
+				if (s.getSoundId() == sound.getSoundId()) {
 					throw new IllegalArgumentException("Sound already liked");
 				}
 			}
-			sound.setSoundRating(sound.getSoundRating()+1);
-			
+			sound.setSoundRating(sound.getSoundRating() + 1);
+
 			u.addSoundToLiked(sound);
 			session.update(sound);
 			session.update(u);
@@ -292,10 +372,10 @@ public class MainController {
 		} finally {
 			session.close();
 		}
-		
-		
+
 		return rv.toString();
 	}
+
 	@RequestMapping(value = "/favSound", method = RequestMethod.POST)
 	public @ResponseBody String favSound(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
@@ -307,8 +387,8 @@ public class MainController {
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 			User u = (User) request.getSession().getAttribute("loggedUser");
 			u = (User) session.get(User.class, u.getUsername());
-			for(Sound s : u.getFavorites()) {
-				if(s.getSoundId() == sound.getSoundId() ) {
+			for (Sound s : u.getFavorites()) {
+				if (s.getSoundId() == sound.getSoundId()) {
 					throw new IllegalArgumentException("Sound already favourited");
 				}
 			}
@@ -331,8 +411,7 @@ public class MainController {
 		} finally {
 			session.close();
 		}
-		
-		
+
 		return rv.toString();
 	}
 }
