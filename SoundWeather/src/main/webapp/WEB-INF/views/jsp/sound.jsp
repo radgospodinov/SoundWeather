@@ -9,6 +9,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
 		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
+		
+		
 		<title>Other user</title>
 		
 			
