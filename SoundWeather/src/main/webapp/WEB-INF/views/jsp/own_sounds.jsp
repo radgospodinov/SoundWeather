@@ -70,7 +70,7 @@
    						</td>
    						<td>
    							
-   							<a class="own_sound_title" id="song_from_album" href=""
+   							<a class="own_sound_title" id="song_from_album" 
 								onclick="getSound('${sound.soundId}')"><c:out
 									value="${sound.soundTitle}" /></a>
    						
