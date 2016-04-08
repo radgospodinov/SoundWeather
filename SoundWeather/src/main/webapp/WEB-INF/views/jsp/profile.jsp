@@ -51,8 +51,12 @@
 </script>
 
 <script>
+<<<<<<< HEAD
 	var avatarOk = false;
 	var avatar = null;
+=======
+var avatarOk = false;
+>>>>>>> branch 'master' of https://github.com/radgospodinov/SoundWeather.git
 	$('#avatar').change(
 			function() {
 				var file = this.files[0];
