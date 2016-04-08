@@ -23,14 +23,15 @@
 			return;
 			}
 			
-			if(areAlbums != null && areAlbums == true) {
+			if(areAlbums) {
 				$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_albums : areAlbums, search_genre : genre});
 
 			} else {
-				if (areUsers != null && areUsers == true) {
+				if (areUsers) {
 					$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_users : areUsers, search_genre : genre});
 
 				} else {
+					
 					$('#sounds_space').load('search', {search_word : searchWord, requested_page : page, are_sounds : areSounds, search_genre : genre});
 
 				}
@@ -46,18 +47,19 @@
   		 function getGenreResults(searchWord, areSounds) {
   		 	var genre =  document.getElementById("filter_genres").value;
   		 	var areAlbums = document.getElementById("are_albums").value;
-  		 	//alert(genre);
+  		 	//alert(areAlbums);
   			//var page = document.getElementById("page").value;
   			if(searchWord.length == 0) {
   				return;
   			}
   			//alert(genre);
-  			if (areAlbums != null && areAlbums == true) {
+  			if (areAlbums) {
   			
   				$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_albums : areAlbums, search_genre : genre});
 
   			} else {
-  	  			$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : areSounds, search_genre : genre});
+  	  			alert('hi,from are-sounds call in getGenreResults')
+  				$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : areSounds, search_genre : genre});
 
   			}
   			
