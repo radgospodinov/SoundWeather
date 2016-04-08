@@ -196,6 +196,10 @@ public class SearchController {
 							criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
 							criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
 							searchResults = (List<Album>) criteria.list();		
+							for (Album a : searchResults) {
+								a.getAlbumTracks();
+							}
+							
 							
 						} catch (HibernateException e) {
 							session.getTransaction().rollback();
@@ -209,6 +213,7 @@ public class SearchController {
 					request.setAttribute("number_of_pages", numberOfPages);
 					request.setAttribute("current_page", page);
 					request.setAttribute("result_list", searchResults);
+					System.out.println(searchResults.size());
 				//	request.setAttribute("are_sounds", areSounds);
 					request.setAttribute("genres", genres);
 					return "search";

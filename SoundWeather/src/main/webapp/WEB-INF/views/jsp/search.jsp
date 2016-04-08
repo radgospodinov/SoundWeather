@@ -204,6 +204,7 @@
 		
 		<c:otherwise>
 		
+		<c:if test="${requestScope.are_users == true}">
 			<div id="search_results">
 			
 			<table id="results_table">
@@ -224,7 +225,7 @@
 				</tr>
 			</table>
 		</div>
-		
+		</c:if>
 	</c:otherwise>
 	
 	</c:choose>
@@ -232,13 +233,14 @@
 	
 	<c:if test="${requestScope.are_albums}">
 		<div id="search_results">
-			<h3>Albums</h3>
+		
+		
 			<table id="results_table">
 				<tr id="row_with_results">
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
 							<div id="photos" >
-								<a onclick="getAlbum(${result.albumId})"><img id="album_cover_photo" alt="Album cover photo" src="<c:url value="${result.albumCover}"/>" height="150" width="150" /></a>
+								<a onclick="getAlbum(${result.albumId})"><img id="album_cover_photo" alt="Album cover photo" src="<c:url value="${result.fileName}"/>" height="150" width="150" /></a>
 							</div>
 
 							<div id="username">

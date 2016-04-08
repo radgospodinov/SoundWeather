@@ -26,7 +26,7 @@ public class Album {
 	private String albumTitle;
 	@ManyToOne
 	private User albumAuthor;
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany//(fetch = FetchType.EAGER)
 	private List<Sound> albumTracks;
 	@Column(name = "album_cover")
 	private String fileName; // (photo)
