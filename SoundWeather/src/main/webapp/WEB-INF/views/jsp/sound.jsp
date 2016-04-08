@@ -10,7 +10,6 @@
 		<link rel="stylesheet" type="text/css" href="<c:url value="/css/other_user.css"/>" />
 		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
 		<title>Other user</title>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 			
 			
 			<script>
