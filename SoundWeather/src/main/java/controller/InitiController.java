@@ -116,7 +116,19 @@ public class InitiController {
 			tx = session.beginTransaction();
 			User user = (User) session.get(User.class, u.getUsername());
 			user.getAlbums().size();
-			request.setAttribute("albums", user.getAlbums());
+			List<Album> albums = user.getAlbums();
+			System.out.println(albums.size());
+			
+			for (Album a : albums) {
+				a.getAlbumTracks();
+				for (Sound s : a.getAlbumTracks()) {
+					System.out.println(s.getSoundTitle());
+				}
+			}
+			
+			
+			
+			request.setAttribute("albums", albums);
 			tx.commit();
 
 		} catch (Exception e) {
