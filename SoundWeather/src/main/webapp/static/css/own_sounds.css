@@ -10,7 +10,7 @@
 
 .own_sound_cover_photo {
 	cursor:pointer;
-	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	 box-shadow: 0 0 5px rgba(0, 0, 0, 1);
 	
 }
 
@@ -20,8 +20,7 @@
 }
 
 .own_sound_title {
-	font-weight:bold;
-	font-size:15px;
+	font-size:20px;
 	color: #800000;
 	
 }

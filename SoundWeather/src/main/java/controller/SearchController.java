@@ -26,7 +26,7 @@ import model.User;
 @Controller
 public class SearchController {
 
-	private static final int MAX_RESULTS_PER_PAGE = 9;
+	private static final int MAX_RESULTS_PER_PAGE = 8;
 
 	@Autowired
 	ServletContext context;

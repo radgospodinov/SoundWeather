@@ -104,9 +104,13 @@
 								<c:out value="${wSound.getSoundTitle()}" />
 							</div>
 
-							<button id="wLike${wSound.getSoundId()}" class="like" onclick="like('${wSound.getSoundId()}')">Like [${wSound.getSoundRating()}]</button>
+							 <button id="wLike${wSound.getSoundId()}" class="like" onclick="like('${wSound.getSoundId()}')">Like [${wSound.getSoundRating()}]</button>
 							<button id="wFav${wSound.getSoundId()}" class="like" onclick="fav('${wSound.getSoundId()}')">Favorite </button>
-							
+							<!-- <div>
+							<b>${wSound.getSoundRating()}</b><img id="wLike${wSound.getSoundId()}" class="fans_heart" src="<c:url value="/images/like.png"/>" onclick="like('${wSound.getSoundId()}')" style=cursor:pointer>
+							<img id="wFav${wSound.getSoundId()}" class="fans_heart" src="<c:url value="/images/heart.png"/>" onclick="fav('${wSound.getSoundId()}')" style=cursor:pointer>-->
+							</div>
+						
 						</td>
 					</c:forEach>
 				</tr>
@@ -128,10 +132,15 @@
 							</div>
 
 							<div id="sound_title">
-								<c:out value="Sound Title ${tSound.getSoundTitle()}" />
+								<c:out value="${tSound.getSoundTitle()}" />
 							</div>
 
-							<button id="tLike${tSound.getSoundId()}" class="like" onclick="like('${tSound.getSoundId()}')">Like [${tSound.getSoundRating()}]</button>
+							 <button id="tLike${tSound.getSoundId()}" class="like" onclick="like('${tSound.getSoundId()}')">Like [${tSound.getSoundRating()}]</button>
+							<button id="tFav${tSound.getSoundId()}" class="like" onclick="fav('${tSound.getSoundId()}')">Favorite </button> 
+						<!--  <div>
+							<b class="number_of_likes">${tSound.getSoundRating()}</b><img id="tLike${tSound.getSoundId()}" class="fans_heart" src="<c:url value="/images/like.png"/>" onclick="like('${tSound.getSoundId()}')" style=cursor:pointer>
+							<img id="tFav${tSound.getSoundId()}" class="fans_heart" src="<c:url value="/images/heart.png"/>" onclick="fav('${tSound.getSoundId()}')" style=cursor:pointer>
+							</div>-->	
 						</td>
 					</c:forEach>
 				</tr>
