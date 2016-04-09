@@ -191,6 +191,10 @@ public class InitiController {
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String initProfile(HttpServletRequest request) {
+		if(request.getSession().getAttribute("loggedUser")==null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "upload");
+			return "login";
+		}
 		User user = (User) request.getSession().getAttribute("loggedUser");
 
 		request.setAttribute("user", user);
