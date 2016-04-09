@@ -137,6 +137,11 @@ public class Sound {
 		soundFans.add(u);
 	}
 	
+	public void removeFan(User u) {
+		this.soundFans.remove(u);
+	}
+	
+	
 	public void addCommentToSound(Comment newComment) {
 		soundComments.add(newComment);
 	}

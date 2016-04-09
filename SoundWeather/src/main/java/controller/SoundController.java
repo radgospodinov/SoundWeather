@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.neo4j.cypher.internal.compiler.v2_1.ast.rewriters.flattenBooleanOperators;
@@ -151,18 +152,22 @@ public class SoundController {
 	@RequestMapping(value = "/removeFromFavorites", method = RequestMethod.POST)
 	public @ResponseBody String removeFromFavorites(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
-		int soundId = Integer.parseInt(request.getParameter("soundId"));
-		String username = request.getParameter("username");
+		int soundId = Integer.parseInt(request.getParameter("sound_Id"));
+		for(int i=0;i<10;i++){System.out.println(soundId);}
+		User user = (User) request.getSession().getAttribute("loggedUser");
 		
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
-			User user = (User) session.get(User.class, username);
-			user.removeFromFavorites(sound);
-			session.update(sound);
-			session.update(user);
+			User u = (User) session.get(User.class, user.getUsername());
+			  Hibernate.initialize(u.getFavorites());
+			  Hibernate.initialize(sound.getSoundFans());
+			  u.removeFromFavorites(sound);
+			  sound.removeFan(u);
+			
+			
 			tx.commit();
 			
 		} catch (Exception e) {

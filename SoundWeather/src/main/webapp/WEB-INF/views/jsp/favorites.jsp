@@ -10,15 +10,19 @@
 
 <title>Favorites</title>
 <script>
-		$('#remove_favorite').on('click', function removeFromFavorites(username,soundId) {
-				
-						alert(soundId);
+		$("button").on('click', function removeFromFavorites(e) {
+			 alert(event.target.id);
+			
+			 var soundId = event.target.id;
+			// alert(soundId);
+			
+					
 					$.post({
 					url : "removeFromFavorites",
 					
 					data : {
-						username : username,
-						soundId : soundId
+						
+						sound_Id : soundId
 					},
 					dataType : "json",
 					success : function(data, textStatus, jqXHR) {
@@ -55,7 +59,7 @@
 								value="${favorite.soundTitle}" /></a></td>
 										
 					<td>
-						<button class="remove_from_favorites" id="remove_favorite"
+						<button class="remove_from_favorites" id="${favorite.soundId}" value="${favorite.soundId}"
 							>Remove</button>
 					
 					<!-- onclick="removeFromFavorites(${sessionScope.loggedUser.username},${favorite.getSoundId()})" -->
