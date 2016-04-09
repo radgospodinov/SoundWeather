@@ -7,15 +7,18 @@
 }
 
 #search_word {
-	font-weight:bold;
-	font-weight:bold;
-	font-size:15px;
+	font-size:20px;
 	color: #800000;
 }
 
 #search_results {
 	margin-left:20px;
 	margin-bottom:40px;
+}
+
+.type_of_result {
+	font-size:20px;
+	color: #800000;
 }
 
 #sound_search_results {

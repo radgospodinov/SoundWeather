@@ -165,7 +165,29 @@
 	
 		
 		<div id="filters">
-			<h3 id="search_word">RESULTS FOR "<c:out value="${requestScope.search_word}"/>" : <c:out value="${requestScope.number_of_results}"/></h3>
+			<h3 id="search_word">RESULTS FOR "<c:out value="${requestScope.search_word}"/>" : <c:out value="${requestScope.number_of_results}"/>
+			
+			<c:if test="${requestScope.are_users == true && requestScope.number_of_results > 1}">
+			<b class="type_of_result">users</b>
+			</c:if>
+			<c:if test="${requestScope.are_users == true && requestScope.number_of_results == 1}">
+			<b class="type_of_result">user</b>
+			</c:if>
+			<c:if test="${requestScope.are_sounds == true && requestScope.number_of_results > 1}">
+			<b class="type_of_result">sounds</b>
+			</c:if>
+			<c:if test="${requestScope.are_sounds == true && requestScope.number_of_results == 1}">
+			<b class="type_of_result">sound</b>
+			</c:if>
+		<c:if test="${requestScope.are_albums == true && requestScope.number_of_results > 1}">
+			<b class="type_of_result">albums</b>
+			</c:if>
+			<c:if test="${requestScope.are_albums == true && requestScope.number_of_results == 1}">
+			<b class="type_of_result">album</b>
+			</c:if>
+			
+			
+			</h3>
 			
 			<button id="user_results" onclick="getUserResults('${requestScope.search_word}')">Filter users</button>
 			<button id="album_results" onclick="getAlbumResults('${requestScope.search_word}')">Filter albums</button>
@@ -255,7 +277,6 @@
 	
 	<c:if test="${requestScope.are_albums}">
 		<div id="search_results">
-		
 		
 			<table id="album_results_table">
 				<tr id="row_with_results">

@@ -248,7 +248,7 @@
 						<c:forEach var="album_sound" items="${album.albumTracks}" varStatus="status">
 							<div id="sound${album_sound.soundId}">
 							
-								<a id="song_from_album" href=""
+								<a id="song_from_album" 
 								onclick="loadJSP('sound?soundId=${album_sound.soundId}')"><c:out
 									value="${status.count}" /> : <c:out
 									value="${album_sound.soundTitle}" /></a>
