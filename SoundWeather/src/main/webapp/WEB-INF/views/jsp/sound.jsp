@@ -11,7 +11,36 @@
 		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
 		
 		
-		<title>Other user</title>
+		<title>Sound</title>
+			<script type="text/javascript">
+    			$("#show_comments_button").hide();
+			</script>
+			
+			
+			
+			
+			<script>
+				$(document).ready(function(){
+   					 
+					$("#hide_comments_button").click(function(){
+      				  			$("#sound_comments").hide(1000);
+      				  			$("#hide_comments_button").hide(1000);
+      				  			$("#show_comments_button").show(1000);
+    				 });
+    			
+   					 $("#show_comments_button").click(function(){
+        						$("#sound_comments").show(1000);
+        						$("#hide_comments_button").show(1000);
+        						$("#show_comments_button").hide(1000);
+   			 		 });
+   					 
+   					
+   				
+
+				});
+			</script>
+						
+			
 			<script type="text/javascript">
 					 function createComment(sound_id) {
 						 alert(sound_id);
@@ -62,11 +91,11 @@
    						</td>
    					<!--  	<td id="songid">
    							<c:out value="${requestScope.sound.soundId}"/>
-   						</td>
+   						</td>-->
    						<td>
-   							<c:out value="${requestScope.sound.soundViewCount}"/>
+   							<b class="by">by</b><b class="sound_autor"><c:out value="${requestScope.sound.soundAuthor.username}"/></b>
    						</td>
-   						<td>
+   					<!--	<td>
    							<c:out value="${requestScope.sound.soundRating}"/>
    						</td>-->
    						<td>
@@ -79,34 +108,43 @@
 			</table>
 		</div>
 		
+		<div class="hide_show_buttons">
+		<button id="hide_comments_button">Hide comments</button>
+		<button id="show_comments_button" class="show_comments">Show comments</button>
+		</div>
 		<div id="sound_comments">
+			
 			<table class="sound_table_with_comments">
-   				<h1>Comments about this sound:</h1>
+   				
    				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
-   							<a onclick=""><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   							<a id="commenter_avatar" onclick=""><img class="commenter_avatar" alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   						</td>
+   						<td >
+   							<b class="commenter_name"><c:out value="${comment.commentAuthor.username}"/></b>
    						</td>
    						<td>
-   							<c:out value="${comment.commentPostingDateTime}"/>
+   							<b class="comment_posting_time"><c:out value="${comment.commentPostingDateTime}"/></b>
    						</td>
+   						
    						<td >
-   							<c:out value="${comment.commentAuthor.username}"/>
-   						</td>
-   						<td >
-   							<c:out value="${comment.commentBody}"/>
+   							<b class="comment_body_text"><c:out value="${comment.commentBody}"/></b>
    						</td>
    					</tr>	
 				</c:forEach>
 			</table>
+			
+			<c:if test="${sessionScope.loggedUser != null}">
+			
 			<div id="write_comment">
 				
 					<h1>Comment it here:</h1>
 				<textarea id="your_comment" class="your_comment"></textarea>
 			<!--  	<button id="submit_comment" onclick="createComment('${requestScope.sound.soundId}')">Save comment</button>-->
-					<button id="submit_comment" value="${requestScope.sound.soundId}">Save comment</button>
+					<button class="submit_comment" id="submit_comment" value="${requestScope.sound.soundId}">Save comment</button>
 			</div>
-			
+			</c:if>
 		</div>
 
 

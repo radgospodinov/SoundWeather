@@ -7,7 +7,7 @@
 }
 
 .sound_table_with_sound_properties {
-	border-spacing:40px 25px;
+	border-spacing:25px 25px;
 }
 
 .sound_page_cover_photo {
@@ -15,7 +15,7 @@
 }
 
 .sound_page_title {
-	font-weight:bold;
+	font-size:20px;
 	color: #800000;
 }
 
@@ -24,9 +24,91 @@
 	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
+.hide_show_buttons {
+	margin-left:100px;
+}
+
+
+
+#hide_comments_button, #show_comments_button {
+	height:25px;
+	width:200px;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	text-align:center;
+	font-weight:bold;
+}
+
+#hide_comments_button:hover, #show_comments_button:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+
+.sound_autor {
+	margin-left:20px;
+	font-size:20px;
+	color: #800000;
+}
+
+
+.sound_table_with_comments {
+	margin-top:30px;
+	margin-left:50px;
+	
+}
+
+.commenter_avatar {
+	border-radius:50%;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	width:50px;
+}
+
+.commenter_name {
+	font-weight:bold;
+	color: #800000;
+}
+
+.comment_body_text {
+	margin-left:50px;
+	color: #800000;
+	font-size:20px;
+	
+}
+
+
 .your_comment {
 	 width:900px; 
 	 height:250px;
 	 font-size: 25px; 
 	 color:#800000;
+}
+
+.submit_comment {
+	
+	
+}
+
+
+.submit_comment {
+   	width:150px;
+	height:70px;
+    padding:5px 15px; 
+    background:#382e38; 
+    border:0px;
+    cursor:pointer;
+    -webkit-border-radius:1px;
+    border-radius:1px;
+	font-weight:bold;
+}
+
+.submit_comment:hover {
+	color: #800000;
+	background: #aaab9c ;
+	border-color: #aaab9c #fff #fff #ccc;
 }
