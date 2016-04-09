@@ -141,7 +141,7 @@ public class InitiController {
 		return "albums";
 	}
 
-	@RequestMapping(value = "/sound", method = RequestMethod.POST)
+	@RequestMapping(value = "/sound", method = RequestMethod.GET)
 	public String initSound(HttpServletRequest request) {
 
 		int soundId = Integer.parseInt(request.getParameter("soundId"));

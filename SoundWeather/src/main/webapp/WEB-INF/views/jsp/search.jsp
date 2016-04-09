@@ -237,8 +237,8 @@
 								<a onclick="getUserProfile(${result.username})"><img id="user_cover_photo" alt="User cover photo" src="<c:url value="/covers/${result.avatarName}.jpg"/>" height="150" width="150" /></a>
 							</div>
 
-							<div id="username">
-								<c:out value="${result.username}" />
+							<div id="username_in_search">
+								<b class="username_in_search"><c:out value="${result.username}" /></b>
 							</div>
 							<button id="follow${result.username}" class="like" onclick="follow('${result.username}')">Follow </button>
 						
@@ -262,11 +262,11 @@
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
 							<div id="photos" >
-								<a onclick="getAlbum(${result.albumId})"><img id="album_cover_photo" alt="Album cover photo" src="<c:url value="${result.fileName}"/>" height="150" width="150" /></a>
+								<a onclick="getAlbum(${result.albumId})"><img id="album_cover_photo" alt="Album cover photo" src="<c:url value="/covers/${result.fileName}.jpg"/>" height="150" width="150" /></a>
 							</div>
 
 							<div id="username">
-								<c:out value="${result.albumTitle}" />
+								<b class="album_title_in_search"><c:out value="${result.albumTitle}" /></b>
 							</div>
 													
 						</td>

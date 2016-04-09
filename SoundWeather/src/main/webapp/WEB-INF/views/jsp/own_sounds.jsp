@@ -70,7 +70,7 @@
 						onclick="addSongs('sounds/${sound.getFileName()}.mp3','covers/${sound.getFileName()}.jpg','${sound.getSoundTitle()}','${sound.getSoundAuthor().getUsername()}','')">
 					</td>
 					<td><a class="own_sound_title" id="song_from_album"
-						onclick="getSound('${sound.soundId}')"><c:out
+						onclick="loadJSP('sound?soundId=${sound.soundId}')"><c:out
 								value="${sound.soundTitle}" /></a></td>
 					<!--  <td>
    							<c:out value="${sound.soundViewCount}"/>

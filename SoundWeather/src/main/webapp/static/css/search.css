@@ -41,7 +41,7 @@
 	border-color: #aaab9c #fff #fff #ccc;
 }
 
-#sound_cover_photo {
+#sound_cover_photo, #user_cover_photo, #album_cover_photo {
 	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
@@ -70,6 +70,15 @@ button.like {
 	font-weight:regular;
 	padding: 0.5em;
 	margin:0px;
-	
-	
+		
+}
+
+.username_in_search {
+	font-size:20px;
+	color: #800000;
+}
+
+.album_title_in_search {
+	font-size:20px;
+	color: #800000;
 }
