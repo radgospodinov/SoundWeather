@@ -26,7 +26,7 @@
 	<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/jquery-ui.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
-<script src="<c:url value="/script/jquery-ui.js"/>"></script>
+<script src="<c:url value="/script/jquery-ui.min.js"/>"></script>
 <title>Home</title>
 
 <script type="text/javascript">
