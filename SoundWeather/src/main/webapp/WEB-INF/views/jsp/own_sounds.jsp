@@ -79,6 +79,10 @@
 								value="${sound.soundFans.size()}" /></b> <img class="fans_heart"
 						src="<c:url value="/images/heart.png"/>"></td>
 					<td>
+					<b class="sound_likes">${sound.getSoundRating()} Like </b>
+					</td>
+							
+					<td>
 						<button id="sound_id_to_delete"
 							onclick="deleteSound(${sound.getSoundId()})">Delete</button>
 					</td>

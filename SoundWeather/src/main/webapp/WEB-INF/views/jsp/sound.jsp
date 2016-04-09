@@ -43,7 +43,7 @@
 			
 			<script type="text/javascript">
 					 function createComment(sound_id) {
-						 alert(sound_id);
+						// alert(sound_id);
 						 var commentBody = document.getElementById('your_comment').value;
 	 				
 					$('#sounds_space').load('createComment', {soundId : sound_id, comment_body : commentBody});
@@ -52,7 +52,8 @@
 			
 			
 			<script>
-			$('#submit_comment').on('click', function () { alert(sound_id);
+			$('#submit_comment').on('click', function () { 
+				//alert(sound_id);
 			 var commentBody = document.getElementById('your_comment').value;
 			 var sound_id = document.getElementById('submit_comment').value;
 			
@@ -93,7 +94,7 @@
    							<c:out value="${requestScope.sound.soundId}"/>
    						</td>-->
    						<td>
-   							<b class="by">by</b><b class="sound_autor"><c:out value="${requestScope.sound.soundAuthor.username}"/></b>
+   							<b class="by">by</b><b class="sound_autor" onclick="loadJSP('otherUser?username=${requestScope.sound.soundAuthor.username}')" style=cursor:pointer><c:out value="${requestScope.sound.soundAuthor.username}"/></b>
    						</td>
    					<!--	<td>
    							<c:out value="${requestScope.sound.soundRating}"/>
@@ -119,7 +120,7 @@
    				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
-   							<a id="commenter_avatar" onclick=""><img class="commenter_avatar" alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   							<a id="commenter_avatar" onclick="loadJSP('otherUser?username=${comment.commentAuthor.username}')" style=cursor:pointer><img class="commenter_avatar" alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
    						</td>
    						<td >
    							<b class="commenter_name"><c:out value="${comment.commentAuthor.username}"/></b>
@@ -139,7 +140,7 @@
 			
 			<div id="write_comment">
 				
-					<h1>Comment it here:</h1>
+					<h1 class="comment_it_here">Comment it here:</h1>
 				<textarea id="your_comment" class="your_comment"></textarea>
 			<!--  	<button id="submit_comment" onclick="createComment('${requestScope.sound.soundId}')">Save comment</button>-->
 					<button class="submit_comment" id="submit_comment" value="${requestScope.sound.soundId}">Save comment</button>

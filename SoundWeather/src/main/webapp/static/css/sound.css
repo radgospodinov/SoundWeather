@@ -83,14 +83,15 @@
 
 
 .your_comment {
+	 margin-left:70px;
 	 width:900px; 
 	 height:250px;
 	 font-size: 25px; 
 	 color:#800000;
 }
 
-.submit_comment {
-	
+.comment_it_here {
+	 margin-left:70px;
 	
 }
 

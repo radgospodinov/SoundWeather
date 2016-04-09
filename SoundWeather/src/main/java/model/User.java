@@ -304,6 +304,8 @@ public class User {
 		this.isActive = isActive;
 	}
 	
-	
+	public void removeFromFavorites(Sound sound) {
+		this.favorites.remove(sound);
+	}
 
 }

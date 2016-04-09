@@ -48,14 +48,15 @@
 <body>
 
 	<div id="other_user_profile">
-		<table>
+		<table class="other_user_characteristics">
 			<tr>
-				<td><img
+				<td><img class="other_user_avatar"
 					src="<c:url value="/covers/${other_user.avatarName}.jpg"/>" >
 				</td>
-				<td><c:out value="${requestScope.other_user.username}" /></td>
+				<td><b class="other_user_name"><c:out value="${requestScope.other_user.username}" /></b></td>
+				<td><b class="other_user_location"><c:out value="${requestScope.other_user.location}" /></b></td>
 				<td>
-					<button id="follow" value="${requestScope.other_user.username}">Follow</button>
+					<button class="follow_other_user" id="follow" value="${requestScope.other_user.username}" onclick="follow('${requestScope.other_user.username}')">Follow</button>
 				</td>
 			</tr>
 		</table>
@@ -70,25 +71,32 @@
 
 
 
-	<div id="other_user_sounds">
-		<table>
+	<div class="other_user_sounds" id="other_user_sounds">
+		<table class="other_user_sounds_table">
 			<c:forEach var="sound" items="${requestScope.other_user.sounds}">
 				<tr>
-					<td><img style="cursor: pointer;"
+					<td><img class="other_user_sound_photo" style="cursor: pointer;"
 						src="<c:url value="/covers/${sound.fileName}.jpg"/>" height="150"
 						width="150"
 						onclick="addSongs('sounds/${sound.getFileName()}.mp3','covers/${sound.getFileName()}.jpg','${sound.getSoundTitle()}','${sound.getSoundAuthor().getUsername()}','')">
 					</td>
-					<td style="cursor: pointer;"
+					<td class="other_user_sound_title" style="cursor: pointer;"
 						onclick="loadJSP('sound?soundId=${sound.soundId}')"><c:out
 							value="${sound.soundTitle}" /></td>
-					<td><c:out value="${sound.soundFans.size()}" /></td>
+					<td><b class="own_sound_fans"><c:out value="${sound.soundFans.size()}" /></b><img class="fans_heart"
+						src="<c:url value="/images/heart.png"/>"></td>
 					<td>
-						<button id="add_to_favorites"
-							onclick="fav('${sound.getSoundId()}')">Add to favorites</button>
+						<!--  <button id="add_to_favorites"
+							onclick="fav('${sound.getSoundId()}')">Add to favorites</button>-->
+					
+					 <button id="tLike${sound.getSoundId()}" class="like" onclick="like('${sound.getSoundId()}')">Like [${sound.getSoundRating()}]</button>
+					
+					
 					</td>
 					<td>
-						<button id="likeSound" onclick="like('${sound.getSoundId()}')">Like</button>
+						<!--  <button id="likeSound" onclick="like('${sound.getSoundId()}')">Like</button>-->
+						<button id="tFav${sound.getSoundId()}" class="like" onclick="fav('${sound.getSoundId()}')">Favorite </button> 
+						
 					</td>
 				</tr>
 			</c:forEach>

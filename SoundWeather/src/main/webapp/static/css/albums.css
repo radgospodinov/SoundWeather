@@ -96,8 +96,8 @@ select#create_new_album.select_album_genres {
 }
 
 .album_title b {
-	font-weight:bold;
-	font-size:18px;
+	color: #800000;
+	font-size:20px;
 }
 
 
@@ -126,7 +126,8 @@ select#create_new_album.select_album_genres {
 #song_from_album {
 	text-decoration: none;
 	cursor:pointer;
-	font-weight:bold;
+	font-size:20;
+	color: #800000;
 }
 
 #song_from_album:hover {
