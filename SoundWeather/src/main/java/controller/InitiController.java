@@ -38,7 +38,8 @@ import scala.math.Ordering.StringOrdering;
 @Controller
 public class InitiController {
 
-	private static final int MAX_SOUNDS_PER_ROW = 9;
+	private static final int MAX_SOUNDS_PER_ROW = 8;
+	private static final String REDIRECT_URL_PARAM = "url";
 
 	@Autowired
 	ServletContext context;
@@ -46,7 +47,6 @@ public class InitiController {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String initIndexPage() {
 		initGenres();
-
 		return "index";
 	}
 
@@ -68,19 +68,26 @@ public class InitiController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String initLoginPage() {
+	public String initLoginPage(HttpServletRequest request) {
 		return "login";
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
 	public String initUploadPage(HttpServletRequest request) {
-
+		if(request.getSession().getAttribute("loggedUser")==null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "upload");
+			return "login";
+		}
 		request.setAttribute("genres", getAllGenres());
 		return "upload";
 	}
 
 	@RequestMapping(value = "/own_sounds", method = RequestMethod.GET)
 	public String initOwnSounds(HttpServletRequest request) {
+		if(request.getSession().getAttribute("loggedUser")==null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "own_sounds");
+			return "login";
+		}
 		Session session = HibernateUtil.getSession();
 		User u = (User) request.getSession().getAttribute("loggedUser");
 
@@ -109,6 +116,10 @@ public class InitiController {
 
 	@RequestMapping(value = "/albums", method = RequestMethod.GET)
 	public String initAlbums(HttpServletRequest request) {
+		if(request.getSession().getAttribute("loggedUser")==null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "albums");
+			return "login";
+		}
 		request.setAttribute("genres", getAllGenres());
 		User u = (User) request.getSession().getAttribute("loggedUser");
 		Session session = HibernateUtil.getSession();
@@ -178,7 +189,11 @@ public class InitiController {
 
 	@RequestMapping(value = "/following", method = RequestMethod.GET)
 	public String initFollowing(HttpServletRequest request) {
-		// TODO list of following users to be initialised
+		
+		if(request.getSession().getAttribute("loggedUser")==null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "following");
+			return "login";
+		}
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
