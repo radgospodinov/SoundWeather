@@ -51,6 +51,9 @@
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
 				if (data.status == 'ok') {
+					$('#registerHeader').hide();
+					$('#loginHeader').hide();
+					$('#logoutHeader').show();
 					loadJSP('home');
 				} else {
 					$("#login_message").text(data.msg);

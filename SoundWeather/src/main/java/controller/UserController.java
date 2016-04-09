@@ -30,6 +30,7 @@ public class UserController {
 	
 	private static final int MAX_PASSWORD_LENGTH = 6;
 	private static final int MAX_USERNAME_LENGTH = 4;
+	private static final String REDIRECT_URL_PARAM = "url";
 
 	@Autowired
 	ServletContext context;
@@ -206,11 +207,13 @@ public class UserController {
 	}
 	
 	
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String loginForm(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		String url = request.getParameter("url");
 		Session session = HibernateUtil.getSession();
 		System.out.println(username + " , " + password);
 		User user = (User) session.get(User.class, username);
@@ -222,17 +225,10 @@ public class UserController {
 			return rv.toString();
 		}
 		rv.addProperty("status", "ok");
+		rv.addProperty(REDIRECT_URL_PARAM, url);
 		request.getSession().setAttribute("loggedUser", user);
 		return rv.toString();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	@RequestMapping(value = "/followUser", method = RequestMethod.POST)
 	public @ResponseBody String followUser(HttpServletRequest request) {

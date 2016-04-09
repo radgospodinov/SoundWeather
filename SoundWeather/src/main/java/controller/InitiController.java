@@ -66,9 +66,19 @@ public class InitiController {
 	public String initRegisterPage() {
 		return "register";
 	}
-
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String initLogout(HttpServletRequest request) {
+		request.getSession().removeAttribute("loggedUser");
+		String location = "Sofia";
+		request.setAttribute("weatherSounds", initWeatherSounds(getWeatherDesc(location)));
+		request.setAttribute("trendySounds", initTrendySounds());
+		return "playlists";
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String initLoginPage(HttpServletRequest request) {
+		request.setAttribute(REDIRECT_URL_PARAM, "home");
 		return "login";
 	}
 

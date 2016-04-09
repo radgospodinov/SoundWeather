@@ -47,6 +47,12 @@
 	$(function() {
 		loadJSP('home');
 	});
+	function logout() {
+		loadJSP('logout');
+		$('#logoutHeader').hide();
+		$('#loginHeader').show();
+		$('#registerHeader').show();
+	};
 </script>
 
 
@@ -63,9 +69,10 @@
 			style="background-image:url(<c:url value="/images/logo.png"/>);"
 			onclick="loadJSP('home')"></div>
 		
-			<div id="register" style="cursor: pointer;" onclick="loadJSP('register')">Register</div>
-			<div id="login" style="cursor: pointer;" onclick="loadJSP('login')">Login</div>
-			<div id="logout"></div>
+			
+			<div id="registerHeader" class="register" style="cursor: pointer;" onclick="loadJSP('register')">Register</div>
+			<div id="loginHeader" class="login" style="cursor: pointer;" onclick="loadJSP('login')">Login</div>
+			<div id="logoutHeader" class="login" style="cursor:pointer;display:none;" onclick="logout()">Logout</div>
 				
 		<div id="search">
 			<form action="javascript:search()" >

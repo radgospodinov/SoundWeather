@@ -16,12 +16,16 @@
 			url : "login",
 			data : {
 				username : $("#user").val(),
-				password : $("#pass").val()
+				password : $("#pass").val(),
+				url : $('#url').val()
 			},
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
 				if (data.status == 'ok') {
-					loadJSP('home');
+					$('#registerHeader').hide();
+					$('#loginHeader').hide();
+					$('#logoutHeader').show();
+					loadJSP(data.url);
 				} else {
 					$("#login_message").text(data.msg);
 					$("#login_message").show();
@@ -60,7 +64,9 @@
 		placeholder="enter spassword" />
 	<br />
 	<input type="submit" value="Login" onclick="login()" />
+	<input id="url" type="hidden" value="${requestScope.url}"/>
 	</div>
+	
 </body>
 
 
