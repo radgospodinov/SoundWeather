@@ -7,9 +7,12 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" type="text/css" href="<c:url value="/css/other_user.css"/>" />
+		
 		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
+		
+		
 		<title>Other user</title>
+		
 			
 			
 			<script>
@@ -45,12 +48,12 @@
    				
    					<tr>
    						<td>
-   							<img alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>">
+   							<img class="sound_page_cover_photo" alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>" height="300" width="300" >
    						</td>
    						<td>
-   							<c:out value="${requestScope.sound.soundTitle}"/>
+   							<b class="sound_page_title" ><c:out value="${requestScope.sound.soundTitle}"/></b>
    						</td>
-   						<td id="songid">
+   					<!--  	<td id="songid">
    							<c:out value="${requestScope.sound.soundId}"/>
    						</td>
    						<td>
@@ -58,9 +61,10 @@
    						</td>
    						<td>
    							<c:out value="${requestScope.sound.soundRating}"/>
-   						</td>
+   						</td>-->
    						<td>
-   							<button id="add_to_favorites" value="${requestScope.sound.soundId}" >Add to favorites</button>
+   							<button id="wLike${requestScope.sound.getSoundId()}" class="like" onclick="like('${requestScope.sound.getSoundId()}')">Like [${requestScope.sound.getSoundRating()}]</button>
+							<button id="wFav${requestScope.sound.getSoundId()}" class="like" onclick="fav('${requestScope.sound.getSoundId()}')">Favorite </button>
    						</td>
    						
 					</tr>	
@@ -73,7 +77,7 @@
    				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
-   							<a onclick="loadJSP('getOtherUser?username=${comment.commentAuthor.username}')"><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   							<a onclick=""><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
    						</td>
    						<td>
    							<c:out value="${comment.commentPostingDateTime}"/>
