@@ -7,14 +7,17 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="own_sounds.css">
+
 <title>Favorites</title>
 <script>
-function removeFromFavorites(userId,soundId) {
-				$.post({
+		$('#remove_favorite').on('click', function removeFromFavorites(username,soundId) {
+				
+						alert(soundId);
+					$.post({
 					url : "removeFromFavorites",
+					
 					data : {
-						userId : userId,
+						username : username,
 						soundId : soundId
 					},
 					dataType : "json",
@@ -29,7 +32,7 @@ function removeFromFavorites(userId,soundId) {
 					}
 				});
 				
-			}
+			})
 			
 </script>
 	
@@ -40,7 +43,8 @@ function removeFromFavorites(userId,soundId) {
 	<div id="favorite_sounds">
 		<table class="table_with_favorite_sounds">
 			<c:forEach var="favorite" items="${requestScope.favorites}">
-				<tr id="${favorite.getSoundId()}">
+			
+				<tr id="sound${favorite.getSoundId()}">
 					<td><img class="favorite_sound_cover_photo" alt=""
 						src="<c:url value="/covers/${favorite.getFileName()}.jpg"/>"
 						height="150" width="150"
@@ -51,13 +55,14 @@ function removeFromFavorites(userId,soundId) {
 								value="${favorite.soundTitle}" /></a></td>
 										
 					<td>
-						<button class="remove_from_favorites" id="${favorite.getSoundId()}"
-							onclick="removeFromFavorites(${sessionScope.loggedUser.username},${favorite.getSoundId()})">Remove</button>
+						<button class="remove_from_favorites" id="remove_favorite"
+							>Remove</button>
 					
-					
+					<!-- onclick="removeFromFavorites(${sessionScope.loggedUser.username},${favorite.getSoundId()})" -->
 					</td>
 					
 				</tr>
+				
 			</c:forEach>
 		</table>
 	</div>

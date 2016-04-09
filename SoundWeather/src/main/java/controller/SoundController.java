@@ -148,6 +148,39 @@ public class SoundController {
 		return rv.toString();
 	}
 	
+	@RequestMapping(value = "/removeFromFavorites", method = RequestMethod.POST)
+	public @ResponseBody String removeFromFavorites(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("soundId"));
+		String username = request.getParameter("username");
+		
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			User user = (User) session.get(User.class, username);
+			user.removeFromFavorites(sound);
+			session.update(sound);
+			session.update(user);
+			tx.commit();
+			
+		} catch (Exception e) {
+			if(tx!=null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		}
+		finally {
+			session.close();
+		}
+		rv.addProperty("status", "ok");
+		rv.addProperty("id", "#sound"+soundId);
+		
+		return rv.toString();
+	}
 
 	@RequestMapping(value = "/createAlbum", method = RequestMethod.POST)
 	public @ResponseBody String createAlbum(MultipartHttpServletRequest request) {

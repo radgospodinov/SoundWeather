@@ -285,6 +285,8 @@ public class User {
 		
 	}
 	
-	
+	public void removeFromFavorites(Sound sound) {
+		this.favorites.remove(sound);
+	}
 
 }
