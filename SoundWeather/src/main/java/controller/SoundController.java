@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -324,5 +326,180 @@ public class SoundController {
 		rv.addProperty("newFilePath", img);
 		return rv.toString();
 	}
+
+
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public @ResponseBody String uploadForm(MultipartHttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+
+		// Get the author = loggedUser:
+		User author = (User) request.getSession().getAttribute("loggedUser");
+		String fileName = author.getUsername() + "_"
+				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+
+		// Get the title:
+		String soundTitle = request.getParameter("mp3title");
+		System.out.println("mp3title: " + soundTitle);
+
+		// Get the audio file:
+
+		MultipartFile mp3sound = request.getFile("mp3sound");
+		byte[] audioFile = mp3sound.getBytes();
+		System.out.println("fileType sound: " + mp3sound.getContentType());
+		// Get the cover photo:
+
+		MultipartFile mp3cover = request.getFile("mp3cover");
+		byte[] coverPhoto = mp3cover.getBytes();
+		System.out.println("fileType cover: " + mp3cover.getContentType());
+
+		// Create Sound object:
+		Sound newSound = new Sound().setSoundTitle(soundTitle).setFileName(fileName).setSoundAuthor(author);
+
+		// Get the genres and set them to the Sound object:
+		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
+		String genresTmp = request.getParameter("mp3genres");
+		System.out.println("TMP=" + genresTmp);
+		String[] genres = genresTmp.split(",");
+		System.out.println("array=" + Arrays.toString(genres));
+		// TODO: Saving file paths to DB
+		// Open hibernate session:
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		JsonObject rv = new JsonObject();
+		try {
+			tx = session.beginTransaction();
+
+			// Fetch the Genre objects (we need the genre id in order to set the
+			// Song object properly):
+			// Set the genres to the newSound:
+			for (String string : genres) {
+				Genre genre = (Genre) session.get(Genre.class, Integer.parseInt(string));
+				System.out.println("NAME OF GENRE : " + genre.getGenreName() + " ID: " + genre.getGenreId()
+						+ " STRING = " + string);
+				newSound.addGenre(genre);
+			}
+			// Save uploaded sound to DB;
+			session.save(newSound);
+			User user = (User) session.get(User.class, author.getUsername());
+			// Set newSound to user and update it to DB
+			user.addSoundToSounds(newSound);
+			session.update(user);
+			tx.commit();
+			request.getSession().setAttribute("loggedUser", user);
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "We couldn't save your file, try again later!");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+
+		// Write the audio byte[] into a file on the hd:
+
+		File soundFile = new File(context.getRealPath("/static/sounds/" + fileName + ".mp3"));
+		soundFile.createNewFile();
+		FileOutputStream fos = new FileOutputStream(soundFile);
+		fos.write(audioFile);
+
+		// Write the picture byte[] into a file on the hd:
+		File photoFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
+		photoFile.createNewFile();
+		FileOutputStream fos2 = new FileOutputStream(photoFile);
+		fos2.write(coverPhoto);
+
+		fos.close();
+		fos2.close();
+		// is.close();
+		rv.addProperty("status", "ok");
+		rv.addProperty("msg", "File was saved successfully!");
+		// TODO serve error msgs
+		return rv.toString();
+	}
+
+	@RequestMapping(value = "/likeSound", method = RequestMethod.POST)
+	public @ResponseBody String likeSound(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("id"));
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+
+			User u = (User) request.getSession().getAttribute("loggedUser");
+
+			u = (User) session.get(User.class, u.getUsername());
+			for (Sound s : u.getPlaylist()) {
+				if (s.getSoundId() == sound.getSoundId()) {
+					throw new IllegalArgumentException("Sound already liked");
+				}
+			}
+			sound.setSoundRating(sound.getSoundRating() + 1);
+
+			u.addSoundToLiked(sound);
+			session.update(sound);
+			session.update(u);
+			tx.commit();
+			request.getSession().setAttribute("loggedUser", u);
+			rv.addProperty("status", "ok");
+			rv.addProperty("id", soundId);
+			rv.addProperty("likes", sound.getSoundRating());
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+
+		return rv.toString();
+	}
+
+	@RequestMapping(value = "/favSound", method = RequestMethod.POST)
+	public @ResponseBody String favSound(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		int soundId = Integer.parseInt(request.getParameter("id"));
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Sound sound = (Sound) session.get(Sound.class, soundId);
+			User u = (User) request.getSession().getAttribute("loggedUser");
+			u = (User) session.get(User.class, u.getUsername());
+			for (Sound s : u.getFavorites()) {
+				if (s.getSoundId() == sound.getSoundId()) {
+					throw new IllegalArgumentException("Sound already favourited");
+				}
+			}
+			sound.addFan(u);
+			u.addSoundToFavorites(sound);
+			session.update(sound);
+			session.update(u);
+			tx.commit();
+			request.getSession().setAttribute("loggedUser", u);
+			rv.addProperty("status", "ok");
+			rv.addProperty("id", soundId);
+			rv.addProperty("likes", sound.getSoundRating());
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+
+		return rv.toString();
+	}
+
 
 }
