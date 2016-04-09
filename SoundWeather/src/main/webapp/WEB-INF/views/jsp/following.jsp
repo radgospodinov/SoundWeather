@@ -30,8 +30,8 @@
 
 
 <body>
-	<div id="following">
-		<table class="myProfileTeamNameList">
+	<div class="following_block" id="following">
+		<table class="following_table">
 			<c:forEach var="followedUser" items="${requestScope.following}">
 				<tr>
 					<td><img

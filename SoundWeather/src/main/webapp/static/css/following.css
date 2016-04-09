@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+.following_block {
+	margin-top:50px;
+	margin-left:50px;
+}
+
+.following_table {
+	border-spacing:40px 25px;
+}
