@@ -18,6 +18,12 @@
 	margin-bottom:40px;
 }
 
+#sound_search_results {
+	margin-top:76px;
+	margin-left:45px;
+	margin-bottom:65px;
+}
+
 #user_results, #sound_results, #album_results, #filter_genres {
 	height:35px;
 	width:140px;
@@ -82,3 +88,18 @@ button.like {
 	font-size:20px;
 	color: #800000;
 }
+
+.sound_title_in_search {
+	font-size:20px;
+	color: #800000;
+	cursor:pointer;
+}
+
+#album_results_table, #user_results_table {
+	border-spacing:25px 25px;
+	
+}
+
+
+
+

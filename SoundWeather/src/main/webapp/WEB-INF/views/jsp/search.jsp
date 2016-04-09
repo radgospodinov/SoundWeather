@@ -196,7 +196,7 @@
 		<c:choose>
 		<c:when test="${requestScope.are_sounds == true}">
 		
-			<div id="search_results">
+			<div id="sound_search_results">
 			
 			<table id="results_table">
 				<tr id="row_with_results">
@@ -210,7 +210,7 @@
 							</div>
 
 							<div id="sound_title">
-								<c:out value="${result.getSoundTitle()}" />
+								<b class="sound_title_in_search" onclick="loadJSP('sound?soundId=${result.soundId}')"><c:out value="${result.getSoundTitle()}" /></b>
 							</div>
 
 							<button id="wLike${result.getSoundId()}" class="like" onclick="like('${result.getSoundId()}')">Like [${result.getSoundRating()}]</button>
@@ -229,7 +229,7 @@
 		<c:if test="${requestScope.are_users == true}">
 			<div id="search_results">
 			
-			<table id="results_table">
+			<table id="user_results_table">
 				<tr id="row_with_results">
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
@@ -257,7 +257,7 @@
 		<div id="search_results">
 		
 		
-			<table id="results_table">
+			<table id="album_results_table">
 				<tr id="row_with_results">
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
@@ -265,7 +265,7 @@
 								<a onclick="getAlbum(${result.albumId})"><img id="album_cover_photo" alt="Album cover photo" src="<c:url value="/covers/${result.fileName}.jpg"/>" height="150" width="150" /></a>
 							</div>
 
-							<div id="username">
+							<div id="album_name_in_search">
 								<b class="album_title_in_search"><c:out value="${result.albumTitle}" /></b>
 							</div>
 													
