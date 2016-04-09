@@ -55,7 +55,7 @@
 				</td>
 				<td><c:out value="${requestScope.other_user.username}" /></td>
 				<td>
-					<button id="follow" value="${requestScope.other_user.username}">Follow</button>
+					<button id="follow" value="${requestScope.other_user.username}" onclick="follow('${requestScope.other_user.username}')">Follow</button>
 				</td>
 			</tr>
 		</table>

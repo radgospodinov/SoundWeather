@@ -93,7 +93,7 @@
    							<c:out value="${requestScope.sound.soundId}"/>
    						</td>-->
    						<td>
-   							<b class="by">by</b><b class="sound_autor"><c:out value="${requestScope.sound.soundAuthor.username}"/></b>
+   							<b class="by">by</b><b class="sound_autor" onclick="loadJSP('otherUser?username=${requestScope.sound.soundAuthor.username}')" style=cursor:pointer><c:out value="${requestScope.sound.soundAuthor.username}"/></b>
    						</td>
    					<!--	<td>
    							<c:out value="${requestScope.sound.soundRating}"/>
