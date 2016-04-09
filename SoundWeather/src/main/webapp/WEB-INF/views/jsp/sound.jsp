@@ -139,7 +139,7 @@
 			
 			<div id="write_comment">
 				
-					<h1>Comment it here:</h1>
+					<h1 class="comment_it_here">Comment it here:</h1>
 				<textarea id="your_comment" class="your_comment"></textarea>
 			<!--  	<button id="submit_comment" onclick="createComment('${requestScope.sound.soundId}')">Save comment</button>-->
 					<button class="submit_comment" id="submit_comment" value="${requestScope.sound.soundId}">Save comment</button>

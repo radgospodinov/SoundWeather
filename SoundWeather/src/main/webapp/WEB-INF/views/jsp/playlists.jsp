@@ -101,7 +101,7 @@
 							</div>
 
 							<div id="sound_title">
-								<c:out value="${wSound.getSoundTitle()}" />
+								<b class="sound_title_in_search" onclick="loadJSP('sound?soundId=${wSound.soundId}')"><c:out value="${wSound.getSoundTitle()}" /></b>
 							</div>
 
 							 <button id="wLike${wSound.getSoundId()}" class="like" onclick="like('${wSound.getSoundId()}')">Like [${wSound.getSoundRating()}]</button>
@@ -132,7 +132,7 @@
 							</div>
 
 							<div id="sound_title">
-								<c:out value="${tSound.getSoundTitle()}" />
+								<b class="sound_title_in_search" onclick="loadJSP('sound?soundId=${tSound.soundId}')"><c:out value="${tSound.getSoundTitle()}" /></b>
 							</div>
 
 							 <button id="tLike${tSound.getSoundId()}" class="like" onclick="like('${tSound.getSoundId()}')">Like [${tSound.getSoundRating()}]</button>
