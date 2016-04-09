@@ -10,7 +10,7 @@
 
 <title>Favorites</title>
 <script>
-		$("button").on('click', function removeFromFavorites(e) {
+		$(".remove_from_favorites").on('click', function removeFromFavorites(e) {
 			 alert(event.target.id);
 			
 			 var soundId = event.target.id;
