@@ -229,6 +229,37 @@ public class InitiController {
 		return "following";
 	}
 	
+	@RequestMapping(value = "/favorites", method = RequestMethod.GET)
+	public String initFavorites(HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("loggedUser")==null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "following");
+			return "login";
+		}
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User current = (User) session.get(User.class, loggedUser.getUsername());
+			current.getFavorites().size();
+			request.setAttribute("favorites", current.getFavorites());
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return "favorites";
+	}
+	
+	
+	
+	
 	@RequestMapping(value = "/otherUser", method = RequestMethod.GET)
 	public String initOtherUser(HttpServletRequest request) {
 		String userId = request.getParameter("username");

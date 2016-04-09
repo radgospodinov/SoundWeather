@@ -1,0 +1,49 @@
+@CHARSET "UTF-8";
+
+
+
+#favorite_sounds {
+	
+	margin-top:50px;
+	margin-left:50px;
+}
+
+.favorite_sound_cover_photo {
+	cursor:pointer;
+	 box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+	
+}
+
+.table_with_favorite_sounds {
+	
+	border-spacing:40px 25px;
+}
+
+.favorite_sound_title {
+	font-size:20px;
+	color: #800000;
+	
+}
+
+.remove_from_favorites {
+	height:40px;
+	width:140px;
+	font-weight:bold;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	text-align:center;
+	font-weight:bold;
+}
+
+.remove_from_favorites:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+
+

@@ -31,6 +31,8 @@
 	href="<c:url value="/css/following.css"/>" />
 	<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/other_user.css"/>" />
+	<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/favorites.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
 <script src="<c:url value="/script/jquery.dataTables.min.js"/>"></script>
 <script src="<c:url value="/script/jquery-ui.min.js"/>"></script>
@@ -147,6 +149,7 @@
 				<li><a id="current" style="cursor: pointer;" onclick="loadJSP('upload')">UPLOAD</a></li>
 				<li><a style="cursor: pointer;" onclick="loadJSP('own_sounds')">SOUNDS</a></li>
 				<li><a style="cursor: pointer;" onclick="loadJSP('albums')">ALBUMS</a></li>
+				<li><a style="cursor: pointer;" onclick="loadJSP('favorites')">FAVORITES</a></li>
 				<li><a style="cursor: pointer;" onclick="loadJSP('following')">FOLLOWING</a></li>
 				<li><a style="cursor: pointer;" onclick="loadJSP('profile')">PROFILE</a></li>
 			</ul>
