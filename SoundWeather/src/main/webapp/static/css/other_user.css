@@ -1,0 +1,68 @@
+@CHARSET "UTF-8";
+
+
+.other_user_characteristics {
+	border-spacing:40px 25px;
+	
+	
+}
+
+
+.other_user_avatar {
+	height:250px;
+	width:250px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	margin-left:100px;
+	margin-top:50px;
+}
+
+.other_user_name {
+	font-size:20px;
+	color: #800000;
+}
+
+.other_user_location {
+	font-size:20px;
+	color: #800000;
+}
+
+.follow_other_user {
+	height:30px;
+	width:100px;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	text-align:center;
+	font-weight:bold;
+}
+
+.follow_other_user:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+
+.other_user_sounds {
+	margin-top:50px;
+	margin-left:100px;
+}
+
+.other_user_sounds_table {
+	border-spacing:40px 25px;
+}
+
+.other_user_sound_photo {
+	height:150px;
+	width:150px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	
+}
+
+.other_user_sound_title {
+	font-size:20px;
+	color: #800000;
+}
