@@ -260,7 +260,7 @@
 							</div>
 
 							<div id="username_in_search">
-								<b class="username_in_search"><c:out value="${result.username}" /></b>
+								<b class="username_in_search" onclick="loadJSP('otherUser?username=${result.username}')" style=cursor:pointer><c:out value="${result.username}" /></b>
 							</div>
 							<button id="follow${result.username}" class="like" onclick="follow('${result.username}')">Follow </button>
 						
