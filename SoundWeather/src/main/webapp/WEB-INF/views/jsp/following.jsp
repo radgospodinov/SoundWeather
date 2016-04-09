@@ -38,7 +38,7 @@
 						style="cursor:pointesl;"
 						src="<c:url value="/covers/${followedUser.avatarName}.jpg"/>"
 						height="150" width="150"
-						onclick="loadJSP('getOtherUser?username=${followedUser.username}')">
+						onclick="loadJSP('otherUser?username=${followedUser.username}')">
 					</td>
 					<td><c:out value="${followedUser.username}" /></td>
 					<td>

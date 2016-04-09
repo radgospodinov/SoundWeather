@@ -199,6 +199,34 @@ public class InitiController {
 
 		return "following";
 	}
+	
+	@RequestMapping(value = "/otherUser", method = RequestMethod.GET)
+	public String initOtherUser(HttpServletRequest request) {
+		String userId = request.getParameter("username");
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User result = (User) session.get(User.class, userId);
+			result.getAlbums().size();
+			result.getComments().size();
+			result.getSounds().size();
+			for(Sound sound : result.getSounds()) {
+				sound.getSoundFans().size();
+				sound.getSoundComments().size();
+			}
+			request.setAttribute("other_user", result);
+			tx.commit();
+		} catch (Exception e) {
+			if(tx!=null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return "other_user";
+	}
 
 	private void initGenres() {
 		Session session = HibernateUtil.getSession();
