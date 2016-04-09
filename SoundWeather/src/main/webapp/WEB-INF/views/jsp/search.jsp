@@ -43,10 +43,24 @@
 		};
   	</script>
 	<script>
-	 /*  $(function() {
-          $( "#user_results, #album_results, #sound_results" ).button();
-          
-       }); */
+	 function follow(userId) {
+		 $.post({
+				url : "followUser",
+				data : {
+					id : userId
+				},
+				dataType : "json",
+				success : function(data, textStatus, jqXHR) {
+					if (data.status == 'ok') {
+						
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					alert("Something really bad happened " + textStatus + " - "
+							+ errorThrown);
+				}
+			});
+	 }
   </script>
 	 <script type="text/javascript">
   		 function getGenreResults(searchWord, areSounds) {
@@ -220,7 +234,7 @@
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
 							<div id="photos" >
-								<a onclick="getUserProfile(${result.username})"><img id="user_cover_photo" alt="User cover photo" src="<c:url value="${result.avatarName}"/>" height="150" width="150" /></a>
+								<a onclick="getUserProfile(${result.username})"><img id="user_cover_photo" alt="User cover photo" src="<c:url value="/covers/${result.avatarName}.jpg"/>" height="150" width="150" /></a>
 							</div>
 
 							<div id="username">

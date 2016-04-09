@@ -119,16 +119,14 @@ public class InitiController {
 			user.getAlbums().size();
 			List<Album> albums = user.getAlbums();
 			System.out.println(albums.size());
-			
+
 			for (Album a : albums) {
 				a.getAlbumTracks();
 				for (Sound s : a.getAlbumTracks()) {
 					System.out.println(s.getSoundTitle());
 				}
 			}
-			
-			
-			
+
 			request.setAttribute("albums", albums);
 			tx.commit();
 
@@ -143,10 +141,9 @@ public class InitiController {
 		return "albums";
 	}
 
-	
 	@RequestMapping(value = "/sound", method = RequestMethod.POST)
 	public String initSound(HttpServletRequest request) {
-	
+
 		int soundId = Integer.parseInt(request.getParameter("soundId"));
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
@@ -154,10 +151,9 @@ public class InitiController {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 			List<Comment> comments = sound.getSoundComments();
-			
+
 			System.out.println(comments.size());
-			
-					
+
 			request.setAttribute("sound", sound);
 			tx.commit();
 
@@ -171,19 +167,36 @@ public class InitiController {
 		}
 		return "sound";
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String initProfile(HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute("loggedUser");
-		
+
 		request.setAttribute("user", user);
 		return "profile";
 	}
+
 	@RequestMapping(value = "/following", method = RequestMethod.GET)
 	public String initFollowing(HttpServletRequest request) {
-        // TODO list of following users to be initialised
+		// TODO list of following users to be initialised
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User current = (User) session.get(User.class, loggedUser.getUsername());
+			current.getFollowing().size();
+			request.setAttribute("following", current.getFollowing());
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
 		return "following";
 	}
 
@@ -292,5 +305,5 @@ public class InitiController {
 		rv = criteria.list();
 		return rv;
 	}
-	
+
 }

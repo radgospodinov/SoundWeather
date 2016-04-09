@@ -268,4 +268,14 @@ public class User {
 		albums.remove(album);
 		
 	}
+
+	public void addToFollowing(User target) {
+		following.add(target);
+		
+	}
+
+	public void addToFollowers(User current) {
+		followers.add(current);
+		
+	}
 }
