@@ -48,7 +48,7 @@
 }
 
 #sound_cover_photo, #user_cover_photo, #album_cover_photo {
-	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	 box-shadow: 0 0 5px rgba(0, 0, 0, 1);
 }
 
 #filter_genres {
@@ -80,17 +80,17 @@ button.like {
 }
 
 .username_in_search {
-	font-size:20px;
+	font-size:15px;
 	color: #800000;
 }
 
 .album_title_in_search {
-	font-size:20px;
+	font-size:15px;
 	color: #800000;
 }
 
 .sound_title_in_search {
-	font-size:20px;
+	font-size:15px;
 	color: #800000;
 	cursor:pointer;
 }
