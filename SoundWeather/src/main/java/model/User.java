@@ -269,6 +269,7 @@ public class User {
 		
 	}
 
+
 	public void addToFollowing(User target) {
 		following.add(target);
 		
@@ -278,4 +279,12 @@ public class User {
 		followers.add(current);
 		
 	}
+
+	public void addComment(Comment newComment) {
+		comments.add(newComment);
+		
+	}
+	
+	
+
 }

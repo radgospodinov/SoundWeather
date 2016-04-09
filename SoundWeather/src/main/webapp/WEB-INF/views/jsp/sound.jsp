@@ -11,12 +11,59 @@
 		<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
 		
 		
-		<title>Other user</title>
-		
+		<title>Sound</title>
+			<script type="text/javascript">
+    			$("#show_comments_button").hide();
+			</script>
+			
+			
 			
 			
 			<script>
 				$(document).ready(function(){
+   					 
+					$("#hide_comments_button").click(function(){
+      				  			$("#sound_comments").hide(1000);
+      				  			$("#hide_comments_button").hide(1000);
+      				  			$("#show_comments_button").show(1000);
+    				 });
+    			
+   					 $("#show_comments_button").click(function(){
+        						$("#sound_comments").show(1000);
+        						$("#hide_comments_button").show(1000);
+        						$("#show_comments_button").hide(1000);
+   			 		 });
+   					 
+   					
+   				
+
+				});
+			</script>
+						
+			
+			<script type="text/javascript">
+					 function createComment(sound_id) {
+						 alert(sound_id);
+						 var commentBody = document.getElementById('your_comment').value;
+	 				
+					$('#sounds_space').load('createComment', {soundId : sound_id, comment_body : commentBody});
+					};
+   			</script>	
+			
+			
+			<script>
+			$('#submit_comment').on('click', function () { alert(sound_id);
+			 var commentBody = document.getElementById('your_comment').value;
+			 var sound_id = document.getElementById('submit_comment').value;
+			
+			 
+				$('#sounds_space').load('createComment', {soundId : sound_id, comment_body : commentBody});
+				})
+			
+			
+			
+			
+				/* $(document).ready(function(){
     			$('#submit_comment').click(function(){
     				     				 
      				 $.post("comment", {
@@ -25,41 +72,30 @@
          			
      				<!--alert($(this).value);-->
          			        			   			
-    			});});
+    			});}); */ 
 			</script>
 			
-				<script>
-				$(document).ready(function(){
-    			$('#add_to_favorites').click(function(){
-    				     				 
-     				 $.post("addToFavorites", {
-     					song_to_favorites : $(this).value,
-     				});
-         			
-     				<!--alert($(this).value);-->
-         			        			   			
-    			});});
-			</script>
+			
 	</head>
 	
 	<body>
 		<div id="sound_properties">
-			<table >
+			<table class="sound_table_with_sound_properties">
    				
    					<tr>
    						<td>
-   							<img class="sound_page_cover_photo" alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>" height="300" width="300" >
+   							<img class="sound_page_cover_photo" alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>" height="300" width="300" onclick="addSongs('sounds/${requestScope.sound.getFileName()}.mp3','covers/${requestScope.sound.getFileName()}.jpg','${requestScope.sound.getSoundTitle()}','${requestScope.sound.getSoundAuthor().getUsername()}','')">
    						</td>
    						<td>
    							<b class="sound_page_title" ><c:out value="${requestScope.sound.soundTitle}"/></b>
    						</td>
    					<!--  	<td id="songid">
    							<c:out value="${requestScope.sound.soundId}"/>
-   						</td>
+   						</td>-->
    						<td>
-   							<c:out value="${requestScope.sound.soundViewCount}"/>
+   							<b class="by">by</b><b class="sound_autor"><c:out value="${requestScope.sound.soundAuthor.username}"/></b>
    						</td>
-   						<td>
+   					<!--	<td>
    							<c:out value="${requestScope.sound.soundRating}"/>
    						</td>-->
    						<td>
@@ -72,32 +108,43 @@
 			</table>
 		</div>
 		
+		<div class="hide_show_buttons">
+		<button id="hide_comments_button">Hide comments</button>
+		<button id="show_comments_button" class="show_comments">Show comments</button>
+		</div>
 		<div id="sound_comments">
-			<table >
+			
+			<table class="sound_table_with_comments">
+   				
    				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
-   							<a onclick=""><img alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   							<a id="commenter_avatar" onclick=""><img class="commenter_avatar" alt="" src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+   						</td>
+   						<td >
+   							<b class="commenter_name"><c:out value="${comment.commentAuthor.username}"/></b>
    						</td>
    						<td>
-   							<c:out value="${comment.commentPostingDateTime}"/>
+   							<b class="comment_posting_time"><c:out value="${comment.commentPostingDateTime}"/></b>
    						</td>
+   						
    						<td >
-   							<c:out value="${comment.commentAuthor.username}"/>
-   						</td>
-   						<td >
-   							<c:out value="${comment.commentBody}"/>
+   							<b class="comment_body_text"><c:out value="${comment.commentBody}"/></b>
    						</td>
    					</tr>	
 				</c:forEach>
 			</table>
-			<div id="write_comment">
-				<form>
-				<textarea id="your_comment" rows="" cols="" onsubmit=""></textarea>
-				<input id="submit_comment" type="submit" value="Save comment" >
-				</form>
-			</div>
 			
+			<c:if test="${sessionScope.loggedUser != null}">
+			
+			<div id="write_comment">
+				
+					<h1>Comment it here:</h1>
+				<textarea id="your_comment" class="your_comment"></textarea>
+			<!--  	<button id="submit_comment" onclick="createComment('${requestScope.sound.soundId}')">Save comment</button>-->
+					<button class="submit_comment" id="submit_comment" value="${requestScope.sound.soundId}">Save comment</button>
+			</div>
+			</c:if>
 		</div>
 
 
