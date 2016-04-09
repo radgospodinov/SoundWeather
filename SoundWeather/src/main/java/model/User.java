@@ -268,4 +268,10 @@ public class User {
 		albums.remove(album);
 		
 	}
+	public void addComment(Comment newComment) {
+		comments.add(newComment);
+		
+	}
+	
+	
 }

@@ -137,7 +137,9 @@ public class Sound {
 		soundFans.add(u);
 	}
 	
-	
+	public void addCommentToSound(Comment newComment) {
+		soundComments.add(newComment);
+	}
 	
 	
 }

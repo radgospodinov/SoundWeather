@@ -12,11 +12,29 @@
 		
 		
 		<title>Other user</title>
-		
+			<script type="text/javascript">
+					 function createComment(sound_id) {
+						 alert(sound_id);
+						 var commentBody = document.getElementById('your_comment').value;
+	 				
+					$('#sounds_space').load('createComment', {soundId : sound_id, comment_body : commentBody});
+					};
+   			</script>	
 			
 			
 			<script>
-				$(document).ready(function(){
+			$('#submit_comment').on('click', function () { alert(sound_id);
+			 var commentBody = document.getElementById('your_comment').value;
+			 var sound_id = document.getElementById('submit_comment').value;
+			
+			 
+				$('#sounds_space').load('createComment', {soundId : sound_id, comment_body : commentBody});
+				})
+			
+			
+			
+			
+				/* $(document).ready(function(){
     			$('#submit_comment').click(function(){
     				     				 
      				 $.post("comment", {
@@ -25,30 +43,19 @@
          			
      				<!--alert($(this).value);-->
          			        			   			
-    			});});
+    			});}); */ 
 			</script>
 			
-				<script>
-				$(document).ready(function(){
-    			$('#add_to_favorites').click(function(){
-    				     				 
-     				 $.post("addToFavorites", {
-     					song_to_favorites : $(this).value,
-     				});
-         			
-     				<!--alert($(this).value);-->
-         			        			   			
-    			});});
-			</script>
+			
 	</head>
 	
 	<body>
 		<div id="sound_properties">
-			<table >
+			<table class="sound_table_with_sound_properties">
    				
    					<tr>
    						<td>
-   							<img class="sound_page_cover_photo" alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>" height="300" width="300" >
+   							<img class="sound_page_cover_photo" alt="" src="<c:url value="/covers/${requestScope.sound.fileName}.jpg"/>" height="300" width="300" onclick="addSongs('sounds/${requestScope.sound.getFileName()}.mp3','covers/${requestScope.sound.getFileName()}.jpg','${requestScope.sound.getSoundTitle()}','${requestScope.sound.getSoundAuthor().getUsername()}','')">
    						</td>
    						<td>
    							<b class="sound_page_title" ><c:out value="${requestScope.sound.soundTitle}"/></b>
@@ -73,7 +80,8 @@
 		</div>
 		
 		<div id="sound_comments">
-			<table >
+			<table class="sound_table_with_comments">
+   				<h1>Comments about this sound:</h1>
    				<c:forEach var="comment" items="${requestScope.sound.soundComments}">
    					<tr>
    						<td>
@@ -92,10 +100,11 @@
 				</c:forEach>
 			</table>
 			<div id="write_comment">
-				<form>
-				<textarea id="your_comment" rows="" cols="" onsubmit=""></textarea>
-				<input id="submit_comment" type="submit" value="Save comment" >
-				</form>
+				
+					<h1>Comment it here:</h1>
+				<textarea id="your_comment" class="your_comment"></textarea>
+			<!--  	<button id="submit_comment" onclick="createComment('${requestScope.sound.soundId}')">Save comment</button>-->
+					<button id="submit_comment" value="${requestScope.sound.soundId}">Save comment</button>
 			</div>
 			
 		</div>

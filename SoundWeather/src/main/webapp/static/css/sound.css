@@ -1,2 +1,32 @@
 @CHARSET "UTF-8";
 
+
+#sound_properties {
+	margin-top:50px;
+	margin-left:50px;
+}
+
+.sound_table_with_sound_properties {
+	border-spacing:40px 25px;
+}
+
+.sound_page_cover_photo {
+	cursor:pointer;
+}
+
+.sound_page_title {
+	font-weight:bold;
+	color: #800000;
+}
+
+
+.sound_page_cover_photo {
+	 box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+.your_comment {
+	 width:900px; 
+	 height:250px;
+	 font-size: 25px; 
+	 color:#800000;
+}

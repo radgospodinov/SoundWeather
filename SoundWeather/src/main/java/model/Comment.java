@@ -37,20 +37,23 @@ public class Comment {
 	public LocalDateTime getCommentPostingDateTime() {
 		return commentPostingDateTime;
 	}
-	public void setCommentPostingDateTime(LocalDateTime commentPostingDateTime) {
+	public Comment setCommentPostingDateTime(LocalDateTime commentPostingDateTime) {
 		this.commentPostingDateTime = commentPostingDateTime;
+		return this;
 	}
 	public User getCommentAuthor() {
 		return commentAuthor;
 	}
-	public void setCommentAuthor(User commentAuthor) {
+	public Comment setCommentAuthor(User commentAuthor) {
 		this.commentAuthor = commentAuthor;
+		return this;
 	}
 	public String getCommentBody() {
 		return commentBody;
 	}
-	public void setCommentBody(String commentBody) {
+	public Comment setCommentBody(String commentBody) {
 		this.commentBody = commentBody;
+		return this;
 	}
 	
 	
