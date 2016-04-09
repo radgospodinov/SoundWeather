@@ -3,7 +3,10 @@ package model;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -46,6 +49,10 @@ public class User {
 								// weather description for the location City
 	@Column(name = "avatar_file_name")
 	private String avatarName;
+	@Column(name = "activation")
+	private boolean isActive;
+	@Column(name ="reg_time")
+	private long registerDate;
 	@ManyToMany
 	@JoinTable(name = "ownsounds_table")
 	private List<Sound> sounds;
@@ -82,7 +89,9 @@ public class User {
 		followers = new Vector<User>();
 		following = new ArrayList<User>();
 		comments = new ArrayList<Comment>();
+		isActive = false;
 		avatarName = "defaultAvatar";
+		registerDate = new Date().getTime();
 	}
 
 	public User(String username) {
@@ -95,6 +104,8 @@ public class User {
 		following = new ArrayList<>();
 		comments = new ArrayList<>();
 		avatarName = "defaultAvatar";
+		isActive = false;
+		registerDate = new Date().getTime();
 	}
 
 	public String getUsername() {
@@ -283,6 +294,14 @@ public class User {
 	public void addComment(Comment newComment) {
 		comments.add(newComment);
 		
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

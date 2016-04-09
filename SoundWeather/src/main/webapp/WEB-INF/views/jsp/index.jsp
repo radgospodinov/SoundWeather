@@ -164,5 +164,12 @@
 // 	$(".jAudio--playlist").unbind();
 
 // 	$(".jAudio--player").jAudio(t);
+
+<c:if test="${logStatus}">
+	$('#logoutHeader').show();
+	$('#loginHeader').hide();
+	$('#registerHeader').hide();
+</c:if>
+
 </script>
 </html>

@@ -1,9 +1,12 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.crypto.spec.RC2ParameterSpec;
+import javax.mail.MailSessionDefinition;
+import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +34,7 @@ import model.Album;
 import model.Comment;
 import model.Genre;
 import model.HibernateUtil;
+import model.MailUtil;
 import model.Sound;
 import model.User;
 import scala.math.Ordering.StringOrdering;
@@ -45,8 +49,9 @@ public class InitiController {
 	ServletContext context;
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String initIndexPage() {
+	public String initIndexPage(HttpServletRequest request) {
 		initGenres();
+		request.setAttribute("logStatus", false);
 		return "index";
 	}
 
@@ -66,7 +71,7 @@ public class InitiController {
 	public String initRegisterPage() {
 		return "register";
 	}
-	
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String initLogout(HttpServletRequest request) {
 		request.getSession().removeAttribute("loggedUser");
@@ -75,16 +80,18 @@ public class InitiController {
 		request.setAttribute("trendySounds", initTrendySounds());
 		return "playlists";
 	}
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String initLoginPage(HttpServletRequest request) {
+		System.out
+				.println(request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath()));
 		request.setAttribute(REDIRECT_URL_PARAM, "home");
 		return "login";
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
 	public String initUploadPage(HttpServletRequest request) {
-		if(request.getSession().getAttribute("loggedUser")==null) {
+		if (request.getSession().getAttribute("loggedUser") == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "upload");
 			return "login";
 		}
@@ -94,7 +101,7 @@ public class InitiController {
 
 	@RequestMapping(value = "/own_sounds", method = RequestMethod.GET)
 	public String initOwnSounds(HttpServletRequest request) {
-		if(request.getSession().getAttribute("loggedUser")==null) {
+		if (request.getSession().getAttribute("loggedUser") == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "own_sounds");
 			return "login";
 		}
@@ -126,7 +133,7 @@ public class InitiController {
 
 	@RequestMapping(value = "/albums", method = RequestMethod.GET)
 	public String initAlbums(HttpServletRequest request) {
-		if(request.getSession().getAttribute("loggedUser")==null) {
+		if (request.getSession().getAttribute("loggedUser") == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "albums");
 			return "login";
 		}
@@ -191,7 +198,7 @@ public class InitiController {
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String initProfile(HttpServletRequest request) {
-		if(request.getSession().getAttribute("loggedUser")==null) {
+		if (request.getSession().getAttribute("loggedUser") == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "upload");
 			return "login";
 		}
@@ -203,8 +210,8 @@ public class InitiController {
 
 	@RequestMapping(value = "/following", method = RequestMethod.GET)
 	public String initFollowing(HttpServletRequest request) {
-		
-		if(request.getSession().getAttribute("loggedUser")==null) {
+
+		if (request.getSession().getAttribute("loggedUser") == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "following");
 			return "login";
 		}
@@ -228,7 +235,7 @@ public class InitiController {
 
 		return "following";
 	}
-	
+
 	@RequestMapping(value = "/otherUser", method = RequestMethod.GET)
 	public String initOtherUser(HttpServletRequest request) {
 		String userId = request.getParameter("username");
@@ -240,14 +247,14 @@ public class InitiController {
 			result.getAlbums().size();
 			result.getComments().size();
 			result.getSounds().size();
-			for(Sound sound : result.getSounds()) {
+			for (Sound sound : result.getSounds()) {
 				sound.getSoundFans().size();
 				sound.getSoundComments().size();
 			}
 			request.setAttribute("other_user", result);
 			tx.commit();
 		} catch (Exception e) {
-			if(tx!=null) {
+			if (tx != null) {
 				tx.rollback();
 			}
 			e.printStackTrace();
@@ -255,6 +262,46 @@ public class InitiController {
 			session.close();
 		}
 		return "other_user";
+	}
+	
+	@RequestMapping(value = "/emailConfirmation", method = RequestMethod.GET)
+	public String emailConfirmation(HttpServletRequest request) {
+		initGenres();
+		String uname = request.getParameter("ecr");
+		String username = "";
+		request.setAttribute("logStatus", false);
+		try {
+			username = MailUtil.dencryptUsername(uname);
+			System.out.println(username);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			if (session.get(User.class, username) != null) {
+				User user = (User) session.get(User.class, username);
+				if (user.isActive()) {
+					return "index";
+				} else {
+					user.setActive(true);
+				}
+				session.update(user);
+				request.getSession().setAttribute("loggedUser", user);
+			} else {
+				return "index";
+			}
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		request.setAttribute("logStatus", true);
+		return "index";
 	}
 
 	private void initGenres() {
@@ -362,5 +409,5 @@ public class InitiController {
 		rv = criteria.list();
 		return rv;
 	}
-
+	
 }

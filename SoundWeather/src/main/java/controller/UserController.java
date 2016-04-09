@@ -3,16 +3,31 @@ package controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.ShortBufferException;
+import javax.mail.MessagingException;
+import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,14 +38,17 @@ import com.google.gson.JsonObject;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import model.HibernateUtil;
+import model.MailUtil;
 import model.User;
 
 @Controller
 public class UserController {
-	
+
 	private static final int MAX_PASSWORD_LENGTH = 6;
 	private static final int MAX_USERNAME_LENGTH = 4;
 	private static final String REDIRECT_URL_PARAM = "url";
+	private static final String SUBJECT = "Activation at SoundWeather";
+	private static final String MAIL_BODY = "Thanks for joining SoundWeather, click on the following link to activate your account.Happy listening! \n\n\n\n" ;
 
 	@Autowired
 	ServletContext context;
@@ -105,8 +123,20 @@ public class UserController {
 		} finally {
 			session.close();
 		}
-		request.getSession().setAttribute("loggedUser", user);
-		rv.addProperty("status", "ok");
+		new Thread(){
+			public void run(){
+				try {
+					String mailMsg = MAIL_BODY + request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath()) + "/emailConfirmation?ecr=" + MailUtil.encryptUsername(username);
+					MailUtil.sendMail(email, SUBJECT, mailMsg);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		
+		// request.getSession().setAttribute("loggedUser", user);
+		 rv.addProperty("status", "ok");
+		 rv.addProperty("msg", "You have successfully completed the registration.Please check your email to activate your account!");
 
 		return rv.toString();
 	}
@@ -205,31 +235,30 @@ public class UserController {
 		rv.addProperty("newLoc", user.getLocation());
 		return rv.toString();
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody String loginForm(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
+		removeFailedActivations();
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String url = request.getParameter("url");
 		Session session = HibernateUtil.getSession();
 		System.out.println(username + " , " + password);
 		User user = (User) session.get(User.class, username);
-		session.close();
 		if (user == null || !user.comparePasswords(password)) {
 			rv.addProperty("status", "bad");
 			rv.addProperty("msg", "Invalid credentials");
 			rv.addProperty("fld", "#username");
 			return rv.toString();
 		}
+
 		rv.addProperty("status", "ok");
 		rv.addProperty(REDIRECT_URL_PARAM, url);
 		request.getSession().setAttribute("loggedUser", user);
 		return rv.toString();
 	}
-	
+
 	@RequestMapping(value = "/followUser", method = RequestMethod.POST)
 	public @ResponseBody String followUser(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
@@ -268,4 +297,29 @@ public class UserController {
 		return rv.toString();
 	}
 
+	
+
+	private void removeFailedActivations() {
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Criteria criteria = session.createCriteria(User.class);
+			criteria.add(Restrictions.eq("isActive", false));
+			criteria.add(Restrictions.lt("registerDate", new Date().getTime()-20*60*1000));
+			List<User> result = criteria.list();
+			for(User user : result) {
+				session.delete(user);
+			}
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.clear();
+		}
+
+	}
 }
