@@ -178,7 +178,7 @@ button#remove_sound_from_album {
      display:none;
 }
 
-#update_album_button, #create_album_button {
+.update_album_button, .create_album_button {
 	height:35px;
 	width:140px;
 	font-weight:bold;
@@ -193,16 +193,34 @@ button#remove_sound_from_album {
 	
 }
 
-#update_album_button:hover, #create_album_button:hover {
+.update_album_button:hover, .create_album_button:hover {
 	color: #800000;
 	background: transparent;
 	border-color: #aaab9c #fff #fff #ccc;
 }
 
 
+.update_album_form {
+	display:none;
+}
 
-
-
+input.update_album_title {
+	
+	margin-right:auto;
+	margin-left:auto;
+	display: block;
+	width: 300px;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:40px;
+	text-align:center;
+	font-weight:bold;
+}
+}
 
 
 

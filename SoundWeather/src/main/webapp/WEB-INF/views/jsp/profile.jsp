@@ -180,7 +180,7 @@
 				<td id="userLocation" class="user_profile_location"><c:out value="${user.location}" /></td>
 				<td>
 			
-			<div id="form">
+			<div class="form" id="form">
 		<p>Select cover photo</p>
 		<input type="file" name="user_cover_photo" id="avatar"
 			accept="image/*" /> <br /> <input id="pass1" type="password"

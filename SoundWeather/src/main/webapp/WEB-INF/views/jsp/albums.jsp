@@ -109,7 +109,7 @@
 				
 				if ($('#updateTitle'+albumId).val() == "") {
 					alert("please enter valid title");
-					$('#updaetTitle'+albumId).focus();
+					$('#updateTitle'+albumId).focus();
 					return;
 				}
 				var form = new FormData();
@@ -198,13 +198,13 @@
 				
 			}
 			
-			$('#update_album_button').on('click', function(e){
-
-			    $("#update_album").toggle(1000);
+			$('.update_album_button').on('click', function(e){
+				 var albumToUpdate = event.target.id;
+			    $("#update_album"+albumToUpdate).toggle(1000);
 			    $(this).toggleClass('class1')
 			});
 			
-			$('#create_album_button').on('click', function(e){
+			$('.create_album_button').on('click', function(e){
 
 			    $("#create_new_album").toggle(1000);
 			    $(this).toggleClass('class1')
@@ -220,7 +220,7 @@
 
 <body>
 
-	<button id="create_album_button">Create new album</button>
+	<button class="create_album_button" id="create_album_button">Create new album</button>
 	<div id="create_new_album">
 	
 		<p>Enter album title</p>
@@ -254,7 +254,7 @@
 						<div class="album_title" id="title${album.albumId}">
 							<b><c:out value="${album.albumTitle}" /></b>
 						</div>
-						<button id="update_album_button">Update</button>
+						<button id="${album.albumId}" class="update_album_button">Update</button>
 						<button id="album_to_delete" value="Delete"
 							onclick="deleteAlbum(${album.albumId})">Delete album</button>
 					</td>
@@ -277,9 +277,9 @@
 						
 					<td>
 					
-						<div id="update_album">
+						<div class="update_album_form" id="update_album${album.albumId}">
 							
-							<input type="text" name="update_album_title"
+							<input class="update_album_title" type="text" name="update_album_title"
 								placeholder="change album title" id="updateTitle${album.albumId}" /> 
 								
 						
