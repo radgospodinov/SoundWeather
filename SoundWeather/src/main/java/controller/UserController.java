@@ -21,6 +21,7 @@ import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -48,7 +49,7 @@ public class UserController {
 	private static final int MAX_USERNAME_LENGTH = 4;
 	private static final String REDIRECT_URL_PARAM = "url";
 	private static final String SUBJECT = "Activation at SoundWeather";
-	private static final String MAIL_BODY = "Thanks for joining SoundWeather, click on the following link to activate your account.Happy listening! \n\n\n\n" ;
+	private static final String MAIL_BODY = "Thanks for joining SoundWeather, click on the following link to activate your account.Happy listening! \n\n\n\n";
 
 	@Autowired
 	ServletContext context;
@@ -93,6 +94,7 @@ public class UserController {
 			return rv.toString();
 		}
 		// TODO : strong password validation
+		// TODO : email uniqueness
 
 		Session session = HibernateUtil.getSession();
 		if (session.get(User.class, username) != null) {
@@ -123,20 +125,24 @@ public class UserController {
 		} finally {
 			session.close();
 		}
-		new Thread(){
-			public void run(){
+		new Thread() {
+			public void run() {
 				try {
-					String mailMsg = MAIL_BODY + request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath()) + "/emailConfirmation?ecr=" + MailUtil.encryptUsername(username);
+					String mailMsg = MAIL_BODY
+							+ request.getRequestURL().toString().replace(request.getRequestURI(),
+									request.getContextPath())
+							+ "/emailConfirmation?ecr=" + MailUtil.encryptUsername(username);
 					MailUtil.sendMail(email, SUBJECT, mailMsg);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}.start();
-		
+
 		// request.getSession().setAttribute("loggedUser", user);
-		 rv.addProperty("status", "ok");
-		 rv.addProperty("msg", "You have successfully completed the registration.Please check your email to activate your account!");
+		rv.addProperty("status", "ok");
+		rv.addProperty("msg",
+				"You have successfully completed the registration.Please check your email to activate your account!");
 
 		return rv.toString();
 	}
@@ -278,12 +284,12 @@ public class UserController {
 			tx = session.beginTransaction();
 			User target = (User) session.get(User.class, targetUserId);
 			User current = (User) session.get(User.class, loggedUser.getUsername());
-			
+
 			if (current.getFollowing().contains(target)) {
 				rv.addProperty("status", "bad");
 				return rv.toString();
 			}
-			
+
 			current.addToFollowing(target);
 			target.addToFollowers(current);
 			session.update(target);
@@ -308,7 +314,7 @@ public class UserController {
 		JsonObject rv = new JsonObject();
 		String userToUnfollow = request.getParameter("username");
 		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
-		
+
 		if (loggedUser == null) {
 			rv.addProperty("status", "bad");
 			return rv.toString();
@@ -323,7 +329,8 @@ public class UserController {
 			tx = session.beginTransaction();
 			User unfollowed = (User) session.get(User.class, userToUnfollow);
 			User logged = (User) session.get(User.class, loggedUser.getUsername());
-			logged.removeFromFollowing(unfollowed);;
+			logged.removeFromFollowing(unfollowed);
+			;
 			unfollowed.removeFromFollowers(logged);
 			session.update(logged);
 			session.update(unfollowed);
@@ -339,10 +346,64 @@ public class UserController {
 			session.close();
 		}
 		rv.addProperty("status", "ok");
-		rv.addProperty("id", "#user"+userToUnfollow);
+		rv.addProperty("id", "#user" + userToUnfollow);
 		return rv.toString();
 	}
 
+	@RequestMapping(value = "/forgottenPass", method = RequestMethod.POST)
+	public @ResponseBody String forgottenPass(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		String email = request.getParameter("email");
+
+		if (email == null || email.isEmpty()) {
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "Invalid Email");
+			return rv.toString();
+		}
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			Criteria criteria = session.createCriteria(User.class);
+			criteria.add(Restrictions.eq("email", email));
+			List<User> results = criteria.list();
+			if(results.size()==0){
+				rv.addProperty("status", "bad");
+				rv.addProperty("msg", "Invalid Email");
+				return rv.toString();
+			}
+			User user = results.get(0);
+			String newPass = generateNewPass();
+			System.out.println("newpass = "+newPass);
+			new Thread() {
+				public void run() {
+					try {
+						MailUtil.sendMail(email, "forgotten pass", "Your new password is:\n"+newPass);
+					} catch (MessagingException e) {
+						e.printStackTrace();
+					}
+				};
+			}.start();
+			user.setPassword(newPass);
+			session.update(user);
+			tx.commit();
+
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+			rv.addProperty("msg", "Internal error, we are sorry!");
+			return rv.toString();
+		} finally {
+			session.close();
+		}
+		
+		rv.addProperty("status", "ok");
+		rv.addProperty("msg", "Your new password has been sent successfully!");
+		return rv.toString();
+	}
 
 	private void removeFailedActivations() {
 		Session session = HibernateUtil.getSession();
@@ -351,9 +412,9 @@ public class UserController {
 			tx = session.beginTransaction();
 			Criteria criteria = session.createCriteria(User.class);
 			criteria.add(Restrictions.eq("isActive", false));
-			criteria.add(Restrictions.lt("registerDate", new Date().getTime()-20*60*1000));
+			criteria.add(Restrictions.lt("registerDate", new Date().getTime() - 20 * 60 * 1000));
 			List<User> result = criteria.list();
-			for(User user : result) {
+			for (User user : result) {
 				session.delete(user);
 			}
 			tx.commit();
@@ -366,5 +427,14 @@ public class UserController {
 			session.clear();
 		}
 
+	}
+	private String generateNewPass() {
+		String rv = "";
+		int length = 8;
+	    boolean useLetters = true;
+	    boolean useNumbers = true;
+	    rv = RandomStringUtils.random(length, useLetters, useNumbers);
+	    
+		return rv;
 	}
 }
