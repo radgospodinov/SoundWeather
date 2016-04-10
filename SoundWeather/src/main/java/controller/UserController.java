@@ -278,6 +278,12 @@ public class UserController {
 			tx = session.beginTransaction();
 			User target = (User) session.get(User.class, targetUserId);
 			User current = (User) session.get(User.class, loggedUser.getUsername());
+			
+			if (current.getFollowing().contains(target)) {
+				rv.addProperty("status", "bad");
+				return rv.toString();
+			}
+			
 			current.addToFollowing(target);
 			target.addToFollowers(current);
 			session.update(target);
