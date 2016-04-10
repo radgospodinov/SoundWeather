@@ -14,7 +14,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -29,9 +28,9 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class MailUtil {
 
-	private static final String username = "sounderweather.noreplay@gmail.com";
-	private static final String password = "radoirumen";
-	private static final String key = "soundswe";
+	private static final String MAIL_USERNAME = "sounderweather.noreplay@gmail.com";
+	private static final String MAIL_PASSWORD = "radoirumen";
+	private static final String ENCRYPTON_KEY = "soundswe";
 
 
 	private static Session initGmailSMTP() {
@@ -42,7 +41,7 @@ public class MailUtil {
 		props.put("mail.smtp.port", "587");
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
+				return new PasswordAuthentication(MAIL_USERNAME, MAIL_PASSWORD);
 			}
 		});
 		return session;
@@ -52,7 +51,7 @@ public class MailUtil {
 			throws AddressException, MessagingException {
 		Message message = new MimeMessage(initGmailSMTP());
 
-		message.setFrom(new InternetAddress(username));
+		message.setFrom(new InternetAddress(MAIL_USERNAME));
 		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
 		message.setSubject(subject);
 		message.setText(text);
@@ -65,7 +64,7 @@ public class MailUtil {
 			InvalidAlgorithmParameterException, ShortBufferException, IllegalBlockSizeException, BadPaddingException {
 
 		byte[] input = username.getBytes("UTF-8");
-		byte[] keyBytes = key.getBytes("UTF-8");
+		byte[] keyBytes = ENCRYPTON_KEY.getBytes("UTF-8");
 
 		SecretKeySpec key = new SecretKeySpec(keyBytes, "DES");
 		Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
@@ -80,7 +79,7 @@ public class MailUtil {
 		
 		
 		byte[] input = Base64.decode(username);
-		byte[] keyBytes = key.getBytes("UTF-8");
+		byte[] keyBytes = ENCRYPTON_KEY.getBytes("UTF-8");
 
 		SecretKeySpec key = new SecretKeySpec(keyBytes, "DES");
 		Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");

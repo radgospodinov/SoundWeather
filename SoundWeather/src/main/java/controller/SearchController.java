@@ -3,7 +3,6 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,7 +11,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,8 +26,6 @@ public class SearchController {
 
 	private static final int MAX_RESULTS_PER_PAGE = 8;
 
-	@Autowired
-	ServletContext context;
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public String search(HttpServletRequest request, HttpServletResponse response) {
@@ -267,7 +263,6 @@ public class SearchController {
 						request.setAttribute("number_of_pages", numberOfPages);
 						request.setAttribute("current_page", page);
 						request.setAttribute("result_list", searchResults);
-					//	request.setAttribute("are_sounds", areSounds);
 						request.setAttribute("genres", genres);
 						return "search";
 					}

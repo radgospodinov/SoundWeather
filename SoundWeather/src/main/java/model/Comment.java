@@ -23,7 +23,6 @@ public class Comment {
 	@Column(name = "comment_posting_date_time")
 	private LocalDateTime commentPostingDateTime;
 	@ManyToOne
-	//@Column(name = "comment_author")
 	private User commentAuthor;
 	@Column(name = "comment_body")
 	private String commentBody;

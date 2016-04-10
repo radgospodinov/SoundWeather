@@ -4,23 +4,20 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
@@ -29,9 +26,6 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 public class User {
 
 	@Id
-	// @GeneratedValue (strategy = GenerationType.TABLE)
-	// @Column(name = "user_id")
-	// private int userId;
 	@Column(name = "username")
 	private String username;
 	@Column(name = "password")
@@ -185,58 +179,58 @@ public class User {
 	}
 
 	public List<Sound> getSounds() {
-		return sounds;
+		return Collections.unmodifiableList(sounds);
 	}
 
-	public void setSounds(List<Sound> sounds) {
+	private void setSounds(List<Sound> sounds) {
 		this.sounds = sounds;
 	}
 
 	public List<Sound> getFavorites() {
-		return favorites;
+		return Collections.unmodifiableList(favorites);
 	}
 
-	public void setFavorites(List<Sound> favorites) {
+	private void setFavorites(List<Sound> favorites) {
 		this.favorites = favorites;
 	}
 
 	public List<Sound> getPlaylist() {
-		return playlist;
+		return Collections.unmodifiableList(playlist);
 	}
 
-	public void setPlaylist(List<Sound> playlist) {
+	private void setPlaylist(List<Sound> playlist) {
 		this.playlist = playlist;
 	}
 
 	public List<Album> getAlbums() {
-		return albums;
+		return Collections.unmodifiableList(albums);
 	}
 
-	public void setAlbums(List<Album> albums) {
+	private void setAlbums(List<Album> albums) {
 		this.albums = albums;
 	}
 
 	public List<User> getFollowers() {
-		return followers;
+		return Collections.unmodifiableList(followers);
 	}
 
-	public void setFollowers(List<User> followers) {
+	private void setFollowers(List<User> followers) {
 		this.followers = followers;
 	}
 
 	public List<User> getFollowing() {
-		return following;
+		return Collections.unmodifiableList(following);
 	}
 
-	public void setFollowing(List<User> following) {
+	private void setFollowing(List<User> following) {
 		this.following = following;
 	}
 
 	public List<Comment> getComments() {
-		return comments;
+		return Collections.unmodifiableList(comments);
 	}
 
-	public void setComments(List<Comment> comments) {
+	private void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
 

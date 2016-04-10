@@ -3,21 +3,12 @@ package controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.ShortBufferException;
 import javax.mail.MessagingException;
-import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +19,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +35,12 @@ import model.User;
 @Controller
 public class UserController {
 
+	private static final String LOGGED_USER = "loggedUser";
+	private static final String RESPONSE_GOOD = "ok";
+	private static final String RESPONSE_BAD = "bad";
+	private static final String RESPONSE_FIELD = "fld";
+	private static final String RESPONSE_MSG = "msg";
+	private static final String RESPONSE_STATUS = "status";
 	private static final int MAX_PASSWORD_LENGTH = 6;
 	private static final int MAX_USERNAME_LENGTH = 4;
 	private static final String REDIRECT_URL_PARAM = "url";
@@ -68,29 +64,29 @@ public class UserController {
 		String gender = request.getParameter("gender");
 
 		if (!password1.equals(password2)) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Password doesn't match");
-			rv.addProperty("fld", "#pass1");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Password doesn't match");
+			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
 
 		if (username.isEmpty() || password1.isEmpty() || password2.isEmpty() || email.isEmpty() || gender.isEmpty()
 				|| location.isEmpty()) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Please, fill all the fields.");
-			rv.addProperty("fld", "#username");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Please, fill all the fields.");
+			rv.addProperty(RESPONSE_FIELD, "#username");
 			return rv.toString();
 		}
 		if (username.length() < MAX_USERNAME_LENGTH) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Username too short.Username must be at least 4 characters");
-			rv.addProperty("fld", "#username");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Username too short.Username must be at least 4 characters");
+			rv.addProperty(RESPONSE_FIELD, "#username");
 			return rv.toString();
 		}
 		if (password1.length() < MAX_PASSWORD_LENGTH) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Password too short.Username must be at least 6 characters");
-			rv.addProperty("fld", "#pass1");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Password too short.Username must be at least 6 characters");
+			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
 		// TODO : strong password validation
@@ -98,9 +94,9 @@ public class UserController {
 
 		Session session = HibernateUtil.getSession();
 		if (session.get(User.class, username) != null) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "There is a user already registered with this username.");
-			rv.addProperty("fld", "#username");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "There is a user already registered with this username.");
+			rv.addProperty(RESPONSE_FIELD, "#username");
 			session.close();
 			return rv.toString();
 		}
@@ -117,9 +113,9 @@ public class UserController {
 			if (tx != null) {
 				tx.rollback();
 			}
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Something went wrong when we tried to save you.");
-			rv.addProperty("fld", "#username");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Something went wrong when we tried to save you.");
+			rv.addProperty(RESPONSE_FIELD, "#username");
 			e.printStackTrace();
 			return rv.toString();
 		} finally {
@@ -139,9 +135,8 @@ public class UserController {
 			}
 		}.start();
 
-		// request.getSession().setAttribute("loggedUser", user);
-		rv.addProperty("status", "ok");
-		rv.addProperty("msg",
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
+		rv.addProperty(RESPONSE_MSG,
 				"You have successfully completed the registration.Please check your email to activate your account!");
 
 		return rv.toString();
@@ -150,7 +145,7 @@ public class UserController {
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	public @ResponseBody String updateUser(MultipartHttpServletRequest request) {
 		JsonObject rv = new JsonObject();
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 		String password1 = request.getParameter("password1");
 		String password2 = request.getParameter("password2");
 		String email = request.getParameter("email");
@@ -169,16 +164,16 @@ public class UserController {
 		}
 
 		if (!password1.equals(password2)) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Password doesn't match");
-			rv.addProperty("fld", "#pass1");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Password doesn't match");
+			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
 
 		if (!password1.isEmpty() && password1.length() < MAX_PASSWORD_LENGTH) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Password too short.Username must be at least 6 characters");
-			rv.addProperty("fld", "#pass1");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Password too short.Username must be at least 6 characters");
+			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
 		// TODO : strong password validation
@@ -207,9 +202,9 @@ public class UserController {
 			if (tx != null) {
 				tx.rollback();
 			}
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Something went wrong when we tried to save you.");
-			rv.addProperty("fld", "#username");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Something went wrong when we tried to save you.");
+			rv.addProperty(RESPONSE_FIELD, "#username");
 			e.printStackTrace();
 			return rv.toString();
 		} finally {
@@ -236,8 +231,8 @@ public class UserController {
 			String img = "data:image/gif;base64," + Base64.encode(avatar);
 			rv.addProperty("img", img);
 		}
-		request.getSession().setAttribute("loggedUser", user);
-		rv.addProperty("status", "ok");
+		request.getSession().setAttribute(LOGGED_USER, user);
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("newLoc", user.getLocation());
 		return rv.toString();
 	}
@@ -253,15 +248,15 @@ public class UserController {
 		System.out.println(username + " , " + password);
 		User user = (User) session.get(User.class, username);
 		if (user == null || !user.comparePasswords(password)) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Invalid credentials");
-			rv.addProperty("fld", "#username");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Invalid credentials");
+			rv.addProperty(RESPONSE_FIELD, "#username");
 			return rv.toString();
 		}
 
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty(REDIRECT_URL_PARAM, url);
-		request.getSession().setAttribute("loggedUser", user);
+		request.getSession().setAttribute(LOGGED_USER, user);
 		return rv.toString();
 	}
 
@@ -269,13 +264,13 @@ public class UserController {
 	public @ResponseBody String followUser(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		String targetUserId = request.getParameter("id");
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute(LOGGED_USER);
 		if (loggedUser == null) {
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		}
 		if (targetUserId.equals(loggedUser.getUsername())) {
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		}
 		Session session = HibernateUtil.getSession();
@@ -286,7 +281,7 @@ public class UserController {
 			User current = (User) session.get(User.class, loggedUser.getUsername());
 
 			if (current.getFollowing().contains(target)) {
-				rv.addProperty("status", "bad");
+				rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 				return rv.toString();
 			}
 
@@ -301,11 +296,11 @@ public class UserController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		return rv.toString();
 	}
 
@@ -313,14 +308,14 @@ public class UserController {
 	public @ResponseBody String unfollowUser(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		String userToUnfollow = request.getParameter("username");
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute(LOGGED_USER);
 
 		if (loggedUser == null) {
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		}
 		if (userToUnfollow.equals(loggedUser.getUsername())) {
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		}
 		Session session = HibernateUtil.getSession();
@@ -341,11 +336,11 @@ public class UserController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", "#user" + userToUnfollow);
 		return rv.toString();
 	}
@@ -356,8 +351,8 @@ public class UserController {
 		String email = request.getParameter("email");
 
 		if (email == null || email.isEmpty()) {
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Invalid Email");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Invalid Email");
 			return rv.toString();
 		}
 		Session session = HibernateUtil.getSession();
@@ -368,8 +363,8 @@ public class UserController {
 			criteria.add(Restrictions.eq("email", email));
 			List<User> results = criteria.list();
 			if(results.size()==0){
-				rv.addProperty("status", "bad");
-				rv.addProperty("msg", "Invalid Email");
+				rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+				rv.addProperty(RESPONSE_MSG, "Invalid Email");
 				return rv.toString();
 			}
 			User user = results.get(0);
@@ -393,15 +388,15 @@ public class UserController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "Internal error, we are sorry!");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Internal error, we are sorry!");
 			return rv.toString();
 		} finally {
 			session.close();
 		}
 		
-		rv.addProperty("status", "ok");
-		rv.addProperty("msg", "Your new password has been sent successfully!");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
+		rv.addProperty(RESPONSE_MSG, "Your new password has been sent successfully!");
 		return rv.toString();
 	}
 

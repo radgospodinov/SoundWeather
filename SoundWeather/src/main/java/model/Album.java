@@ -1,11 +1,11 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +76,7 @@ public class Album {
 	}
 
 	public List<Sound> getAlbumTracks() {
-		return albumTracks;
+		return Collections.unmodifiableList(albumTracks);
 	}
 
 	public void setAlbumTracks(List<Sound> albumTracks) {
@@ -84,7 +84,7 @@ public class Album {
 	}
 
 	public List<Genre> getAlbumGenres() {
-		return albumGenres;
+		return Collections.unmodifiableList(albumGenres);
 	}
 
 	public Album setAlbumGenres(List<Genre> albumGenres) {

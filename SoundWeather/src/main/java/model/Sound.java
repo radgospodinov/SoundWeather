@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -9,15 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.mockito.internal.exceptions.util.ScenarioPrinter;
-
-import scala.collection.immutable.ListMap;
 
 @Entity
 @Table (name = "sounds")
@@ -99,21 +95,21 @@ public class Sound {
 		return this;
 	}
 	public List<Comment> getSoundComments() {
-		return soundComments;
+		return Collections.unmodifiableList(soundComments);
 	}
-	public void setSoundComments(List<Comment> soundComments) {
+	private void setSoundComments(List<Comment> soundComments) {
 		this.soundComments = soundComments;
 	}
 	public List<User> getSoundFans() {
-		return soundFans;
+		return Collections.unmodifiableList(soundFans);
 	}
-	public void setSoundFans(List<User> soundFans) {
+	private void setSoundFans(List<User> soundFans) {
 		this.soundFans = soundFans;
 	}
-	private List<Genre> getSoundGenres() {
-		return soundGenres;
+	public List<Genre> getSoundGenres() {
+		return Collections.unmodifiableList(soundGenres);
 	}
-	public void setSoundGenres(List<Genre> soundGenres) {
+	private void setSoundGenres(List<Genre> soundGenres) {
 		this.soundGenres = soundGenres;
 	}
 
@@ -139,7 +135,6 @@ public class Sound {
 	public void removeFan(User u) {
 		this.soundFans.remove(u);
 	}
-	
 	
 	public void addCommentToSound(Comment newComment) {
 		soundComments.add(newComment);

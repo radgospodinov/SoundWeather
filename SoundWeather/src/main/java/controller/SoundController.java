@@ -1,12 +1,10 @@
 package controller;
 
-import java.awt.event.FocusAdapter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,15 +13,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
-import org.neo4j.cypher.internal.compiler.v2_1.ast.rewriters.flattenBooleanOperators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +37,13 @@ import model.User;
 @Controller
 public class SoundController {
 
+	private static final String RESPONSE_MSG = "msg";
+	private static final String RESPONSE_GOOD = "ok";
+	private static final String RESPONSE_BAD = "bad";
+	private static final String RESPONSE_STATUS = "status";
+
+	private static final String LOGGED_USER = "loggedUser";
+
 	@Autowired
 	ServletContext context;
 
@@ -51,7 +51,7 @@ public class SoundController {
 	public @ResponseBody String deleteSound(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		int id = Integer.parseInt(request.getParameter("id"));
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
@@ -63,7 +63,6 @@ public class SoundController {
 			for (Album album : u.getAlbums()) {
 				album.removeSound(sound);
 			}
-			System.out.println("update user");
 			session.update(u);
 			// wokring slow
 			
@@ -95,19 +94,19 @@ public class SoundController {
 			}
 			
 			session.delete(sound);
-			request.getSession().setAttribute("loggedUser", u);
+			request.getSession().setAttribute(LOGGED_USER, u);
 			tx.commit();
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", "#s" + id);
 		return rv.toString();
 	}
@@ -132,12 +131,12 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		return rv.toString();
 	}
 
@@ -163,12 +162,12 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", "#sound" + soundId);
 
 		return rv.toString();
@@ -181,7 +180,7 @@ public class SoundController {
 		for (int i = 0; i < 10; i++) {
 			System.out.println(soundId);
 		}
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
@@ -201,12 +200,12 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", "#sound" + soundId);
 
 		return rv.toString();
@@ -216,7 +215,7 @@ public class SoundController {
 	public @ResponseBody String createAlbum(MultipartHttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		// getting Album params
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 		String fileName = user.getUsername() + "_"
 				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 		String title = request.getParameter("albumTitle");
@@ -229,7 +228,7 @@ public class SoundController {
 			coverPhoto = albumCover.getBytes();
 		} catch (IOException e) {
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		}
 		// saving album to DB
@@ -247,13 +246,13 @@ public class SoundController {
 			author.addAlbum(album);
 			session.update(author);
 			tx.commit();
-			rv.addProperty("status", "ok");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
@@ -274,7 +273,7 @@ public class SoundController {
 				e.printStackTrace();
 			}
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		return rv.toString();
 	}
 
@@ -282,7 +281,7 @@ public class SoundController {
 	public @ResponseBody String deleteAlbum(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		int id = Integer.parseInt(request.getParameter("id"));
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
@@ -297,7 +296,7 @@ public class SoundController {
 			session.update(u);
 			Album album = (Album) session.get(Album.class, id);
 			session.delete(album);
-			request.getSession().setAttribute("loggedUser", u);
+			request.getSession().setAttribute(LOGGED_USER, u);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -305,12 +304,12 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
 		}
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", "#album" + id);
 		return rv.toString();
 	}
@@ -319,20 +318,18 @@ public class SoundController {
 	public @ResponseBody String updateAlbum(MultipartHttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		// getting Album params
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 		String fileName = user.getUsername() + "_"
 				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 		String title = request.getParameter("albumTitle");
-		// String genresTmp = request.getParameter("albumGenres");
 		int albumId = Integer.parseInt(request.getParameter("albumId"));
-		// String[] genresS = genresTmp.split(",");
 		MultipartFile albumCover = request.getFile("albumCover");
 		byte[] coverPhoto = null;
 		try {
 			coverPhoto = albumCover.getBytes();
 		} catch (IOException e) {
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		}
 		// saving album to DB
@@ -342,16 +339,6 @@ public class SoundController {
 			tx = session.beginTransaction();
 			User author = (User) session.get(User.class, user.getUsername());
 			Album album = (Album) session.get(Album.class, albumId);
-			// for (String string : genresS) {
-			// for(Genre genres : album.getAlbumGenres()) {
-			// if(Integer.parseInt(string) != genres.getGenreId()) {
-			// TODO: GENRE LOGIKA
-			// }
-			// }
-			// Genre genre = (Genre) session.get(Genre.class,
-			// Integer.parseInt(string));
-			// album.addGenre(genre);
-			// }
 			album.setAlbumTitle(title).setFileName(fileName);
 			session.save(album);
 			session.update(author);
@@ -361,7 +348,7 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
@@ -383,7 +370,7 @@ public class SoundController {
 			}
 		}
 		String img = "data:image/gif;base64," + Base64.encode(coverPhoto);
-		rv.addProperty("status", "ok");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", albumId);
 		rv.addProperty("newName", title);
 		rv.addProperty("newFilePath", img);
@@ -394,8 +381,9 @@ public class SoundController {
 	public @ResponseBody String uploadForm(MultipartHttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
+		JsonObject rv = new JsonObject();
 		// Get the author = loggedUser:
-		User author = (User) request.getSession().getAttribute("loggedUser");
+		User author = (User) request.getSession().getAttribute(LOGGED_USER);
 		String fileName = author.getUsername() + "_"
 				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 
@@ -418,16 +406,11 @@ public class SoundController {
 		Sound newSound = new Sound().setSoundTitle(soundTitle).setFileName(fileName).setSoundAuthor(author);
 
 		// Get the genres and set them to the Sound object:
-		ArrayList<Genre> genreDummyObjects = new ArrayList<Genre>();
 		String genresTmp = request.getParameter("mp3genres");
-		System.out.println("TMP=" + genresTmp);
 		String[] genres = genresTmp.split(",");
-		System.out.println("array=" + Arrays.toString(genres));
-		// TODO: Saving file paths to DB
 		// Open hibernate session:
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
-		JsonObject rv = new JsonObject();
 		try {
 			tx = session.beginTransaction();
 
@@ -447,14 +430,14 @@ public class SoundController {
 			user.addSoundToSounds(newSound);
 			session.update(user);
 			tx.commit();
-			request.getSession().setAttribute("loggedUser", user);
+			request.getSession().setAttribute(LOGGED_USER, user);
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
-			rv.addProperty("msg", "We couldn't save your file, try again later!");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "We couldn't save your file, try again later!");
 			return rv.toString();
 		} finally {
 			session.close();
@@ -476,8 +459,8 @@ public class SoundController {
 		fos.close();
 		fos2.close();
 		// is.close();
-		rv.addProperty("status", "ok");
-		rv.addProperty("msg", "File was saved successfully!");
+		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
+		rv.addProperty(RESPONSE_MSG, "File was saved successfully!");
 		// TODO serve error msgs
 		return rv.toString();
 	}
@@ -492,7 +475,7 @@ public class SoundController {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 
-			User u = (User) request.getSession().getAttribute("loggedUser");
+			User u = (User) request.getSession().getAttribute(LOGGED_USER);
 
 			u = (User) session.get(User.class, u.getUsername());
 			for (Sound s : u.getPlaylist()) {
@@ -506,8 +489,8 @@ public class SoundController {
 			session.update(sound);
 			session.update(u);
 			tx.commit();
-			request.getSession().setAttribute("loggedUser", u);
-			rv.addProperty("status", "ok");
+			request.getSession().setAttribute(LOGGED_USER, u);
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 			rv.addProperty("id", soundId);
 			rv.addProperty("likes", sound.getSoundRating());
 		} catch (Exception e) {
@@ -515,7 +498,7 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
@@ -533,7 +516,7 @@ public class SoundController {
 		try {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
-			User u = (User) request.getSession().getAttribute("loggedUser");
+			User u = (User) request.getSession().getAttribute(LOGGED_USER);
 			u = (User) session.get(User.class, u.getUsername());
 			for (Sound s : u.getFavorites()) {
 				if (s.getSoundId() == sound.getSoundId()) {
@@ -545,8 +528,8 @@ public class SoundController {
 			session.update(sound);
 			session.update(u);
 			tx.commit();
-			request.getSession().setAttribute("loggedUser", u);
-			rv.addProperty("status", "ok");
+			request.getSession().setAttribute(LOGGED_USER, u);
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 			rv.addProperty("id", soundId);
 			rv.addProperty("likes", sound.getSoundRating());
 		} catch (Exception e) {
@@ -554,7 +537,7 @@ public class SoundController {
 				tx.rollback();
 			}
 			e.printStackTrace();
-			rv.addProperty("status", "bad");
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			return rv.toString();
 		} finally {
 			session.close();
