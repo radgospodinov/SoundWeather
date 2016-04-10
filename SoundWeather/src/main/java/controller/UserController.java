@@ -297,7 +297,46 @@ public class UserController {
 		return rv.toString();
 	}
 
-	
+	@RequestMapping(value = "/unfollowUser", method = RequestMethod.POST)
+	public @ResponseBody String unfollowUser(HttpServletRequest request) {
+		JsonObject rv = new JsonObject();
+		String userToUnfollow = request.getParameter("username");
+		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		
+		if (loggedUser == null) {
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		}
+		if (userToUnfollow.equals(loggedUser.getUsername())) {
+			rv.addProperty("status", "bad");
+			return rv.toString();
+		}
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			User unfollowed = (User) session.get(User.class, userToUnfollow);
+			User logged = (User) session.get(User.class, loggedUser.getUsername());
+			logged.removeFromFollowing(unfollowed);;
+			unfollowed.removeFromFollowers(logged);
+			session.update(logged);
+			session.update(unfollowed);
+			tx.commit();
+
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			e.printStackTrace();
+			rv.addProperty("status", "bad");
+		} finally {
+			session.close();
+		}
+		rv.addProperty("status", "ok");
+		rv.addProperty("id", "#user"+userToUnfollow);
+		return rv.toString();
+	}
+
 
 	private void removeFailedActivations() {
 		Session session = HibernateUtil.getSession();

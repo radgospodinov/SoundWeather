@@ -9,21 +9,35 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <title>Following</title>
-<!--  	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
+
 
 <script>
-	$(document).ready(function() {
-		$("button").click(function() {
-
-			$.post("unfollow", {
-				user_id : $(this).value,
-			});
-
-			<!--alert($(this).value);
-			-->
-
-		});
-	});
+		$(".unfollow_user").on('click', function unfollowUser(e) {
+			// alert(event.target.id);
+			
+			 var username = event.target.id;
+								
+					$.post({
+					url : "unfollowUser",
+					
+					data : {
+						
+						username : username
+					},
+					dataType : "json",
+					success : function(data, textStatus, jqXHR) {
+						if (data.status == 'ok') {
+							$(data.id).remove();
+						}
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+						alert("Something really bad happened " + textStatus + " - "
+								+ errorThrown);
+					}
+				});
+				
+			})
+			
 </script>
  <script type="text/javascript">
 $(document).ready(function() {
@@ -44,7 +58,7 @@ $(document).ready(function() {
 	<div class="following_block" id="following">
 		<table id="following_table" class="following_table">
 			<c:forEach var="followedUser" items="${requestScope.following}">
-				<tr>
+				<tr id="user${followedUser.username}">
 					<td><img class="following_avatar"
 						style=cursor:pointer
 						src="<c:url value="/covers/${followedUser.avatarName}.jpg"/>"
@@ -53,8 +67,9 @@ $(document).ready(function() {
 					</td>
 					<td><b class="following_username"><c:out value="${followedUser.username}" /></b></td>
 					<td>
-						<button id="unfollow" value="${followedUser.username}">Unfollow</button>
+						<button class="unfollow_user" id="${followedUser.username}" value="${followedUser.username}">Unfollow</button>
 					</td>
+					</tr>
 			</c:forEach>
 		</table>
 	</div>

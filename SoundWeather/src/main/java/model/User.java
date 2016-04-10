@@ -308,4 +308,12 @@ public class User {
 		this.favorites.remove(sound);
 	}
 
+	public void removeFromFollowing(User u) {
+		this.following.remove(u);
+	}
+
+	public void removeFromFollowers(User u) {
+		this.followers.remove(u);
+	}
+
 }
