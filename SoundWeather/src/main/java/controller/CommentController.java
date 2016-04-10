@@ -1,6 +1,9 @@
 package controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +42,11 @@ public class CommentController {
 		// saving comment to DB
 				Session session = HibernateUtil.getSession();
 				Transaction tx = null;
+				Sound sound = null;
 				try {
 					tx = session.beginTransaction();
 					User author = (User) session.get(User.class, user.getUsername());
-					Sound sound = (Sound) session.get(Sound.class, soundId);
+					sound = (Sound) session.get(Sound.class, soundId);
 					Comment newComment = new Comment().setCommentAuthor(author).setCommentBody(commentBody).setCommentPostingDateTime(LocalDateTime.now());
 					
 					session.save(newComment);
@@ -50,7 +54,8 @@ public class CommentController {
 					sound.addCommentToSound(newComment);
 					session.update(sound);
 					session.update(author);
-					request.setAttribute("sound", sound);
+					//request.setAttribute("sound", sound);
+					
 					tx.commit();
 					
 				} catch (Exception e) {
@@ -62,7 +67,17 @@ public class CommentController {
 					session.close();
 				}
 		
-			
+				List<Comment> comments = sound.getSoundComments();
+				Collections.sort(comments, new Comparator<Comment>() {
+
+					@Override
+					public int compare(Comment c1, Comment c2) {
+												return c1.getCommentPostingDateTime().compareTo(c2.getCommentPostingDateTime());
+					}
+					
+				});
+				
+				request.setAttribute("sound", sound);
 		
 		
 		return "sound";

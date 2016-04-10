@@ -1,6 +1,8 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -177,7 +179,14 @@ public class InitiController {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 			List<Comment> comments = sound.getSoundComments();
+			Collections.sort(comments, new Comparator<Comment>() {
 
+				@Override
+				public int compare(Comment c1, Comment c2) {
+											return c1.getCommentPostingDateTime().compareTo(c2.getCommentPostingDateTime());
+				}
+				
+			});
 			System.out.println(comments.size());
 
 			request.setAttribute("sound", sound);
