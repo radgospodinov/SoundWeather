@@ -60,8 +60,8 @@ public class User {
 	@JoinTable(name = "favorites_table")
 	private List<Sound> favorites;
 	@ManyToMany
-	@JoinTable(name = "playlists_table")
-	private List<Sound> playlist;
+	@JoinTable(name = "playlists_table")   //   LIKES TABLE   !!!
+	private List<Sound> playlist;          //   LIKES TABLE   !!!
 	@ManyToMany
 	@Column(name = "albums")
 	private List<Album> albums;
@@ -262,6 +262,9 @@ public class User {
 
 	public void addSoundToLiked(Sound sound) {
 		playlist.add(sound);
+	}
+	public void removeSoundFromLiked(Sound sound) {
+		playlist.remove(sound);
 	}
 
 	public void addSoundToFavorites(Sound sound) {

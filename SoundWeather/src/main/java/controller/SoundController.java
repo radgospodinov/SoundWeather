@@ -8,15 +8,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.neo4j.cypher.internal.compiler.v2_1.ast.rewriters.flattenBooleanOperators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,26 +57,46 @@ public class SoundController {
 		try {
 			tx = session.beginTransaction();
 			User u = (User) session.get(User.class, user.getUsername());
-			for (Sound sound : u.getSounds()) {
-				if (sound.getSoundId() == id) {
-					u.removeSoundFromSounds(sound);
-					break;
-				}
-			}
-			for (Album album : u.getAlbums()) {
-				for (Sound sound : album.getAlbumTracks()) {
-					if (sound.getSoundId() == id) {
-						album.removeSound(sound);
-						break;
-					}
-				}
-			}
-			session.update(u);
 			Sound sound = (Sound) session.get(Sound.class, id);
+			u.removeFromFavorites(sound);
+			u.removeSoundFromSounds(sound);
+			for (Album album : u.getAlbums()) {
+				album.removeSound(sound);
+			}
+			System.out.println("update user");
+			session.update(u);
+			// wokring slow
+			
+//			Criteria criteria = session.createCriteria(User.class);
+//			criteria.createAlias("playlist", "likes").add(Restrictions.eq("likes.soundId", id));
+//			List<User> results = criteria.list();
+//			System.out.println("soundId:" + id);
+//			for (User usr : results) {
+//				System.out.println("username:" + usr.getUsername());
+//				usr.removeSoundFromLiked(sound);
+//				session.update(usr);
+//			}
+//			Criteria criteria2 = session.createCriteria(User.class);
+//			criteria2.createAlias("favorites", "favorites").add(Restrictions.eq("favorites.soundId", id));
+//			List<User> results2 = criteria2.list();
+//			for (User usr : results2) {
+//				System.out.println("username:" + usr.getUsername());
+//				usr.removeFromFavorites(sound);
+//				session.update(usr);
+//			}
+
+			Query query = session.createQuery("from User u where exists(from u.playlist where soundId=" +id + ") or exists(from u.favorites where soundId = " +id + ")");
+			List<User> results = query.list();
+			for (User usr : results) {
+				System.out.println("username:" + usr.getUsername());
+				usr.removeSoundFromLiked(sound);
+				usr.removeFromFavorites(sound);
+				session.update(usr);
+			}
+			
 			session.delete(sound);
 			request.getSession().setAttribute("loggedUser", u);
 			tx.commit();
-
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
@@ -114,13 +140,13 @@ public class SoundController {
 		rv.addProperty("status", "ok");
 		return rv.toString();
 	}
-	
+
 	@RequestMapping(value = "/removeSoundFromAlbum", method = RequestMethod.POST)
 	public @ResponseBody String removeSoundFromAlbum(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		int soundId = Integer.parseInt(request.getParameter("soundId"));
 		int albumId = Integer.parseInt(request.getParameter("albumId"));
-		
+
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
@@ -131,59 +157,58 @@ public class SoundController {
 			session.update(album);
 			session.update(sound);
 			tx.commit();
-			
+
 		} catch (Exception e) {
-			if(tx!=null) {
+			if (tx != null) {
 				tx.rollback();
 			}
 			e.printStackTrace();
 			rv.addProperty("status", "bad");
 			return rv.toString();
-		}
-		finally {
+		} finally {
 			session.close();
 		}
 		rv.addProperty("status", "ok");
-		rv.addProperty("id", "#sound"+soundId);
-		
+		rv.addProperty("id", "#sound" + soundId);
+
 		return rv.toString();
 	}
-	
+
 	@RequestMapping(value = "/removeFromFavorites", method = RequestMethod.POST)
 	public @ResponseBody String removeFromFavorites(HttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		int soundId = Integer.parseInt(request.getParameter("sound_Id"));
-		for(int i=0;i<10;i++){System.out.println(soundId);}
+		for (int i = 0; i < 10; i++) {
+			System.out.println(soundId);
+		}
 		User user = (User) request.getSession().getAttribute("loggedUser");
-		
+
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 			User u = (User) session.get(User.class, user.getUsername());
-			  Hibernate.initialize(u.getFavorites());
-			  Hibernate.initialize(sound.getSoundFans());
-			  u.removeFromFavorites(sound);
-			  sound.removeFan(u);
-			
-			
+			Hibernate.initialize(u.getFavorites());
+			Hibernate.initialize(sound.getSoundFans());
+			u.removeFromFavorites(sound);
+			sound.removeFan(u);
+
 			tx.commit();
-			
+
 		} catch (Exception e) {
-			if(tx!=null) {
+			if (tx != null) {
 				tx.rollback();
 			}
 			e.printStackTrace();
 			rv.addProperty("status", "bad");
 			return rv.toString();
-		}
-		finally {
+		} finally {
 			session.close();
 		}
 		rv.addProperty("status", "ok");
-		rv.addProperty("id", "#sound"+soundId);
-		
+		rv.addProperty("id", "#sound" + soundId);
+
 		return rv.toString();
 	}
 
@@ -298,9 +323,9 @@ public class SoundController {
 		String fileName = user.getUsername() + "_"
 				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
 		String title = request.getParameter("albumTitle");
-		//String genresTmp = request.getParameter("albumGenres");
+		// String genresTmp = request.getParameter("albumGenres");
 		int albumId = Integer.parseInt(request.getParameter("albumId"));
-	//	String[] genresS = genresTmp.split(",");
+		// String[] genresS = genresTmp.split(",");
 		MultipartFile albumCover = request.getFile("albumCover");
 		byte[] coverPhoto = null;
 		try {
@@ -357,14 +382,13 @@ public class SoundController {
 				e.printStackTrace();
 			}
 		}
-		String img ="data:image/gif;base64," +Base64.encode(coverPhoto);
+		String img = "data:image/gif;base64," + Base64.encode(coverPhoto);
 		rv.addProperty("status", "ok");
 		rv.addProperty("id", albumId);
 		rv.addProperty("newName", title);
 		rv.addProperty("newFilePath", img);
 		return rv.toString();
 	}
-
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public @ResponseBody String uploadForm(MultipartHttpServletRequest request, HttpServletResponse response)
@@ -538,6 +562,5 @@ public class SoundController {
 
 		return rv.toString();
 	}
-
 
 }
