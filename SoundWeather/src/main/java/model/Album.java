@@ -31,7 +31,7 @@ public class Album {
 	@Column(name = "album_cover")
 	private String fileName; // (photo)
 	@ManyToMany
-	@Column(name = "album_genres") // mai tva beshe one-to-many pregledai
+	@Column(name = "album_genres") 
 	private List<Genre> albumGenres;
 	
 	

@@ -9,15 +9,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
-
-
 <title>Sound</title>
+
 <script type="text/javascript">
 	$("#show_comments_button").hide();
 </script>
-
-
 
 
 <script>
@@ -34,10 +30,9 @@
 	};
 </script>
 
-
 <script type="text/javascript">
 	function createComment(sound_id) {
-		// alert(sound_id);
+		
 		var commentBody = document.getElementById('your_comment').value;
 
 		$('#sounds_space').load('createComment', {
@@ -50,7 +45,7 @@
 
 <script>
 	$('#submit_comment').on('click', function() {
-		//alert(sound_id);
+		
 		var commentBody = document.getElementById('your_comment').value;
 		var sound_id = document.getElementById('submit_comment').value;
 
@@ -59,20 +54,7 @@
 			comment_body : commentBody
 		});
 	})
-
-	/* $(document).ready(function(){
-	$('#submit_comment').click(function(){
-		     				 
-		 $.post("comment", {
-			comment_body : $('#your_comment').value,
-		});
-		
-		<!--alert($(this).value);-->
-		        			   			
-	});}); */
 </script>
-
-
 </head>
 
 <body>
@@ -87,16 +69,12 @@
 				</td>
 				<td><b class="sound_page_title"><c:out
 							value="${requestScope.sound.soundTitle}" /></b></td>
-				<!--  	<td id="songid">
-   							<c:out value="${requestScope.sound.soundId}"/>
-   						</td>-->
+				
 				<td><b class="by">by</b><b class="sound_autor"
 					onclick="loadJSP('otherUser?username=${requestScope.sound.soundAuthor.username}')"
 					style="cursor: pointer"><c:out
 							value="${requestScope.sound.soundAuthor.username}" /></b></td>
-				<!--	<td>
-   							<c:out value="${requestScope.sound.soundRating}"/>
-   						</td>-->
+			
 				<td>
 					<button id="wLike${requestScope.sound.getSoundId()}" class="like"
 						onclick="like('${requestScope.sound.getSoundId()}')">Like
@@ -144,7 +122,7 @@
 
 				<h1 class="comment_it_here">Comment it here:</h1>
 				<textarea id="your_comment" class="your_comment"></textarea>
-				<!--  	<button id="submit_comment" onclick="createComment('${requestScope.sound.soundId}')">Save comment</button>-->
+				
 				<button class="submit_comment" id="submit_comment"
 					value="${requestScope.sound.soundId}">Save comment</button>
 			</div>
@@ -152,7 +130,5 @@
 	</div>
 
 
-
 </body>
-
 </html>

@@ -32,9 +32,8 @@ public class Sound {
 	@Column(name = "sound_view_count")
 	private int soundViewCount;
 	@Column(name = "sound_rating")
-	private int soundRating; //function of view-count and likes
+	private int soundRating; //likes
 	@ManyToOne
-	//@Column(name = "sound_author")
 	private User soundAuthor;
 	@ManyToOne	
 	private Album album;
@@ -45,7 +44,7 @@ public class Sound {
 	private List<Comment> soundComments;
 	@ManyToMany
 	@Column(name = "sound_fans")
-	private List<User> soundFans; //fans.size() == number of likes
+	private List<User> soundFans; //favorite button
 	@ManyToMany
 	@Column(name = "sound_genres")
 	private List<Genre> soundGenres;

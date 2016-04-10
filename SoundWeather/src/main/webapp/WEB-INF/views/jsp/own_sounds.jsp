@@ -7,9 +7,8 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="own_sounds.css">
-<title>Own sounds</title>
 
+<title>Own sounds</title>
 
 <script>
 			function deleteSound(soundId){
@@ -39,10 +38,7 @@
 					},
 					dataType : "json",
 					success : function(data, textStatus, jqXHR) {
-						
-						if (data.status == 'ok') {
-							// TODO controller method + result to be made
-						}
+												
 					},
 					error : function(jqXHR, textStatus, errorThrown) {
 						alert("Something really bad happened " + textStatus + " - "
@@ -51,11 +47,12 @@
 				});
 			};
 			</script>
+			
 <script type="text/javascript">
 					 function getSound(sound_id) {
 					$('#sounds_space').load('sound', {soundId : sound_id});
 					};
-   	</script>
+</script>
 </head>
 
 
@@ -72,9 +69,6 @@
 					<td><a class="own_sound_title" id="song_from_album"
 						onclick="loadJSP('sound?soundId=${sound.soundId}')"><c:out
 								value="${sound.soundTitle}" /></a></td>
-					<!--  <td>
-   							<c:out value="${sound.soundViewCount}"/>
-   						</td>-->
 					<td><b class="own_sound_fans"><c:out
 								value="${sound.soundFans.size()}" /></b> <img class="fans_heart"
 						src="<c:url value="/images/heart.png"/>"></td>
@@ -96,13 +90,11 @@
 						<button id="sound_id_to_delete"
 							onclick="addSoundToAlbum(${sound.getSoundId()},$('#add_to_album${sound.soundId}').val())">Add
 							to album</button>
-
 					</td>
 				</tr>
 			</c:forEach>
 		</table>
 	</div>
-
 
 
 </body>

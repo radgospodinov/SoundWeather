@@ -32,7 +32,7 @@ public class MailUtil {
 	private static final String username = "sounderweather.noreplay@gmail.com";
 	private static final String password = "radoirumen";
 	private static final String key = "soundswe";
-	private static final String vector = "j3tP4cK5";
+
 
 	private static Session initGmailSMTP() {
 		Properties props = new Properties();

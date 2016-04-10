@@ -13,8 +13,7 @@
 
 <script>
 		$(".unfollow_user").on('click', function unfollowUser(e) {
-			// alert(event.target.id);
-			
+						
 			 var username = event.target.id;
 								
 					$.post({
@@ -39,22 +38,12 @@
 			})
 			
 </script>
- <script type="text/javascript">
-$(document).ready(function() {
-    $('#following_table').DataTable( {
-         scrollY :        '200px',
-         scrollCollapse : true,
-         paging :         false
-    } );
-} );
-
-</script>
-
-
 </head>
 
 
 <body>
+
+
 	<div class="following_block" id="following">
 		<table id="following_table" class="following_table">
 			<c:forEach var="followedUser" items="${requestScope.following}">
@@ -76,5 +65,4 @@ $(document).ready(function() {
 
 
 </body>
-
 </html>

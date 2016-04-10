@@ -45,8 +45,7 @@ public class User {
 	@Column(name = "email")
 	private String email;
 	@Column(name = "location")
-	private String location; // Play list to be generated according to the
-								// weather description for the location City
+	private String location; 
 	@Column(name = "avatar_file_name")
 	private String avatarName;
 	@Column(name = "activation")
@@ -75,12 +74,6 @@ public class User {
 	@Column(name = "comments")
 	private List<Comment> comments;
 
-	// public int getUserId() {
-	// return userId;
-	// }
-	// public void setUserId(int userId) {
-	// this.userId = userId;
-	// }
 	public User() {
 		sounds = new ArrayList<Sound>();
 		favorites = new ArrayList<Sound>();

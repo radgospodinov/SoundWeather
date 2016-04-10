@@ -117,8 +117,7 @@
 				form.append("albumCover", updateAlbumCover);
 				form.append('albumTitle', $('#updateTitle'+albumId).val());
 				form.append('albumId', albumId);
-		//		form.append('albumGenres', $('#genres').val());    -- TO BE ADDED IN JSP MAYBE?
-
+	
 				$.ajax({
 					url : 'updateAlbum',
 					data : form,
@@ -133,8 +132,7 @@
 							$('#updateAlbumCover').val('');
 							$('#title'+data.id).html(data.newName.bold());
 							$('#cover'+data.id).attr('src', data.newFilePath);
-						//	$('#genres').val('');             -- TO BE ADDED IN JSP MAYBE?
-							
+												
 							coverOk = false;
 							$('#albumTitle').focus();
 // 							$('#upload_message').text(data.msg);
@@ -173,8 +171,7 @@
 				});
 				
 			}
-			
-			
+		
 			
 
 			function deleteSound(soundId,albumId) {
@@ -212,10 +209,8 @@
 			
 			</script>
 
-
-
-
 </head>
+
 
 
 <body>
@@ -229,7 +224,6 @@
 		<p>Select album cover</p>
 		<select class="select_album_genres" id="genres" size="1" name="genres" multiple="multiple">
 
-
 			<c:forEach items="${requestScope.genres}" var="genre">
 				<option value="${genre.getGenreId()}"><c:out
 						value="${genre.getGenreName()}" /></option>
@@ -241,15 +235,12 @@
 
 
 
-
 	<div id="own_albums">
 		<table>
 			<c:forEach var="album" items="${requestScope.albums}">
-				<tr class="one_album" id="album${album.albumId}"  >   <!-- class="individual_album" AKO IMA NUJDA OT STYLING -->
-					
-					
+				<tr class="one_album" id="album${album.albumId}"  >  
+									
 					<td>
-						
 						<img class="albums_covers" id="cover${album.albumId}" src="<c:url value="/covers/${album.fileName}.jpg"/>"> 
 						<div class="album_title" id="title${album.albumId}">
 							<b><c:out value="${album.albumTitle}" /></b>
@@ -272,17 +263,16 @@
 								onclick="deleteSound(${album_sound.soundId},${album.albumId})">Remove</button>
 								
 							</div>
+							
 						</c:forEach>
 						</td>
+					
 						
 					<td>
-					
 						<div class="update_album_form" id="update_album${album.albumId}">
-							
 							<input class="update_album_title" type="text" name="update_album_title"
 								placeholder="change album title" id="updateTitle${album.albumId}" /> 
-								
-						
+												
 							<input type="file" name="update_cover_photo"
 								id="file${album.albumId}" accept="image/*" />
 								
@@ -291,14 +281,11 @@
 								onclick="updateAlbum(${album.albumId})" />
 						</div>
 					</td>
-
-
-					
 				</tr>
+				
 			</c:forEach>
 		</table>
 	</div>
-
 
 
 </body>

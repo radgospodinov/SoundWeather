@@ -11,6 +11,7 @@
 
 <title>Upload</title>
 </head>
+
 <script type="text/javascript">
 	var soundOk = false;
 	var coverOk = false;
@@ -111,10 +112,7 @@
 		<div id="upload_notification">
 			<h3 id="upload_message" style="display: none; color: #ff6666"></h3>
 		</div>
-		<!-- 
 	
-		<form action="upload2" e	method="POST">
-	 -->
 		<p>Select sound file</p>
 		<input type="file" name="uploaded_sound" id="mp3sound"
 			accept="audio/*" /> <br />
@@ -135,8 +133,7 @@
 		</select> <br /> <input type="hidden" name="author"
 			value="${sessionScope.loggedUser.username}" /> <input type="submit"
 			value="Upload sound" onclick="uploadFile()" />
-
 	</div>
+	
 </body>
-
 </html>

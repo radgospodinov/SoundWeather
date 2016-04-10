@@ -11,6 +11,7 @@
 <title>Login</title>
 
 <script>
+	
 	function login() {
 		$.post({
 			url : "login",
@@ -39,18 +40,15 @@
 						+ errorThrown);
 			}
 		});
-
-		<!--alert(document.getElementById('username').value);
-		-->
-
 	};
-
 
 
 function showForgottenPass() {
 	$('#login_space').hide(1000);
 	$('#forgottenPass').show(1000);
 }
+
+
 function sendNewPass() {
 	$.post({
 		url : "forgottenPass",
@@ -109,6 +107,7 @@ function sendNewPass() {
 			onclick="showForgottenPass()">Forgotten password?
 			</a>
 	</div>
+	
 	<div id="forgottenPass" style="display: none">
 		<div>
 			<h3>Enter your email and we are gonna send you a new password</h3>
@@ -118,14 +117,7 @@ function sendNewPass() {
 			placeholder="enter email" onkeyup="validateEmailRecipient(); return false;"
 			required /> <br /> <input type="submit" value="Send new password"
 			onclick="sendNewPass()" />
-
 	</div>
 
-
-
 </body>
-
-
-
-
 </html>

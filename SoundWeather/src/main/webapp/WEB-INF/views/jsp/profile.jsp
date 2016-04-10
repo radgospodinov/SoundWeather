@@ -8,11 +8,8 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css"
-	href="<c:url value="/css/profile.css"/>" />
-<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
-<title>Profile</title>
 
+<title>Profile</title>
 
 <script>
 	function checkPass() {
@@ -96,8 +93,8 @@
 			enctype : 'multipart/form-data',
 			success : function(data) {
 				if (data.status == 'ok') {
-					if(data.img){
-					$('#userAvatar').attr('src', data.img);
+					if (data.img) {
+						$('#userAvatar').attr('src', data.img);
 					}
 					$('#avatar').val('');
 					$('#pass1').val('');
@@ -124,45 +121,39 @@
 		});
 
 	}
-	
-	
-	
-	$('#update_user_data').on('click', function(e){
 
-	    $("#form").toggle(1000);
-	    $(this).toggleClass('class1')
+	$('#update_user_data').on('click', function(e) {
+
+		$("#form").toggle(1000);
+		$(this).toggleClass('class1')
 	});
-	
-		
 </script>
 
-			<script>
-				$(document).ready(function(){
-   					 
-					$("#submit_update_user_data").click(function(){
-      				  			$("#form").hide(1000);
-      				  			$("#update_user_data").show(1000);
-    				 });
-    			
-   					 $("#update_user_data").click(function(){
-        					
-        						$("#update_user_data").hide(1000);
-        						$("#no_update_user_data").show(1000);
-   			 		 });
-   					 
-   					 $("#no_update_user_data").click(function(){
-     					
- 						$("#form").hide(1000);
- 						$("#update_user_data").show(1000);
- 						$("#no_update_user_data").hide(1000);
-		 		 });
-   					
-   				
+<script>
+	$(document).ready(function() {
 
-				});
-			</script>
+		$("#submit_update_user_data").click(function() {
+			$("#form").hide(1000);
+			$("#update_user_data").show(1000);
+		});
 
+		$("#update_user_data").click(function() {
+
+			$("#update_user_data").hide(1000);
+			$("#no_update_user_data").show(1000);
+		});
+
+		$("#no_update_user_data").click(function() {
+
+			$("#form").hide(1000);
+			$("#update_user_data").show(1000);
+			$("#no_update_user_data").hide(1000);
+		});
+
+	});
+</script>
 </head>
+
 
 <body>
 
@@ -172,55 +163,46 @@
 				<td><img class="user_avatar" alt=""
 					src="<c:url value="/covers/${user.avatarName}.jpg"/>" height="150"
 					width="150"></td>
+				<td><b class="user_profile_name"><c:out
+							value="${user.username}" /></b></td>
+				<td id="userLocation" class="user_profile_location"><c:out
+						value="${user.location}" /></td>
 				<td>
-				<b class="user_profile_name"><c:out value="${user.username}" /></b>
-				
-				
+
+					<div class="form" id="form">
+						<p>Select cover photo</p>
+						<input type="file" name="user_cover_photo" id="avatar"
+							accept="image/*" /> <br /> <input id="pass1" type="password"
+							name="password1" placeholder="choose new password"
+							onkeyup="checkPass(); return false;" required /> <br /> <input
+							id="pass2" type="password" name="password2"
+							placeholder="re-enter new password"
+							onkeyup="checkPass(); return false;" required /> <br /> <input
+							id="email" type="text" name="email" placeholder="enter new email"
+							onkeyup="validateEmail(); return false;" required /> <br /> <input
+							id="location" type="text" name="location"
+							placeholder="enter new location" required /> <br /> <input
+							id="submit_update_user_data" type="submit" value="Update"
+							onclick="updateUser()" /> <br />
+					</div>
+
 				</td>
-				<td id="userLocation" class="user_profile_location"><c:out value="${user.location}" /></td>
-				<td>
-			
-			<div class="form" id="form">
-		<p>Select cover photo</p>
-		<input type="file" name="user_cover_photo" id="avatar"
-			accept="image/*" /> <br /> <input id="pass1" type="password"
-			name="password1" placeholder="choose new password"
-			onkeyup="checkPass(); return false;" required /> <br /> <input
-			id="pass2" type="password" name="password2"
-			placeholder="re-enter new password"
-			onkeyup="checkPass(); return false;" required /> <br /> <input
-			id="email" type="text" name="email" placeholder="enter new email"
-			onkeyup="validateEmail(); return false;" required /> <br /> <input
-			id="location" type="text" name="location"
-			placeholder="enter new location" required /> <br /> <input
-			id="submit_update_user_data" type="submit" value="Update" onclick="updateUser()" /> <br />
-		<!--<span id="update_message"></span>-->
-	</div>
-			
-			
-				</td>
-			
-			
+
 			</tr>
+
+		</table>
 		
-			</table>
 		<button id="update_user_data">Update your profile</button>
 		<button id="no_update_user_data">No thanks</button>
+		
 	</div>
 
 
 
 	<div id="update_notification">
-
 		<h5 id="update_message" style="display: none; color: #ff6666">Problem
 			updating. /// Please, fill all the fields.</h5>
-
 	</div>
 
-	
-
-
-
 </body>
-
 </html>

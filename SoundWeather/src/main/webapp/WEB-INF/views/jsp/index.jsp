@@ -36,9 +36,10 @@
 	<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/profile.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
-<script src="<c:url value="/script/jquery.dataTables.min.js"/>"></script>
-<script src="<c:url value="/script/jquery-ui.min.js"/>"></script>
-<title>Home</title>
+<!--  <script src="<c:url value="/script/jquery.dataTables.min.js"/>"></script>
+<script src="<c:url value="/script/jquery-ui.min.js"/>"></script>-->
+
+<title>SoundWeather</title>
 
 <script type="text/javascript">
 	function loadJSP(target) {
@@ -50,7 +51,7 @@
 			return;
 		}
 		$('#sounds_space').load('search', {search_word : $('#searchText').val().trim(),requested_page : 1,are_sounds : true});
-// 		alert($('#searchText').val());
+
 	};
 	
 	$(function() {
@@ -63,13 +64,11 @@
 		$('#registerHeader').show();
 	};
 </script>
-
-
-
-
 </head>
 
+
 <body id="body">
+
 
 	<div id="header"
 		style="background-image:url(<c:url value="/images/background1.jpg"/>);">
@@ -90,6 +89,8 @@
 		</div>
 		
 	</div>
+
+
 
 	<div id="player">
 		<div class="jAudio--player">
@@ -144,6 +145,8 @@
 
 	</div>
 
+
+
 	<div id="user_navigation">
 
 		<div id="navcontainer">
@@ -166,14 +169,10 @@
 	</div>
 
 </body>
+
 <script src="<c:url value="/script/jaudio.min.js"/>"></script>
+
 <script>
-// 	t.playlist = [];
-
-// 	$(".jAudio--controls").unbind();
-// 	$(".jAudio--playlist").unbind();
-
-// 	$(".jAudio--player").jAudio(t);
 
 <c:if test="${logStatus}">
 	$('#logoutHeader').show();

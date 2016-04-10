@@ -11,12 +11,9 @@
 <title>Favorites</title>
 <script>
 		$(".remove_from_favorites").on('click', function removeFromFavorites(e) {
-			// alert(event.target.id);
-			
+						
 			 var soundId = event.target.id;
-			// alert(soundId);
-			
-					
+							
 					$.post({
 					url : "removeFromFavorites",
 					
@@ -61,10 +58,8 @@
 					<td>
 						<button class="remove_from_favorites" id="${favorite.soundId}" value="${favorite.soundId}"
 							>Remove</button>
-					
-					<!-- onclick="removeFromFavorites(${sessionScope.loggedUser.username},${favorite.getSoundId()})" -->
+									
 					</td>
-					
 				</tr>
 				
 			</c:forEach>

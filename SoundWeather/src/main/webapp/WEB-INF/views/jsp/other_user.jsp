@@ -8,11 +8,8 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css"
-	href="<c:url value="/css/other_user.css"/>" />
-<!-- TODO -> MOVE TO INDEX.JSP ALL CSS/JS -->
-<title>Other user</title>
 
+<title>Other user</title>
 
 <script>
 function followOther(userId) {
@@ -33,7 +30,6 @@ function followOther(userId) {
 			}
 		});
 }
-	
 </script>
 
 <script>
@@ -43,10 +39,6 @@ function followOther(userId) {
 			$.post("addToFavorites", {
 				song_to_favorites : $(this).value,
 			});
-
-			<!--alert($(this).value);
-			-->
-
 		});
 	});
 </script>
@@ -67,15 +59,7 @@ function followOther(userId) {
 				</td>
 			</tr>
 		</table>
-
-
-
-
-
-
 	</div>
-
-
 
 
 	<div class="other_user_sounds" id="other_user_sounds">
@@ -93,24 +77,15 @@ function followOther(userId) {
 					<td><b class="own_sound_fans"><c:out value="${sound.soundFans.size()}" /></b><img class="fans_heart"
 						src="<c:url value="/images/heart.png"/>"></td>
 					<td>
-						<!--  <button id="add_to_favorites"
-							onclick="fav('${sound.getSoundId()}')">Add to favorites</button>-->
-					
-					 <button id="tLike${sound.getSoundId()}" class="like" onclick="like('${sound.getSoundId()}')">Like [${sound.getSoundRating()}]</button>
-					
-					
+					 	<button id="tLike${sound.getSoundId()}" class="like" onclick="like('${sound.getSoundId()}')">Like [${sound.getSoundRating()}]</button>
 					</td>
 					<td>
-						<!--  <button id="likeSound" onclick="like('${sound.getSoundId()}')">Like</button>-->
 						<button id="tFav${sound.getSoundId()}" class="like" onclick="fav('${sound.getSoundId()}')">Favorite </button> 
-						
 					</td>
 				</tr>
 			</c:forEach>
 		</table>
 	</div>
-
-
 
 
 </body>
