@@ -55,6 +55,13 @@
 	 box-shadow: 0 0 5px rgba(0, 0, 0, 1);
 }
 
+#sound_cover_photo:hover, #user_cover_photo:hover, #album_cover_photo:hover {
+	 cursor:pointer;
+	height:152px;
+	width:152px;
+	 z-index:1000;
+}
+
 #filter_genres {
 	position:absolute;
 	height:40px;
@@ -84,12 +91,12 @@ button.like {
 }
 
 .username_in_search {
-	font-size:15px;
+	font-size:17px;
 	color: #800000;
 }
 
 .album_title_in_search {
-	font-size:15px;
+	font-size:17px;
 	color: #800000;
 }
 

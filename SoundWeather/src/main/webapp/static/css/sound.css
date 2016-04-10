@@ -13,7 +13,12 @@
 .sound_page_cover_photo {
 	cursor:pointer;
 }
-
+.sound_page_cover_photo:hover {
+	cursor:pointer;
+	height:302px;
+	width:302px;
+	z-index:100;
+}
 .sound_page_title {
 	font-size:20px;
 	color: #800000;
@@ -74,6 +79,16 @@
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 	width:50px;
 }
+
+.commenter_avatar:hover {
+	cursor:pointer;
+	height:51px;
+	width:51px;
+	 z-index:1000;
+	
+}
+
+
 
 .commenter_name {
 	font-weight:bold;

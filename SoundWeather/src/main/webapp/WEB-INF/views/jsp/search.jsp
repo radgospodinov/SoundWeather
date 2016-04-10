@@ -255,7 +255,7 @@
 				<tr id="row_with_results">
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
-							<div id="photos" >
+							<div class="user_serch_photos" id="photos" >
 								<a onclick="loadJSP('otherUser?username=${result.username}')" style=cursor:pointer><img id="user_cover_photo" alt="User cover photo" src="<c:url value="/covers/${result.avatarName}.jpg"/>" height="150" width="150" /></a>
 							</div>
 

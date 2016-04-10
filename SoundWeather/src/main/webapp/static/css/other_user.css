@@ -62,7 +62,20 @@
 	
 }
 
+.other_user_sound_photo:hover {
+	height:152px;
+	width:152px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	
+}
+
 .other_user_sound_title {
 	font-size:20px;
 	color: #800000;
+}
+
+.other_user_sound_title:hover {
+	font-weight:bold;
+	color: #0c0743;
+	background: transparent;
 }

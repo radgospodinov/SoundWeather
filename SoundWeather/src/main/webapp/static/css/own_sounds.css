@@ -14,6 +14,14 @@
 	
 }
 
+.own_sound_cover_photo:hover {
+	 cursor:pointer;
+	height:152px;
+	width:152px;
+	 z-index:1000;
+	
+}
+
 .table_with_own_sounds {
 	
 	border-spacing:40px 25px;

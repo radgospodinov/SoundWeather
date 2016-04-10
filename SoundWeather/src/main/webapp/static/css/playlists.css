@@ -68,6 +68,14 @@ html {
 	cursor:pointer;
 }
 
+#sound_cover_photo:hover {
+	cursor:pointer;
+	height:152px;
+	width:152px;
+	 z-index:1000;
+}
+
+
 #images_container {
 	position:relative;
 }
