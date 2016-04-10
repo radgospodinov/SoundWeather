@@ -15,18 +15,25 @@
 
 
 <script>
-	$(document).ready(function() {
-		$('#follow').click(function() {
-
-			$.post("follow", {
-				user_to_follow : $(this).value,
-			});
-
-			<!--alert($(this).value);
-			-->
-
+function followOther(userId) {
+	 $.post({
+			url : "followUser",
+			data : {
+				id : userId
+			},
+			dataType : "json",
+			success : function(data, textStatus, jqXHR) {
+				if (data.status == 'ok') {
+					
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				alert("Something really bad happened " + textStatus + " - "
+						+ errorThrown);
+			}
 		});
-	});
+}
+	
 </script>
 
 <script>
@@ -56,7 +63,7 @@
 				<td><b class="other_user_name"><c:out value="${requestScope.other_user.username}" /></b></td>
 				<td><b class="other_user_location"><c:out value="${requestScope.other_user.location}" /></b></td>
 				<td>
-					<button class="follow_other_user" id="follow" value="${requestScope.other_user.username}" onclick="follow('${requestScope.other_user.username}')">Follow</button>
+					<button class="follow_other_user" id="follow" value="${requestScope.other_user.username}" onclick="followOther('${requestScope.other_user.username}')">Follow</button>
 				</td>
 			</tr>
 		</table>
