@@ -1,36 +1,23 @@
 package controller;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
-import javax.crypto.spec.RC2ParameterSpec;
-import javax.mail.MailSessionDefinition;
-import javax.mail.MessagingException;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.loader.plan.exec.process.spi.ReturnReader;
-import org.omg.PortableServer.POAPackage.WrongAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.gson.JsonObject;
 
 import model.Album;
 import model.Comment;
@@ -39,33 +26,39 @@ import model.HibernateUtil;
 import model.MailUtil;
 import model.Sound;
 import model.User;
-import scala.math.Ordering.StringOrdering;
 
 @Controller
 public class InitiController {
 
+	private static final String ALBUMS = "albums";
 	private static final int MAX_SOUNDS_PER_ROW = 8;
+	private static final String DEFAULT_LOCATION = "Sofia";
+	
+	private static final String LOGGED_USER = "loggedUser";
 	private static final String REDIRECT_URL_PARAM = "url";
+	private static final String LOG_STATUS = "logStatus";
+	private static final String WEATHER_LIST = "weatherSounds";
+	private static final String TRENDY_LIST = "trendySounds";
+	private static final String GENRES = "genres";
+	private static final String SOUNDS = "sounds";
 
-	@Autowired
-	ServletContext context;
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String initIndexPage(HttpServletRequest request) {
 		initGenres();
-		request.setAttribute("logStatus", false);
+		request.setAttribute(LOG_STATUS, false);
 		return "index";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String initHomePage(HttpServletRequest request) {
 
-		String location = "Sofia";
-		if (request.getSession().getAttribute("loggedUser") != null) {
-			location = ((User) request.getSession().getAttribute("loggedUser")).getLocation();
+		String location = DEFAULT_LOCATION;
+		if (request.getSession().getAttribute(LOGGED_USER) != null) {
+			location = ((User) request.getSession().getAttribute(LOGGED_USER)).getLocation();
 		}
-		request.setAttribute("weatherSounds", initWeatherSounds(getWeatherDesc(location)));
-		request.setAttribute("trendySounds", initTrendySounds());
+		request.setAttribute(WEATHER_LIST, initWeatherSounds(getWeatherDesc(location)));
+		request.setAttribute(TRENDY_LIST, initTrendySounds());
 		return "playlists";
 	}
 
@@ -76,10 +69,10 @@ public class InitiController {
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String initLogout(HttpServletRequest request) {
-		request.getSession().removeAttribute("loggedUser");
-		String location = "Sofia";
-		request.setAttribute("weatherSounds", initWeatherSounds(getWeatherDesc(location)));
-		request.setAttribute("trendySounds", initTrendySounds());
+		request.getSession().removeAttribute(LOGGED_USER);
+		String location = DEFAULT_LOCATION;
+		request.setAttribute(WEATHER_LIST, initWeatherSounds(getWeatherDesc(location)));
+		request.setAttribute(TRENDY_LIST, initTrendySounds());
 		return "playlists";
 	}
 
@@ -91,35 +84,34 @@ public class InitiController {
 
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
 	public String initUploadPage(HttpServletRequest request) {
-		if (request.getSession().getAttribute("loggedUser") == null) {
+		if (request.getSession().getAttribute(LOGGED_USER) == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "upload");
 			return "login";
 		}
-		request.setAttribute("genres", getAllGenres());
+		request.setAttribute(GENRES, getAllGenres());
 		return "upload";
 	}
 
 	@RequestMapping(value = "/own_sounds", method = RequestMethod.GET)
 	public String initOwnSounds(HttpServletRequest request) {
-		if (request.getSession().getAttribute("loggedUser") == null) {
+		if (request.getSession().getAttribute(LOGGED_USER) == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "own_sounds");
 			return "login";
 		}
 		Session session = HibernateUtil.getSession();
-		User u = (User) request.getSession().getAttribute("loggedUser");
+		User u = (User) request.getSession().getAttribute(LOGGED_USER);
 
 		try {
 			session.beginTransaction();
 			User tmp = (User) session.get(User.class, u.getUsername());
-
 			for (Sound sound : tmp.getSounds()) {
 				sound.getSoundFans().size();
 				sound.getSoundComments().size();
 			}
 			tmp.getAlbums().size();
-
-			request.setAttribute("sounds", tmp.getSounds());
-			request.setAttribute("albums", tmp.getAlbums());
+			
+			request.setAttribute(SOUNDS, tmp.getSounds());
+			request.setAttribute(ALBUMS, tmp.getAlbums());
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -133,12 +125,12 @@ public class InitiController {
 
 	@RequestMapping(value = "/albums", method = RequestMethod.GET)
 	public String initAlbums(HttpServletRequest request) {
-		if (request.getSession().getAttribute("loggedUser") == null) {
-			request.setAttribute(REDIRECT_URL_PARAM, "albums");
+		if (request.getSession().getAttribute(LOGGED_USER) == null) {
+			request.setAttribute(REDIRECT_URL_PARAM, ALBUMS);
 			return "login";
 		}
-		request.setAttribute("genres", getAllGenres());
-		User u = (User) request.getSession().getAttribute("loggedUser");
+		request.setAttribute(GENRES, getAllGenres());
+		User u = (User) request.getSession().getAttribute(LOGGED_USER);
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
@@ -147,15 +139,13 @@ public class InitiController {
 			user.getAlbums().size();
 			List<Album> albums = user.getAlbums();
 			System.out.println(albums.size());
-
 			for (Album a : albums) {
 				a.getAlbumTracks();
 				for (Sound s : a.getAlbumTracks()) {
 					System.out.println(s.getSoundTitle());
 				}
 			}
-
-			request.setAttribute("albums", albums);
+			request.setAttribute(ALBUMS, albums);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -180,12 +170,10 @@ public class InitiController {
 			Sound sound = (Sound) session.get(Sound.class, soundId);
 			List<Comment> comments = sound.getSoundComments();
 			Collections.sort(comments, new Comparator<Comment>() {
-
 				@Override
 				public int compare(Comment c1, Comment c2) {
 											return c1.getCommentPostingDateTime().compareTo(c2.getCommentPostingDateTime());
 				}
-				
 			});
 			System.out.println(comments.size());
 
@@ -205,11 +193,11 @@ public class InitiController {
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String initProfile(HttpServletRequest request) {
-		if (request.getSession().getAttribute("loggedUser") == null) {
+		if (request.getSession().getAttribute(LOGGED_USER) == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "upload");
 			return "login";
 		}
-		User user = (User) request.getSession().getAttribute("loggedUser");
+		User user = (User) request.getSession().getAttribute(LOGGED_USER);
 
 		request.setAttribute("user", user);
 		return "profile";
@@ -218,11 +206,11 @@ public class InitiController {
 	@RequestMapping(value = "/following", method = RequestMethod.GET)
 	public String initFollowing(HttpServletRequest request) {
 
-		if (request.getSession().getAttribute("loggedUser") == null) {
+		if (request.getSession().getAttribute(LOGGED_USER) == null) {
 			request.setAttribute(REDIRECT_URL_PARAM, "following");
 			return "login";
 		}
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute(LOGGED_USER);
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
@@ -250,7 +238,7 @@ public class InitiController {
 			request.setAttribute(REDIRECT_URL_PARAM, "following");
 			return "login";
 		}
-		User loggedUser = (User) request.getSession().getAttribute("loggedUser");
+		User loggedUser = (User) request.getSession().getAttribute(LOGGED_USER);
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
@@ -276,6 +264,10 @@ public class InitiController {
 	
 	@RequestMapping(value = "/otherUser", method = RequestMethod.GET)
 	public String initOtherUser(HttpServletRequest request) {
+		if (request.getSession().getAttribute(LOGGED_USER) == null) {
+			request.setAttribute(REDIRECT_URL_PARAM, "otherUser");
+			return "login";
+		}
 		String userId = request.getParameter("username");
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
@@ -307,7 +299,7 @@ public class InitiController {
 		initGenres();
 		String uname = request.getParameter("ecr");
 		String username = "";
-		request.setAttribute("logStatus", false);
+		request.setAttribute(LOG_STATUS, false);
 		try {
 			username = MailUtil.dencryptUsername(uname);
 			System.out.println(username);
@@ -326,7 +318,7 @@ public class InitiController {
 					user.setActive(true);
 				}
 				session.update(user);
-				request.getSession().setAttribute("loggedUser", user);
+				request.getSession().setAttribute(LOGGED_USER, user);
 			} else {
 				return "index";
 			}
@@ -338,7 +330,7 @@ public class InitiController {
 		} finally {
 			session.close();
 		}
-		request.setAttribute("logStatus", true);
+		request.setAttribute(LOG_STATUS, true);
 		return "index";
 	}
 
@@ -373,7 +365,6 @@ public class InitiController {
 		RestTemplate restTemplate = new RestTemplate();
 
 		// GET WEATHER DESC FROM OPENWEATHERAPI
-
 		// TODO : String[] apiKeys to use multiple keys from openweather in case
 		// of overload of system
 		String apiKey = "c63d60d1d5efdd704911c9add93638e8";
@@ -387,7 +378,6 @@ public class InitiController {
 			System.out.println("p1=" + p1 + " p2=" + p2);
 			weatherDesc = result.substring(p1 + 8, p2);
 		}
-
 		return weatherDesc;
 
 	}
@@ -396,7 +386,6 @@ public class InitiController {
 		int genreId = -1;
 		switch (weatherDescription.toLowerCase()) {
 		// TODO better logic and stuff / maybe use constants not magic numbers
-
 		case "clear":
 			genreId = 1; // Pop
 			break;
