@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -95,6 +96,12 @@ public class Sound {
 		return this;
 	}
 	public List<Comment> getSoundComments() {
+		Collections.sort(soundComments, new Comparator<Comment>() {
+			@Override
+			public int compare(Comment c1, Comment c2) {
+										return c1.getCommentPostingDateTime().compareTo(c2.getCommentPostingDateTime());
+			}
+		});
 		return Collections.unmodifiableList(soundComments);
 	}
 	private void setSoundComments(List<Comment> soundComments) {

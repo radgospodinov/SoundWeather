@@ -65,26 +65,29 @@ public class SoundController {
 			}
 			session.update(u);
 			// wokring slow
-			
-//			Criteria criteria = session.createCriteria(User.class);
-//			criteria.createAlias("playlist", "likes").add(Restrictions.eq("likes.soundId", id));
-//			List<User> results = criteria.list();
-//			System.out.println("soundId:" + id);
-//			for (User usr : results) {
-//				System.out.println("username:" + usr.getUsername());
-//				usr.removeSoundFromLiked(sound);
-//				session.update(usr);
-//			}
-//			Criteria criteria2 = session.createCriteria(User.class);
-//			criteria2.createAlias("favorites", "favorites").add(Restrictions.eq("favorites.soundId", id));
-//			List<User> results2 = criteria2.list();
-//			for (User usr : results2) {
-//				System.out.println("username:" + usr.getUsername());
-//				usr.removeFromFavorites(sound);
-//				session.update(usr);
-//			}
 
-			Query query = session.createQuery("from User u where exists(from u.playlist where soundId=" +id + ") or exists(from u.favorites where soundId = " +id + ")");
+			// Criteria criteria = session.createCriteria(User.class);
+			// criteria.createAlias("playlist",
+			// "likes").add(Restrictions.eq("likes.soundId", id));
+			// List<User> results = criteria.list();
+			// System.out.println("soundId:" + id);
+			// for (User usr : results) {
+			// System.out.println("username:" + usr.getUsername());
+			// usr.removeSoundFromLiked(sound);
+			// session.update(usr);
+			// }
+			// Criteria criteria2 = session.createCriteria(User.class);
+			// criteria2.createAlias("favorites",
+			// "favorites").add(Restrictions.eq("favorites.soundId", id));
+			// List<User> results2 = criteria2.list();
+			// for (User usr : results2) {
+			// System.out.println("username:" + usr.getUsername());
+			// usr.removeFromFavorites(sound);
+			// session.update(usr);
+			// }
+
+			Query query = session.createQuery("from User u where exists(from u.playlist where soundId=" + id
+					+ ") or exists(from u.favorites where soundId = " + id + ")");
 			List<User> results = query.list();
 			for (User usr : results) {
 				System.out.println("username:" + usr.getUsername());
@@ -92,7 +95,7 @@ public class SoundController {
 				usr.removeFromFavorites(sound);
 				session.update(usr);
 			}
-			
+
 			session.delete(sound);
 			request.getSession().setAttribute(LOGGED_USER, u);
 			tx.commit();
@@ -325,12 +328,14 @@ public class SoundController {
 		int albumId = Integer.parseInt(request.getParameter("albumId"));
 		MultipartFile albumCover = request.getFile("albumCover");
 		byte[] coverPhoto = null;
-		try {
-			coverPhoto = albumCover.getBytes();
-		} catch (IOException e) {
-			e.printStackTrace();
-			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			return rv.toString();
+		if (albumCover != null && !albumCover.isEmpty()) {
+			try {
+				coverPhoto = albumCover.getBytes();
+			} catch (IOException e) {
+				e.printStackTrace();
+				rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+				return rv.toString();
+			}
 		}
 		// saving album to DB
 		Session session = HibernateUtil.getSession();
@@ -339,8 +344,11 @@ public class SoundController {
 			tx = session.beginTransaction();
 			User author = (User) session.get(User.class, user.getUsername());
 			Album album = (Album) session.get(Album.class, albumId);
-			album.setAlbumTitle(title).setFileName(fileName);
-			session.save(album);
+			if (title != null && !title.isEmpty())
+				album.setAlbumTitle(title);
+			if (fileName != null && !fileName.isEmpty())
+				album.setFileName(fileName);
+			session.update(album);
 			session.update(author);
 			tx.commit();
 		} catch (Exception e) {
@@ -353,27 +361,29 @@ public class SoundController {
 		} finally {
 			session.close();
 		}
-		// TODO save cover to server's file system
-		FileOutputStream fos = null;
-		File coverFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
-		try {
-			coverFile.createNewFile();
-			fos = new FileOutputStream(coverFile);
-			fos.write(coverPhoto);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
+		// save cover to server's file system
+		if (albumCover != null && !albumCover.isEmpty()) {
+			FileOutputStream fos = null;
+			File coverFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
 			try {
-				fos.close();
+				coverFile.createNewFile();
+				fos = new FileOutputStream(coverFile);
+				fos.write(coverPhoto);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+			String img = "data:image/gif;base64," + Base64.encode(coverPhoto);
+			rv.addProperty("newFilePath", img);
 		}
-		String img = "data:image/gif;base64," + Base64.encode(coverPhoto);
 		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", albumId);
 		rv.addProperty("newName", title);
-		rv.addProperty("newFilePath", img);
 		return rv.toString();
 	}
 

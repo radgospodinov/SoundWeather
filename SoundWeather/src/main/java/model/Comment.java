@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,7 +55,10 @@ public class Comment {
 		this.commentBody = commentBody;
 		return this;
 	}
-	
+	public String getCommentPostingDateTimeString() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		return commentPostingDateTime.format(formatter);
+	}
 	
 	
 	

@@ -60,12 +60,6 @@ public class CommentController {
 		}
 
 		List<Comment> comments = sound.getSoundComments();
-		Collections.sort(comments, new Comparator<Comment>() {
-			@Override
-			public int compare(Comment c1, Comment c2) {
-				return c1.getCommentPostingDateTime().compareTo(c2.getCommentPostingDateTime());
-			}
-		});
 
 		request.setAttribute("sound", sound);
 

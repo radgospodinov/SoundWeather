@@ -108,7 +108,7 @@
 					<td><b class="commenter_name"><c:out
 								value="${comment.commentAuthor.username}" /></b></td>
 					<td><b class="comment_posting_time"><c:out
-								value="${comment.commentPostingDateTime}" /></b></td>
+								value="${comment.getCommentPostingDateTimeString()}" /></b></td>
 
 					<td><b class="comment_body_text"><c:out
 								value="${comment.commentBody}" /></b></td>
