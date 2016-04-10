@@ -18,3 +18,27 @@
 	color: #800000;
 	
 }
+
+.unfollow_user {
+	height:35px;
+	width:140px;
+	font-weight:bold;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	text-align:center;
+	
+}
+
+.unfollow_user:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+	
+	
+}

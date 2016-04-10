@@ -124,35 +124,63 @@
 		});
 
 	}
+	
+	
+	
+	$('#update_user_data').on('click', function(e){
+
+	    $("#form").toggle(1000);
+	    $(this).toggleClass('class1')
+	});
+	
+		
 </script>
 
+			<script>
+				$(document).ready(function(){
+   					 
+					$("#submit_update_user_data").click(function(){
+      				  			$("#form").hide(1000);
+      				  			$("#update_user_data").show(1000);
+    				 });
+    			
+   					 $("#update_user_data").click(function(){
+        					
+        						$("#update_user_data").hide(1000);
+        						$("#no_update_user_data").show(1000);
+   			 		 });
+   					 
+   					 $("#no_update_user_data").click(function(){
+     					
+ 						$("#form").hide(1000);
+ 						$("#update_user_data").show(1000);
+ 						$("#no_update_user_data").hide(1000);
+		 		 });
+   					
+   				
+
+				});
+			</script>
 
 </head>
 
 <body>
 
-	<div id="my_profile">
-		<table>
+	<div class="my_profile">
+		<table class="user_characteristics">
 			<tr>
-				<td><img id="userAvatar" alt=""
+				<td><img class="user_avatar" alt=""
 					src="<c:url value="/covers/${user.avatarName}.jpg"/>" height="150"
 					width="150"></td>
-				<td><c:out value="${user.username}" /></td>
-				<td id="userLocation"><c:out value="${user.location}" /></td>
-			</tr>
-		</table>
-	</div>
-
-
-
-	<div id="update_notification">
-
-		<h5 id="update_message" style="display: none; color: #ff6666">Problem
-			updating. /// Please, fill all the fields.</h5>
-
-	</div>
-
-	<div id="form">
+				<td>
+				<b class="user_profile_name"><c:out value="${user.username}" /></b>
+				
+				
+				</td>
+				<td id="userLocation" class="user_profile_location"><c:out value="${user.location}" /></td>
+				<td>
+			
+			<div id="form">
 		<p>Select cover photo</p>
 		<input type="file" name="user_cover_photo" id="avatar"
 			accept="image/*" /> <br /> <input id="pass1" type="password"
@@ -165,9 +193,31 @@
 			onkeyup="validateEmail(); return false;" required /> <br /> <input
 			id="location" type="text" name="location"
 			placeholder="enter new location" required /> <br /> <input
-			type="submit" value="Update" onclick="updateUser()" /> <br />
+			id="submit_update_user_data" type="submit" value="Update" onclick="updateUser()" /> <br />
 		<!--<span id="update_message"></span>-->
 	</div>
+			
+			
+				</td>
+			
+			
+			</tr>
+		
+			</table>
+		<button id="update_user_data">Update your profile</button>
+		<button id="no_update_user_data">No thanks</button>
+	</div>
+
+
+
+	<div id="update_notification">
+
+		<h5 id="update_message" style="display: none; color: #ff6666">Problem
+			updating. /// Please, fill all the fields.</h5>
+
+	</div>
+
+	
 
 
 

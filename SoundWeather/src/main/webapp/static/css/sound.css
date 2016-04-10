@@ -56,6 +56,12 @@
 	color: #800000;
 }
 
+.sound_autor:hover {
+	font-weight:bold;
+	margin-left:20px;
+	font-size:20px;
+	color: #0c0743;
+}
 
 .sound_table_with_comments {
 	margin-top:30px;

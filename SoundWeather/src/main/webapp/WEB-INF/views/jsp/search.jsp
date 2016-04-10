@@ -77,7 +77,7 @@
   				$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_albums : areAlbums, search_genre : genre});
 
   			} else {
-  	  			alert('hi,from are-sounds call in getGenreResults')
+  	  			//alert('hi,from are-sounds call in getGenreResults')
   				$('#sounds_space').load('search', {search_word : searchWord, requested_page : 1, are_sounds : areSounds, search_genre : genre});
 
   			}
@@ -167,19 +167,19 @@
 		<div id="filters">
 			<h3 id="search_word">RESULTS FOR "<c:out value="${requestScope.search_word}"/>" : <c:out value="${requestScope.number_of_results}"/>
 			
-			<c:if test="${requestScope.are_users == true && requestScope.number_of_results > 1}">
+			<c:if test="${requestScope.are_users == true && (requestScope.number_of_results > 1 || requestScope.number_of_results == 0)}">
 			<b class="type_of_result">users</b>
 			</c:if>
 			<c:if test="${requestScope.are_users == true && requestScope.number_of_results == 1}">
 			<b class="type_of_result">user</b>
 			</c:if>
-			<c:if test="${requestScope.are_sounds == true && requestScope.number_of_results > 1}">
+			<c:if test="${requestScope.are_sounds == true && (requestScope.number_of_results > 1 || requestScope.number_of_results == 0)}">
 			<b class="type_of_result">sounds</b>
 			</c:if>
 			<c:if test="${requestScope.are_sounds == true && requestScope.number_of_results == 1}">
 			<b class="type_of_result">sound</b>
 			</c:if>
-		<c:if test="${requestScope.are_albums == true && requestScope.number_of_results > 1}">
+		<c:if test="${requestScope.are_albums == true &&  (requestScope.number_of_results > 1 || requestScope.number_of_results == 0)}">
 			<b class="type_of_result">albums</b>
 			</c:if>
 			<c:if test="${requestScope.are_albums == true && requestScope.number_of_results == 1}">

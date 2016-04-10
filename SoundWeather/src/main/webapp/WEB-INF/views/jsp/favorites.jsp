@@ -11,7 +11,7 @@
 <title>Favorites</title>
 <script>
 		$(".remove_from_favorites").on('click', function removeFromFavorites(e) {
-			 alert(event.target.id);
+			// alert(event.target.id);
 			
 			 var soundId = event.target.id;
 			// alert(soundId);

@@ -198,6 +198,18 @@
 				
 			}
 			
+			$('#update_album_button').on('click', function(e){
+
+			    $("#update_album").toggle(1000);
+			    $(this).toggleClass('class1')
+			});
+			
+			$('#create_album_button').on('click', function(e){
+
+			    $("#create_new_album").toggle(1000);
+			    $(this).toggleClass('class1')
+			});
+			
 			</script>
 
 
@@ -208,9 +220,9 @@
 
 <body>
 
-
+	<button id="create_album_button">Create new album</button>
 	<div id="create_new_album">
-		<h3>Create new album</h3>
+	
 		<p>Enter album title</p>
 		<input type="text" name="new_album_title"
 			placeholder="enter album title" id="albumTitle" /> <br />
@@ -238,10 +250,13 @@
 					
 					<td>
 						
-						<img id="cover${album.albumId}" src="<c:url value="/covers/${album.fileName}.jpg"/>" height="150" width="150" > 
+						<img class="albums_covers" id="cover${album.albumId}" src="<c:url value="/covers/${album.fileName}.jpg"/>"> 
 						<div class="album_title" id="title${album.albumId}">
 							<b><c:out value="${album.albumTitle}" /></b>
 						</div>
+						<button id="update_album_button">Update</button>
+						<button id="album_to_delete" value="Delete"
+							onclick="deleteAlbum(${album.albumId})">Delete album</button>
 					</td>
 					
 					<td>
@@ -261,6 +276,7 @@
 						</td>
 						
 					<td>
+					
 						<div id="update_album">
 							
 							<input type="text" name="update_album_title"
@@ -277,11 +293,7 @@
 					</td>
 
 
-					<td>
-						<button id="album_to_delete" value="Delete"
-							onclick="deleteAlbum(${album.albumId})">Delete album</button>
-					</td>
-
+					
 				</tr>
 			</c:forEach>
 		</table>

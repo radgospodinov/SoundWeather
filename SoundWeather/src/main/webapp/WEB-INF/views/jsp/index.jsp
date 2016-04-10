@@ -33,6 +33,8 @@
 	href="<c:url value="/css/other_user.css"/>" />
 	<link rel="stylesheet" type="text/css"
 	href="<c:url value="/css/favorites.css"/>" />
+	<link rel="stylesheet" type="text/css"
+	href="<c:url value="/css/profile.css"/>" />
 <script src="<c:url value="/script/jquery-2.2.2.min.js"/>"></script>
 <script src="<c:url value="/script/jquery.dataTables.min.js"/>"></script>
 <script src="<c:url value="/script/jquery-ui.min.js"/>"></script>

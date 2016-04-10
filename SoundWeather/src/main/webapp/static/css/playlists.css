@@ -6,7 +6,7 @@ html {
 }
 
 
-.like {
+/* .like {
 	cursor:pointer;
 	width: 85px;
 	height:20px;
@@ -21,7 +21,7 @@ html {
 	text-align:center;
 	margin-left:45px;
 	font-weight:bold;
-}
+} */
 
 #playlists_body {
 	margin:0 auto; 
@@ -42,6 +42,7 @@ html {
 	font-size:20px;
 	color: #800000;
 	margin-bottom:15px;
+	/* text-shadow: 2px 3px #eadaca; */
 }
 
 #playlist_table {
@@ -84,7 +85,7 @@ html {
 } 
 
 
-.like {
+/* .like {
 	cursor:pointer;
 	width: 50px;
 	height:20px;
@@ -105,7 +106,31 @@ html {
 	color: #800000;
 	background: transparent;
 	border-color: #aaab9c #fff #fff #ccc;
+} */
+
+.like {
+	height:35px;
+	width:140px;
+	font-weight:bold;
+	cursor:pointer;
+	border-width: 1px;
+	border-color: #ffe #aaab9c #ccc #fff;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f7f2ea;
+	text-align:center;
+	
 }
+
+.like:hover {
+	color: #800000;
+	background: transparent;
+	border-color: #aaab9c #fff #fff #ccc;
+}
+
+
+
 
 .number_of_likes {
 	font-size:15px;
