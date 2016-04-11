@@ -44,7 +44,7 @@ public class User {
 	private String avatarName;
 	@Column(name = "activation")
 	private boolean isActive;
-	@Column(name ="reg_time")
+	@Column(name = "reg_time")
 	private long registerDate;
 	@ManyToMany
 	@JoinTable(name = "ownsounds_table")
@@ -241,6 +241,14 @@ public class User {
 	public User setAvatarName(String avatarName) {
 		this.avatarName = avatarName;
 		return this;
+	}
+
+	public long getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(long registerDate) {
+		this.registerDate = registerDate;
 	}
 
 	public void addSoundToSounds(Sound sound) {

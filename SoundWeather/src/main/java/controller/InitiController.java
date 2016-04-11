@@ -32,6 +32,12 @@ public class InitiController {
 	private static final int MAX_SOUNDS_PER_ROW = 8;
 	private static final String DEFAULT_LOCATION = "Sofia";
 	
+	private static final String API_PROVIDER_REQUEST = "http://api.openweathermap.org/data/2.5/weather?q=";
+	private static final String API_PROVIDER_KEY_PARAM = "&APPID=";
+	private static final String API_KEY1 = "c63d60d1d5efdd704911c9add93638e8";
+	private static final String API_KEY2 = "c358dab4ad6389a50bb2ab26051556a1";
+	private static final String API_KEY3 = "7c53134e21b6d4e83c16b8ea305f679b";
+	
 	private static final String LOGGED_USER = "loggedUser";
 	private static final String REDIRECT_URL_PARAM = "url";
 	private static final String LOG_STATUS = "logStatus";
@@ -39,6 +45,12 @@ public class InitiController {
 	private static final String TRENDY_LIST = "trendySounds";
 	private static final String GENRES = "genres";
 	private static final String SOUNDS = "sounds";
+	private static final int MAIN_CHARS_TO_DESC = 8;
+	private static final int POP_GENRE = 1;
+	private static final int ROCK_GENRE = 2;
+	private static final int RAP_GENRE = 3;
+	private static final int CLASSIC_GENRE = 4;
+	private static final int TECHNO_GENRE = 5;
 
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -186,7 +198,7 @@ public class InitiController {
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String initProfile(HttpServletRequest request) {
 		if (request.getSession().getAttribute(LOGGED_USER) == null) {
-			request.setAttribute(REDIRECT_URL_PARAM, "upload");
+			request.setAttribute(REDIRECT_URL_PARAM, "profile");
 			return "login";
 		}
 		User user = (User) request.getSession().getAttribute(LOGGED_USER);
@@ -302,8 +314,8 @@ public class InitiController {
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			if (session.get(User.class, username) != null) {
-				User user = (User) session.get(User.class, username);
+			User user = (User) session.get(User.class, username);
+			if (user != null) {
 				if (user.isActive()) {
 					return "index";
 				} else {
@@ -311,6 +323,7 @@ public class InitiController {
 				}
 				session.update(user);
 				request.getSession().setAttribute(LOGGED_USER, user);
+				tx.commit();
 			} else {
 				return "index";
 			}
@@ -357,18 +370,23 @@ public class InitiController {
 		RestTemplate restTemplate = new RestTemplate();
 
 		// GET WEATHER DESC FROM OPENWEATHERAPI
-		// TODO : String[] apiKeys to use multiple keys from openweather in case
-		// of overload of system
-		String apiKey = "c63d60d1d5efdd704911c9add93638e8";
-		String url = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&APPID=" + apiKey;
-		String result = restTemplate.getForObject(url, String.class);
-		System.out.println("result=" + result);
-		int p1 = result.indexOf("\"main\"");
+		// more to be added if we have issues with these 3
+		String[] apiKeys = {API_KEY1,API_KEY2,API_KEY3}; 
 		String weatherDesc = "";
-		if (p1 > -1) {
-			int p2 = result.indexOf("\"", p1 + 8);
-			System.out.println("p1=" + p1 + " p2=" + p2);
-			weatherDesc = result.substring(p1 + 8, p2);
+		for(String apiKey : apiKeys) {
+			String url = API_PROVIDER_REQUEST + location + API_PROVIDER_KEY_PARAM + apiKey;
+			String result = "";
+			try {
+				 result = restTemplate.getForObject(url, String.class);
+			} catch (Exception e) {
+				continue;
+			}
+			int startOfDesc = result.indexOf("\"main\"")+MAIN_CHARS_TO_DESC;
+			if (startOfDesc > -1) {
+				int endOfDesc = result.indexOf("\"", startOfDesc);
+				weatherDesc = result.substring(startOfDesc, endOfDesc);
+				break;
+			} 
 		}
 		return weatherDesc;
 
@@ -377,35 +395,34 @@ public class InitiController {
 	private List<Sound> initWeatherSounds(String weatherDescription) {
 		int genreId = -1;
 		switch (weatherDescription.toLowerCase()) {
-		// TODO better logic and stuff / maybe use constants not magic numbers
 		case "clear":
-			genreId = 1; // Pop
+			genreId = POP_GENRE; // Pop
 			break;
 		case "thunderstorm":
-			genreId = 2; // Rock
+			genreId = ROCK_GENRE; // Rock
 			break;
 		case "atmosphere":
-			genreId = 3; // Rap
+			genreId = RAP_GENRE; // Rap
 			break;
 		case "rain":
-			genreId = 4; // Classic
+			genreId = CLASSIC_GENRE; // Classic
 			break;
 		case "snow":
-			genreId = 5; // Techno
+			genreId = TECHNO_GENRE; // Techno
 			break;
 		default:
-			genreId = 1; // Pop
+			genreId = POP_GENRE; // Pop
 			break;
 		}
 		List<Sound> rv = null;
 
-		// TODO : SELECT TO BE MADE
 		Session session = HibernateUtil.getSession();
-		Criteria c = session.createCriteria(Sound.class);
-		c.createAlias("soundGenres", "genre");
-		c.setMaxResults(MAX_SOUNDS_PER_ROW);
-		c.add(Restrictions.eq("genre.genreId", genreId));
-		rv = c.list();
+		Criteria criteria = session.createCriteria(Sound.class);
+		criteria.createAlias("soundGenres", "genre");
+		criteria.add(Restrictions.eq("genre.genreId", genreId));
+		criteria.add(Restrictions.sqlRestriction("1=1 order by rand()"));
+		criteria.setMaxResults(MAX_SOUNDS_PER_ROW);
+		rv = criteria.list();
 		session.close();
 		return rv;
 	}
@@ -413,10 +430,10 @@ public class InitiController {
 	private List<Sound> initTrendySounds() {
 		List<Sound> rv = null;
 		Session session = HibernateUtil.getSession();
-		Criteria c = session.createCriteria(Sound.class);
-		c.addOrder(Order.desc("soundRating"));
-		c.setMaxResults(MAX_SOUNDS_PER_ROW);
-		rv = c.list();
+		Criteria criteria = session.createCriteria(Sound.class);
+		criteria.addOrder(Order.desc("soundRating"));
+		criteria.setMaxResults(MAX_SOUNDS_PER_ROW);
+		rv = criteria.list();
 		session.close();
 		return rv;
 	}

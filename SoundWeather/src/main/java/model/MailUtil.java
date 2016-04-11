@@ -32,7 +32,7 @@ public class MailUtil {
 	private static final String MAIL_PASSWORD = "radoirumen";
 	private static final String ENCRYPTON_KEY = "soundswe";
 
-
+     // google post office
 	private static Session initGmailSMTP() {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -46,7 +46,7 @@ public class MailUtil {
 		});
 		return session;
 	}
-
+	
 	public static void sendMail(String recipient, String subject, String text)
 			throws AddressException, MessagingException {
 		Message message = new MimeMessage(initGmailSMTP());

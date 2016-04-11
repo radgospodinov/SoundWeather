@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Hibernate;
+import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -64,27 +65,6 @@ public class SoundController {
 				album.removeSound(sound);
 			}
 			session.update(u);
-			// wokring slow
-
-			// Criteria criteria = session.createCriteria(User.class);
-			// criteria.createAlias("playlist",
-			// "likes").add(Restrictions.eq("likes.soundId", id));
-			// List<User> results = criteria.list();
-			// System.out.println("soundId:" + id);
-			// for (User usr : results) {
-			// System.out.println("username:" + usr.getUsername());
-			// usr.removeSoundFromLiked(sound);
-			// session.update(usr);
-			// }
-			// Criteria criteria2 = session.createCriteria(User.class);
-			// criteria2.createAlias("favorites",
-			// "favorites").add(Restrictions.eq("favorites.soundId", id));
-			// List<User> results2 = criteria2.list();
-			// for (User usr : results2) {
-			// System.out.println("username:" + usr.getUsername());
-			// usr.removeFromFavorites(sound);
-			// session.update(usr);
-			// }
 
 			Query query = session.createQuery("from User u where exists(from u.playlist where soundId=" + id
 					+ ") or exists(from u.favorites where soundId = " + id + ")");
@@ -214,179 +194,7 @@ public class SoundController {
 		return rv.toString();
 	}
 
-	@RequestMapping(value = "/createAlbum", method = RequestMethod.POST)
-	public @ResponseBody String createAlbum(MultipartHttpServletRequest request) {
-		JsonObject rv = new JsonObject();
-		// getting Album params
-		User user = (User) request.getSession().getAttribute(LOGGED_USER);
-		String fileName = user.getUsername() + "_"
-				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
-		String title = request.getParameter("albumTitle");
-		String genresTmp = request.getParameter("albumGenres");
-		String[] genres = genresTmp.split(",");
-		System.out.println(Arrays.toString(genres));
-		MultipartFile albumCover = request.getFile("albumCover");
-		byte[] coverPhoto = null;
-		try {
-			coverPhoto = albumCover.getBytes();
-		} catch (IOException e) {
-			e.printStackTrace();
-			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			return rv.toString();
-		}
-		// saving album to DB
-		Session session = HibernateUtil.getSession();
-		Transaction tx = null;
-		try {
-			tx = session.beginTransaction();
-			User author = (User) session.get(User.class, user.getUsername());
-			Album album = new Album().setAlbumAuthor(author).setAlbumTitle(title).setFileName(fileName);
-			for (String string : genres) {
-				Genre genre = (Genre) session.get(Genre.class, Integer.parseInt(string));
-				album.addGenre(genre);
-			}
-			session.save(album);
-			author.addAlbum(album);
-			session.update(author);
-			tx.commit();
-			rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
-		} catch (Exception e) {
-			if (tx != null) {
-				tx.rollback();
-			}
-			e.printStackTrace();
-			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			return rv.toString();
-		} finally {
-			session.close();
-		}
-		// TODO save cover to server's file system
-		FileOutputStream fos = null;
-		File coverFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
-		try {
-			coverFile.createNewFile();
-			fos = new FileOutputStream(coverFile);
-			fos.write(coverPhoto);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
-		return rv.toString();
-	}
-
-	@RequestMapping(value = "/deleteAlbum", method = RequestMethod.POST)
-	public @ResponseBody String deleteAlbum(HttpServletRequest request) {
-		JsonObject rv = new JsonObject();
-		int id = Integer.parseInt(request.getParameter("id"));
-		User user = (User) request.getSession().getAttribute(LOGGED_USER);
-		Session session = HibernateUtil.getSession();
-		Transaction tx = null;
-		try {
-			tx = session.beginTransaction();
-			User u = (User) session.get(User.class, user.getUsername());
-			for (Album album : u.getAlbums()) {
-				if (album.getAlbumId() == id) {
-					u.removeAlbumFromAlbums(album);
-					break;
-				}
-			}
-			session.update(u);
-			Album album = (Album) session.get(Album.class, id);
-			session.delete(album);
-			request.getSession().setAttribute(LOGGED_USER, u);
-			tx.commit();
-
-		} catch (Exception e) {
-			if (tx != null) {
-				tx.rollback();
-			}
-			e.printStackTrace();
-			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			return rv.toString();
-		} finally {
-			session.close();
-		}
-		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
-		rv.addProperty("id", "#album" + id);
-		return rv.toString();
-	}
-
-	@RequestMapping(value = "/updateAlbum", method = RequestMethod.POST)
-	public @ResponseBody String updateAlbum(MultipartHttpServletRequest request) {
-		JsonObject rv = new JsonObject();
-		// getting Album params
-		User user = (User) request.getSession().getAttribute(LOGGED_USER);
-		String fileName = user.getUsername() + "_"
-				+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
-		String title = request.getParameter("albumTitle");
-		int albumId = Integer.parseInt(request.getParameter("albumId"));
-		MultipartFile albumCover = request.getFile("albumCover");
-		byte[] coverPhoto = null;
-		if (albumCover != null && !albumCover.isEmpty()) {
-			try {
-				coverPhoto = albumCover.getBytes();
-			} catch (IOException e) {
-				e.printStackTrace();
-				rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-				return rv.toString();
-			}
-		}
-		// saving album to DB
-		Session session = HibernateUtil.getSession();
-		Transaction tx = null;
-		try {
-			tx = session.beginTransaction();
-			User author = (User) session.get(User.class, user.getUsername());
-			Album album = (Album) session.get(Album.class, albumId);
-			if (title != null && !title.isEmpty())
-				album.setAlbumTitle(title);
-			if (albumCover != null && !albumCover.isEmpty())
-				album.setFileName(fileName);
-			session.update(album);
-			session.update(author);
-			tx.commit();
-		} catch (Exception e) {
-			if (tx != null) {
-				tx.rollback();
-			}
-			e.printStackTrace();
-			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			return rv.toString();
-		} finally {
-			session.close();
-		}
-		// save cover to server's file system
-		if (albumCover != null && !albumCover.isEmpty()) {
-			FileOutputStream fos = null;
-			File coverFile = new File(context.getRealPath("/static/covers/" + fileName + ".jpg"));
-			try {
-				coverFile.createNewFile();
-				fos = new FileOutputStream(coverFile);
-				fos.write(coverPhoto);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			String img = "data:image/gif;base64," + Base64.encode(coverPhoto);
-			rv.addProperty("newFilePath", img);
-		}
-		if(title!=null && !title.isEmpty())
-			rv.addProperty("newName", title);	
-		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
-		rv.addProperty("id", albumId);
-		return rv.toString();
-	}
+	
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public @ResponseBody String uploadForm(MultipartHttpServletRequest request, HttpServletResponse response)
@@ -484,7 +292,7 @@ public class SoundController {
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			Sound sound = (Sound) session.get(Sound.class, soundId);
+			Sound sound = (Sound) session.get(Sound.class, soundId,LockOptions.UPGRADE);
 
 			User u = (User) request.getSession().getAttribute(LOGGED_USER);
 

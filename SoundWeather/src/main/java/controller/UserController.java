@@ -16,7 +16,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +44,7 @@ public class UserController {
 	private static final String RESPONSE_MSG = "msg";
 	private static final String RESPONSE_STATUS = "status";
 	private static final int MAX_PASSWORD_LENGTH = 6;
+	private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-zA-Z]).{"+ MAX_PASSWORD_LENGTH +",}$";
 	private static final int MAX_USERNAME_LENGTH = 4;
 	private static final String REDIRECT_URL_PARAM = "url";
 	private static final String SUBJECT = "Activation at SoundWeather";
@@ -83,14 +86,15 @@ public class UserController {
 			rv.addProperty(RESPONSE_FIELD, "#username");
 			return rv.toString();
 		}
-		if (password1.length() < MAX_PASSWORD_LENGTH) {
+		
+		if (!password1.matches(PASSWORD_REGEX)) {
 			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			rv.addProperty(RESPONSE_MSG, "Password too short.Username must be at least 6 characters");
+			rv.addProperty(RESPONSE_MSG,
+					"Your password must have at least 1 digit and 1 letter must be at least "
+							+ MAX_PASSWORD_LENGTH + " chars long!");
 			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
-		// TODO : strong password validation
-		// TODO : email uniqueness
 
 		Session session = HibernateUtil.getSession();
 		if (session.get(User.class, username) != null) {
@@ -99,6 +103,19 @@ public class UserController {
 			rv.addProperty(RESPONSE_FIELD, "#username");
 			session.close();
 			return rv.toString();
+		}
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.eq("email", email)).setProjection(Projections.rowCount());
+		List mailCounts = criteria.list();
+		if (mailCounts != null) {
+			if ((Long) mailCounts.get(0) > 0) {
+				rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+				rv.addProperty(RESPONSE_MSG,
+						"There is already registered user with that email,please use another one.");
+				rv.addProperty(RESPONSE_FIELD, "#email");
+				session.close();
+				return rv.toString();
+			}
 		}
 
 		User user = new User(username).setEmail(email).setBirthMonth(birth_month).setBirthYear(birth_year)
@@ -121,17 +138,11 @@ public class UserController {
 		} finally {
 			session.close();
 		}
+		String mailLink = request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath())
+				+ "/emailConfirmation?ecr=";
 		new Thread() {
 			public void run() {
-				try {
-					String mailMsg = MAIL_BODY
-							+ request.getRequestURL().toString().replace(request.getRequestURI(),
-									request.getContextPath())
-							+ "/emailConfirmation?ecr=" + MailUtil.encryptUsername(username);
-					MailUtil.sendMail(email, SUBJECT, mailMsg);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				sendActivationEmail(username, mailLink, email);
 			}
 		}.start();
 
@@ -146,6 +157,7 @@ public class UserController {
 	public @ResponseBody String updateUser(MultipartHttpServletRequest request) {
 		JsonObject rv = new JsonObject();
 		User user = (User) request.getSession().getAttribute(LOGGED_USER);
+			
 		String password1 = request.getParameter("password1");
 		String password2 = request.getParameter("password2");
 		String email = request.getParameter("email");
@@ -170,13 +182,12 @@ public class UserController {
 			return rv.toString();
 		}
 
-		if (!password1.isEmpty() && password1.length() < MAX_PASSWORD_LENGTH) {
+		if (!password1.isEmpty() && !password1.matches(PASSWORD_REGEX)) {
 			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
-			rv.addProperty(RESPONSE_MSG, "Password too short.Username must be at least 6 characters");
+			rv.addProperty(RESPONSE_MSG, "Invalid password.Please enter at least 1 digit and letter and at least "+ MAX_PASSWORD_LENGTH + " chars");
 			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
-		// TODO : strong password validation
 
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
@@ -247,9 +258,15 @@ public class UserController {
 		Session session = HibernateUtil.getSession();
 		System.out.println(username + " , " + password);
 		User user = (User) session.get(User.class, username);
-		if (user == null || !user.comparePasswords(password)) {
+		if (user == null || !user.comparePasswords(password) ) {
 			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 			rv.addProperty(RESPONSE_MSG, "Invalid credentials");
+			rv.addProperty(RESPONSE_FIELD, "#username");
+			return rv.toString();
+		}
+		if(!user.isActive()) {
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Please activate your account. Check your email.");
 			rv.addProperty(RESPONSE_FIELD, "#username");
 			return rv.toString();
 		}
@@ -362,23 +379,19 @@ public class UserController {
 			Criteria criteria = session.createCriteria(User.class);
 			criteria.add(Restrictions.eq("email", email));
 			List<User> results = criteria.list();
-			if(results.size()==0){
+			if (results.size() == 0) {
 				rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
 				rv.addProperty(RESPONSE_MSG, "Invalid Email");
 				return rv.toString();
 			}
 			User user = results.get(0);
 			String newPass = generateNewPass();
-			System.out.println("newpass = "+newPass);
 			new Thread() {
 				public void run() {
-					try {
-						MailUtil.sendMail(email, "forgotten pass", "Your new password is:\n"+newPass);
-					} catch (MessagingException e) {
-						e.printStackTrace();
-					}
+					sendNewPassMail(newPass, email);
 				};
 			}.start();
+
 			user.setPassword(newPass);
 			session.update(user);
 			tx.commit();
@@ -394,21 +407,33 @@ public class UserController {
 		} finally {
 			session.close();
 		}
-		
+
 		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty(RESPONSE_MSG, "Your new password has been sent successfully!");
 		return rv.toString();
+	}
+
+
+	private void sendNewPassMail(String newPass, String email) {
+		try {
+			MailUtil.sendMail(email, "forgotten pass", "Your new password is:\n" + newPass);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void removeFailedActivations() {
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
+			System.out.println("V REMOVE-a SYM");
 			tx = session.beginTransaction();
 			Criteria criteria = session.createCriteria(User.class);
 			criteria.add(Restrictions.eq("isActive", false));
 			criteria.add(Restrictions.lt("registerDate", new Date().getTime() - 20 * 60 * 1000));
 			List<User> result = criteria.list();
+			System.out.println(result.size());
 			for (User user : result) {
 				session.delete(user);
 			}
@@ -423,13 +448,25 @@ public class UserController {
 		}
 
 	}
+
 	private String generateNewPass() {
 		String rv = "";
 		int length = 8;
-	    boolean useLetters = true;
-	    boolean useNumbers = true;
-	    rv = RandomStringUtils.random(length, useLetters, useNumbers);
-	    
+		boolean useLetters = true;
+		boolean useNumbers = true;
+		rv = RandomStringUtils.random(length, useLetters, useNumbers);
+
 		return rv;
+	}
+
+	private void sendActivationEmail(String username, String mailLink, String email) {
+
+		try {
+			String mailMsg = MAIL_BODY + mailLink + MailUtil.encryptUsername(username);
+			MailUtil.sendMail(email, SUBJECT, mailMsg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 }

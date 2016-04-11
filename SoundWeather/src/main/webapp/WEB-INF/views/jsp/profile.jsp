@@ -102,7 +102,7 @@
 					$('#email').val('');
 					$('#location').val('');
 					$('#userLocation').text(data.newLoc);
-
+					$('#no_update_user_data').hide(1000);
 					avatarOk = false;
 					$('#pass1').focus();
 					//					$('#upload_message').text(data.msg);
@@ -160,7 +160,7 @@
 	<div class="my_profile">
 		<table class="user_characteristics">
 			<tr>
-				<td><img class="user_avatar" alt=""
+				<td><img id="userAvatar" class="user_avatar" alt=""
 					src="<c:url value="/covers/${user.avatarName}.jpg"/>" height="150"
 					width="150"></td>
 				<td><b class="user_profile_name"><c:out
@@ -178,12 +178,14 @@
 							id="pass2" type="password" name="password2"
 							placeholder="re-enter new password"
 							onkeyup="checkPass(); return false;" required /> <br /> <input
-							id="email" type="text" name="email" placeholder="enter new email"
+							id="email" type="hidden" name="email"
+							placeholder="enter new email"
 							onkeyup="validateEmail(); return false;" required /> <br /> <input
 							id="location" type="text" name="location"
 							placeholder="enter new location" required /> <br /> <input
 							id="submit_update_user_data" type="submit" value="Update"
 							onclick="updateUser()" /> <br />
+						<!-- EMAIL HIDDEN  -->
 					</div>
 
 				</td>
@@ -191,10 +193,10 @@
 			</tr>
 
 		</table>
-		
+
 		<button id="update_user_data">Update your profile</button>
 		<button id="no_update_user_data">No thanks</button>
-		
+
 	</div>
 
 

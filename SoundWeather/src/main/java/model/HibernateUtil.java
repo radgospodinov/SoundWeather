@@ -1,6 +1,9 @@
 package model;
 
 
+import java.util.concurrent.locks.Lock;
+
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
