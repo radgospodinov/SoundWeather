@@ -209,13 +209,13 @@
 										onclick="loadJSP('sound?soundId=${result.soundId}')"><c:out
 											value="${result.getSoundTitle()}" /></b>
 								</div>
-
+									<c:if test="${sessionScope.loggedUser != null}">
 								<button id="wLike${result.getSoundId()}" class="like"
 									onclick="like('${result.getSoundId()}')">Like
 									[${result.getSoundRating()}]</button>
 								<button id="wFav${result.getSoundId()}" class="like"
 									onclick="fav('${result.getSoundId()}')">Favorite</button>
-
+								</c:if>
 							</td>
 						</c:forEach>
 					</tr>
@@ -245,9 +245,10 @@
 										<b class="username_in_search"><c:out
 												value="${result.username}" /></b>
 									</div>
+										<c:if test="${sessionScope.loggedUser != null}">
 									<button id="follow${result.username}" class="like"
 										onclick="follow('${result.username}')">Follow</button>
-
+										</c:if>
 								</td>
 							</c:forEach>
 						</tr>

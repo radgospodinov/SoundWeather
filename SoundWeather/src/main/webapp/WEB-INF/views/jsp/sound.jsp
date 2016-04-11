@@ -70,11 +70,12 @@
 				<td><b class="sound_page_title"><c:out
 							value="${requestScope.sound.soundTitle}" /></b></td>
 				
+					<c:if test="${sessionScope.loggedUser.username ne requestScope.sound.soundAuthor.username}">
 				<td><b class="by">by</b><b class="sound_autor"
 					onclick="loadJSP('otherUser?username=${requestScope.sound.soundAuthor.username}')"
 					style="cursor: pointer"><c:out
 							value="${requestScope.sound.soundAuthor.username}" /></b></td>
-			
+				</c:if>
 				<td>
 					<button id="wLike${requestScope.sound.getSoundId()}" class="like"
 						onclick="like('${requestScope.sound.getSoundId()}')">Like

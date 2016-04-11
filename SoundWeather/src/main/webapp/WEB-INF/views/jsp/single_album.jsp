@@ -31,11 +31,13 @@
 						<div class="album_title" id="title${requestScope.single_album.albumId}">
 							<b><c:out value="${requestScope.single_album.albumTitle}" /></b>
 							<br>
+							
+							<c:if test="${sessionScope.loggedUser.username ne requestScope.single_album.albumAuthor.username}">
 							<b class="by">by</b><b class="sound_autor"
 					onclick="loadJSP('otherUser?username=${requestScope.single_album.albumAuthor.username}')"
 					style="cursor: pointer"><c:out
 							value="${requestScope.single_album.albumAuthor.username}" /></b>
-							
+							</c:if>
 							
 							<!--  <b><c:out value="${requestScope.single_album.albumAuthor.username}" /></b>-->
 						</div>

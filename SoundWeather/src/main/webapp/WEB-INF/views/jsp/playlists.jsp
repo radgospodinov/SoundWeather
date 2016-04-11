@@ -101,13 +101,13 @@
 									onclick="loadJSP('sound?soundId=${wSound.soundId}')"><c:out
 										value="${wSound.getSoundTitle()}" /></b>
 							</div>
-
+						<c:if test="${sessionScope.loggedUser != null}">
 							<button id="wLike${wSound.getSoundId()}" class="like"
 								onclick="like('${wSound.getSoundId()}')">Like
 								[${wSound.getSoundRating()}]</button>
 							<button id="wFav${wSound.getSoundId()}" class="like"
 							onclick="fav('${wSound.getSoundId()}')">Favorite</button>
-
+						</c:if>
 						</td>
 					</c:forEach>
 				</tr>
@@ -134,12 +134,13 @@
 									onclick="loadJSP('sound?soundId=${tSound.soundId}')"><c:out
 										value="${tSound.getSoundTitle()}" /></b>
 							</div>
-
+								<c:if test="${sessionScope.loggedUser != null}">
 							<button id="tLike${tSound.getSoundId()}" class="like"
 								onclick="like('${tSound.getSoundId()}')">Like
 								[${tSound.getSoundRating()}]</button>
 							<button id="tFav${tSound.getSoundId()}" class="like"
 								onclick="fav('${tSound.getSoundId()}')">Favorite</button> 
+							</c:if>
 						</td>
 					</c:forEach>
 				</tr>
