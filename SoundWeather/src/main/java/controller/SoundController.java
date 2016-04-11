@@ -346,7 +346,7 @@ public class SoundController {
 			Album album = (Album) session.get(Album.class, albumId);
 			if (title != null && !title.isEmpty())
 				album.setAlbumTitle(title);
-			if (fileName != null && !fileName.isEmpty())
+			if (albumCover != null && !albumCover.isEmpty())
 				album.setFileName(fileName);
 			session.update(album);
 			session.update(author);
@@ -381,9 +381,10 @@ public class SoundController {
 			String img = "data:image/gif;base64," + Base64.encode(coverPhoto);
 			rv.addProperty("newFilePath", img);
 		}
+		if(title!=null && !title.isEmpty())
+			rv.addProperty("newName", title);	
 		rv.addProperty(RESPONSE_STATUS, RESPONSE_GOOD);
 		rv.addProperty("id", albumId);
-		rv.addProperty("newName", title);
 		return rv.toString();
 	}
 

@@ -91,27 +91,22 @@
 				
 				var file = $('#file'+albumId)[0].files[0];
 				updateAlbumCover = file;
-				name = file.name;
-				size = file.size;
-				type = file.type;
-				if (file.name.length < 1) {
-					alert("Please choose album cover");
-					return;
-				} else if (file.size > 1000000) {
-					alert("File is to big");
-					return;
-				} else if (file.type != 'image/png' && file.type != 'image/jpg'
-						&& file.type != 'image/gif'
-						&& file.type != 'image/jpeg') {
-					alert("File doesnt match png, jpg or gif");
-					return;
-				}				
-				
-				if ($('#updateTitle'+albumId).val() == "") {
-					alert("please enter valid title");
-					$('#updateTitle'+albumId).focus();
-					return;
+				if(updateAlbumCover) {
+					name = file.name;
+					size = file.size;
+					type = file.type;
+					if (file.size > 1000000) {
+						alert("File is to big");
+						return;
+					} else if (file.type != 'image/png' && file.type != 'image/jpg'
+							&& file.type != 'image/gif'
+							&& file.type != 'image/jpeg') {
+						alert("File doesnt match png, jpg or gif");
+						return;
+					}			
 				}
+				
+				
 				var form = new FormData();
 			
 				form.append("albumCover", updateAlbumCover);
@@ -128,10 +123,15 @@
 					enctype : 'multipart/form-data',
 					success : function(data) {
 						if (data.status == 'ok') {
-							$('#updateAlbumTitle').val('');
-							$('#updateAlbumCover').val('');
+							$('#file'+albumId).val('');
+							$('#updateTitle'+albumId).val('');
+							if(data.newName) {
 							$('#title'+data.id).html(data.newName.bold());
+							}
+							if(data.newFilePath) {
 							$('#cover'+data.id).attr('src', data.newFilePath);
+							}
+							$('#update_album'+data.id).hide(1000);
 												
 							coverOk = false;
 							$('#albumTitle').focus();
@@ -215,14 +215,16 @@
 
 <body>
 
-	<button class="create_album_button" id="create_album_button">Create new album</button>
+	<button class="create_album_button" id="create_album_button">Create
+		new album</button>
 	<div id="create_new_album">
-	
+
 		<p>Enter album title</p>
 		<input type="text" name="new_album_title"
 			placeholder="enter album title" id="albumTitle" /> <br />
 		<p>Select album cover</p>
-		<select class="select_album_genres" id="genres" size="1" name="genres" multiple="multiple">
+		<select class="select_album_genres" id="genres" size="1" name="genres"
+			multiple="multiple">
 
 			<c:forEach items="${requestScope.genres}" var="genre">
 				<option value="${genre.getGenreId()}"><c:out
@@ -238,51 +240,47 @@
 	<div id="own_albums">
 		<table>
 			<c:forEach var="album" items="${requestScope.albums}">
-				<tr class="one_album" id="album${album.albumId}"  >  
-									
-					<td>
-						<img class="albums_covers" id="cover${album.albumId}" src="<c:url value="/covers/${album.fileName}.jpg"/>"> 
+				<tr class="one_album" id="album${album.albumId}">
+
+					<td><img class="albums_covers" id="cover${album.albumId}"
+						src="<c:url value="/covers/${album.fileName}.jpg"/>">
 						<div class="album_title" id="title${album.albumId}">
 							<b><c:out value="${album.albumTitle}" /></b>
 						</div>
 						<button id="${album.albumId}" class="update_album_button">Update</button>
 						<button id="album_to_delete" value="Delete"
-							onclick="deleteAlbum(${album.albumId})">Delete album</button>
-					</td>
-					
-					<td>
-						<c:forEach var="album_sound" items="${album.albumTracks}" varStatus="status">
+							onclick="deleteAlbum(${album.albumId})">Delete album</button></td>
+
+					<td><c:forEach var="album_sound" items="${album.albumTracks}"
+							varStatus="status">
 							<div id="sound${album_sound.soundId}">
-							
-								<a id="song_from_album" 
-								onclick="loadJSP('sound?soundId=${album_sound.soundId}')"><c:out
-									value="${status.count}" /> : <c:out
-									value="${album_sound.soundTitle}" /></a>
-								
-							<button id="remove_sound_from_album" value="Remove"
-								onclick="deleteSound(${album_sound.soundId},${album.albumId})">Remove</button>
-								
+
+								<a id="song_from_album"
+									onclick="loadJSP('sound?soundId=${album_sound.soundId}')"><c:out
+										value="${status.count}" /> : <c:out
+										value="${album_sound.soundTitle}" /></a>
+
+								<button id="remove_sound_from_album" value="Remove"
+									onclick="deleteSound(${album_sound.soundId},${album.albumId})">Remove</button>
+
 							</div>
-							
-						</c:forEach>
-						</td>
-					
-						
+
+						</c:forEach></td>
+
+
 					<td>
 						<div class="update_album_form" id="update_album${album.albumId}">
-							<input class="update_album_title" type="text" name="update_album_title"
-								placeholder="change album title" id="updateTitle${album.albumId}" /> 
-												
-							<input type="file" name="update_cover_photo"
-								id="file${album.albumId}" accept="image/*" />
-								
-								 <input
-								type="submit" value="Update album"
+							<input class="update_album_title" type="text"
+								name="update_album_title" placeholder="change album title"
+								id="updateTitle${album.albumId}" />
+							 <input type="file"
+								name="update_cover_photo" id="file${album.albumId}"
+								accept="image/*" /> <input type="submit" value="Update album"
 								onclick="updateAlbum(${album.albumId})" />
 						</div>
 					</td>
 				</tr>
-				
+
 			</c:forEach>
 		</table>
 	</div>
