@@ -110,7 +110,7 @@
 
 	<div id="upload_space">
 		<div id="upload_notification">
-			<h3 id="upload_message" style="display: none; color: #ff6666"></h3>
+			<h3 id="upload_message" style="display: none;"></h3>
 		</div>
 	
 		<p>Select sound file</p>

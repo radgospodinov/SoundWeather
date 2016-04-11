@@ -83,7 +83,7 @@
 
 
 	<div id="login_notification">
-		<h5 id="login_message" style="display: none; color: #ff6666">There
+		<h5 id="login_message" style="display: none; ">There
 			is a user already registered with this username. /// Please, fill all
 			the fields.</h5>
 	</div>

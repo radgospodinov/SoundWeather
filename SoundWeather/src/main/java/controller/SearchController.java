@@ -81,10 +81,10 @@ public class SearchController {
 				session.beginTransaction();
 				Criteria criteria = session.createCriteria(Sound.class);
 				criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-				criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+				criteria.setMaxResults(MAX_RESULTS_PER_PAGE);
 				criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
 				searchResults = (List<Sound>) criteria.list();		
-				
+				System.out.println(searchResults.size());
 			} catch (HibernateException e) {
 				session.getTransaction().rollback();
 			} finally {
@@ -137,7 +137,7 @@ public class SearchController {
 					session.beginTransaction();
 					Criteria criteria = session.createCriteria(Sound.class);
 					criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+					criteria.setMaxResults(MAX_RESULTS_PER_PAGE);
 					criteria.add(Restrictions.like("soundTitle", "%" + searchWord + "%"));
 					criteria.createAlias("soundGenres", "genre");
 					criteria.add(Restrictions.eq("genre.genreName", genre));
@@ -189,7 +189,7 @@ public class SearchController {
 							session.beginTransaction();
 							Criteria criteria = session.createCriteria(Album.class);
 							criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-							criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+							criteria.setMaxResults(MAX_RESULTS_PER_PAGE);
 							criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
 							searchResults = (List<Album>) criteria.list();		
 							for (Album a : searchResults) {
@@ -245,7 +245,7 @@ public class SearchController {
 								session.beginTransaction();
 								Criteria criteria = session.createCriteria(Album.class);
 								criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-								criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+								criteria.setMaxResults(MAX_RESULTS_PER_PAGE);
 								criteria.add(Restrictions.like("albumTitle", "%" + searchWord + "%"));
 								criteria.createAlias("albumGenres", "genre");
 								criteria.add(Restrictions.eq("genre.genreName", genre));
@@ -295,7 +295,7 @@ public class SearchController {
 					session.beginTransaction();
 					Criteria criteria = session.createCriteria(User.class);
 					criteria.setFirstResult((page - 1) * MAX_RESULTS_PER_PAGE);
-					criteria.setMaxResults(page * MAX_RESULTS_PER_PAGE);
+					criteria.setMaxResults(MAX_RESULTS_PER_PAGE);
 					criteria.add(Restrictions.like("username", "%" + searchWord + "%"));
 					searchResults = (List<User>) criteria.list();		
 					

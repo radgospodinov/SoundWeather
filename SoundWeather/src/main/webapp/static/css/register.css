@@ -46,8 +46,50 @@ input {
 }
 
 #login_message {
+	font-size:15px;
+	color: #800000;
+	margin-left:700px;
+}
+
+
+
+.forgotten_password {
+	margin-left:685px;
+	text-decoration: none;
+	cursor:pointer;
+	font-size:20px;
+	color: #800000;
+}
+
+.forgotten_password:hover {
+	font-weight:bold;
+	color: #0c0743;
+	background: transparent;
+}
+
+#emailRecipient {
 	margin-right:auto;
 	margin-left:auto;
+	display: block;
+	width: 300px;
+	padding: 0.5em;
+	border-width: 1px;
+	border-color: #ccc #ffe  #fff  #aaab9c ;
+	border-style: solid;
+	color: #777;
+	text-decoration: none;
+	background: #f0f0f0;
+	height:45px;
+	text-align:center;
+	font-weight:bold;
+	margin-top:15px;
+	
+}
+
+.send_new_password_message {
+	margin-left:565px;
+	font-size:15px;
+	color: #800000;
 }
 
 input[type=submit] {

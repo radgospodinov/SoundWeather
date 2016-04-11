@@ -93,7 +93,7 @@ function sendNewPass() {
 
 	<div id="login_space">
 		<div id="login_notification">
-			<h5 id="login_message" style="display: none; color: #ff6666">Wrong
+			<h5 id="login_message" style="display: none;">Wrong
 				username or password.</h5>
 		</div>
 
@@ -103,14 +103,14 @@ function sendNewPass() {
 			type="password" name="password" placeholder="enter spassword" /> <br />
 		<input type="submit" value="Login" onclick="login()" /> <input
 			id="url" type="hidden" value="${requestScope.url}" /> <br> 
-			<a
+			<a class="forgotten_password"
 			onclick="showForgottenPass()">Forgotten password?
 			</a>
 	</div>
 	
 	<div id="forgottenPass" style="display: none">
 		<div>
-			<h3>Enter your email and we are gonna send you a new password</h3>
+			<h3 class="send_new_password_message">Enter your email and we are gonna send you a new password</h3>
 		</div>
 
 		<input id="emailRecipient" type="text" name="email"
