@@ -267,7 +267,7 @@
 					<c:forEach var="result" items="${requestScope.result_list}">
 						<td id="one_result">
 							<div id="photos">
-								<a onclick="getAlbum(${result.albumId})"><img
+								<a onclick="loadJSP('getAlbum?requested_album_id=${result.albumId}')"><img
 									id="album_cover_photo" alt="Album cover photo"
 									src="<c:url value="/covers/${result.fileName}.jpg"/>"
 									height="150" width="150" /></a>
