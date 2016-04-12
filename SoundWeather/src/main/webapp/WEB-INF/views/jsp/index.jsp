@@ -43,7 +43,7 @@
 
 <script type="text/javascript">
 	function loadJSP(target) {
-		$('#sounds_space').load(target);
+		$('#sounds_space').load(target); 
 	};
 
 	function search() {
@@ -63,7 +63,48 @@
 		$('#loginHeader').show();
 		$('#registerHeader').show();
 	};
-</script>
+	
+	</script>
+	
+	
+	<script>
+	
+	
+	var timer;
+	var lat;
+	var lon;
+	function startLocationUpdate() {
+		if (navigator.geolocation) {
+			timer = setInterval(getLocation(), 10*1000)
+			getLocation();			
+	    } 
+	}
+	function getLocation(){
+		 navigator.geolocation.getCurrentPosition(function(x){
+			var changed = false;
+			if(lat) {
+				if(x.coords.latitude.toFixed(2)!= lat || x.coords.longitude.toFixed(2)!=lon) {
+					changed=true;
+				} 
+			} else {
+				changed=true;
+			}
+			if(changed && jQuery.active==0) {
+				if($('#weather_sounds')) {
+					lat = x.coords.latitude.toFixed(2);
+					lon = x.coords.longitude.toFixed(2);
+					loadJSP('updateLocationByCords?lat='+lat+'&lon='+lon);
+				}
+			}
+		 
+		 
+		 },function(){
+			 clearInterval(timer);
+		 });
+		 
+	}
+	</script>
+
 </head>
 
 
@@ -179,6 +220,6 @@
 	$('#loginHeader').hide();
 	$('#registerHeader').hide();
 </c:if>
-
+startLocationUpdate();
 </script>
 </html>

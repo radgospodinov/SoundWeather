@@ -32,8 +32,8 @@ public class InitiController {
 	private static final int MAX_SOUNDS_PER_ROW = 8;
 	private static final String DEFAULT_LOCATION = "Sofia";
 	
-	private static final String API_PROVIDER_REQUEST = "http://api.openweathermap.org/data/2.5/weather?q=";
-	private static final String API_PROVIDER_KEY_PARAM = "&APPID=";
+	private static final String API_PROVIDER_REQUEST_BY_CITY = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=%s";
+	private static final String API_PROVIDER_REQUEST_BY_CORDS = "http://api.openweathermap.org/data/2.5/weather?lat=%.2f&lon=%.2f&APPID=%s";
 	private static final String API_KEY1 = "c63d60d1d5efdd704911c9add93638e8";
 	private static final String API_KEY2 = "c358dab4ad6389a50bb2ab26051556a1";
 	private static final String API_KEY3 = "7c53134e21b6d4e83c16b8ea305f679b";
@@ -74,6 +74,17 @@ public class InitiController {
 		request.setAttribute(WEATHER_LIST, initWeatherSounds(getWeatherDesc(location)));
 		request.setAttribute(TRENDY_LIST, initTrendySounds());
 		return "playlists";
+	}
+	@RequestMapping(value = "/updateLocationByCords", method = RequestMethod.GET)
+	public String getUpdatedLocationByCords(HttpServletRequest request) {
+		double lat = Double.parseDouble(request.getParameter("lat"));
+		double lon = Double.parseDouble(request.getParameter("lon"));
+		System.out.println("lat = " + lat);
+		System.out.println("lon = " + lon);
+		request.setAttribute(WEATHER_LIST, initWeatherSounds(getWeatherDescByCordinates(lat,lon)));
+		request.setAttribute(TRENDY_LIST, initTrendySounds());
+		return "playlists";
+		
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -378,7 +389,7 @@ public class InitiController {
 		String[] apiKeys = {API_KEY1,API_KEY2,API_KEY3}; 
 		String weatherDesc = "";
 		for(String apiKey : apiKeys) {
-			String url = API_PROVIDER_REQUEST + location + API_PROVIDER_KEY_PARAM + apiKey;
+			String url = String.format(API_PROVIDER_REQUEST_BY_CITY,location,apiKey);
 			String result = "";
 			try {
 				 result = restTemplate.getForObject(url, String.class);
@@ -393,6 +404,33 @@ public class InitiController {
 			} 
 		}
 		return weatherDesc;
+
+	}
+	private String getWeatherDescByCordinates(double latitude , double longtitude) {
+		RestTemplate restTemplate = new RestTemplate();
+		
+		
+		String[] apiKeys = {API_KEY1,API_KEY2,API_KEY3}; 
+		String weatherDesc = "";
+		for(String apiKey : apiKeys) {
+			String url = String.format(API_PROVIDER_REQUEST_BY_CORDS,latitude,longtitude,apiKey);
+			String result = "";
+			try {
+				 result = restTemplate.getForObject(url, String.class);
+			} catch (Exception e) {
+				continue;
+			}
+			int startOfDesc = result.indexOf("\"main\"")+MAIN_CHARS_TO_DESC;
+			if (startOfDesc > -1) {
+				int endOfDesc = result.indexOf("\"", startOfDesc);
+				weatherDesc = result.substring(startOfDesc, endOfDesc);
+				break;
+			} 
+		}
+		return weatherDesc;
+
+		
+		
 
 	}
 
