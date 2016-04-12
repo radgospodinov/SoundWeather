@@ -44,6 +44,7 @@ public class UserController {
 	private static final String RESPONSE_MSG = "msg";
 	private static final String RESPONSE_STATUS = "status";
 	private static final int MAX_PASSWORD_LENGTH = 6;
+	private static final String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
 	private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-zA-Z]).{"+ MAX_PASSWORD_LENGTH +",}$";
 	private static final int MAX_USERNAME_LENGTH = 4;
 	private static final String REDIRECT_URL_PARAM = "url";
@@ -95,7 +96,12 @@ public class UserController {
 			rv.addProperty(RESPONSE_FIELD, "#pass1");
 			return rv.toString();
 		}
-
+		if(!email.matches(EMAIL_REGEX)) {
+			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
+			rv.addProperty(RESPONSE_MSG, "Please, enter valid type of email!");
+			rv.addProperty(RESPONSE_FIELD, "#email");
+			return rv.toString();
+		}
 		Session session = HibernateUtil.getSession();
 		if (session.get(User.class, username) != null) {
 			rv.addProperty(RESPONSE_STATUS, RESPONSE_BAD);
