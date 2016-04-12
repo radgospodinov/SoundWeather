@@ -233,6 +233,8 @@
 						<tr id="row_with_results">
 							<c:forEach var="result" items="${requestScope.result_list}">
 								<td id="one_result">
+									
+									<c:if test="${sessionScope.loggedUser.username ne result.username}">
 									<div class="user_serch_photos" id="photos">
 										<a onclick="loadJSP('otherUser?username=${result.username}')"
 											style="cursor: pointer"><img id="user_cover_photo"
@@ -240,14 +242,34 @@
 											src="<c:url value="/covers/${result.avatarName}.jpg"/>"
 											height="150" width="150" /></a>
 									</div>
-
+									</c:if>
+									<c:if test="${sessionScope.loggedUser.username eq result.username}">
+									<div class="user_serch_photos" id="photos">
+										<a onclick="loadJSP('profile')"
+											style="cursor: pointer"><img id="user_cover_photo"
+											alt="User cover photo"
+											src="<c:url value="/covers/${result.avatarName}.jpg"/>"
+											height="150" width="150" /></a>
+									</div>
+									</c:if>
+									
+									
+									
+									
+									
+									
+									
 									<div id="username_in_search">
 										<b class="username_in_search"><c:out
 												value="${result.username}" /></b>
 									</div>
-										<c:if test="${sessionScope.loggedUser != null}">
+										<c:if test="${sessionScope.loggedUser != null && sessionScope.loggedUser.username ne result.username}">
 									<button id="follow${result.username}" class="like"
 										onclick="follow('${result.username}')">Follow</button>
+										</c:if>
+											<c:if test="${sessionScope.loggedUser.username eq result.username}">
+									<div class="like" id="loggeduser_follow"
+										style=opacity:0; style=cursor:none;></div>
 										</c:if>
 								</td>
 							</c:forEach>

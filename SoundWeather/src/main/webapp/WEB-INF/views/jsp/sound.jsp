@@ -71,11 +71,25 @@
 							value="${requestScope.sound.soundTitle}" /></b></td>
 				
 					<c:if test="${sessionScope.loggedUser.username ne requestScope.sound.soundAuthor.username}">
-				<td><b class="by">by</b><b class="sound_autor"
+				<td>
+				
+				<b class="by">by</b><b class="sound_autor"
 					onclick="loadJSP('otherUser?username=${requestScope.sound.soundAuthor.username}')"
 					style="cursor: pointer"><c:out
-							value="${requestScope.sound.soundAuthor.username}" /></b></td>
+							value="${requestScope.sound.soundAuthor.username}" /></b>
+				</td>
+				
 				</c:if>
+				
+				<c:if test="${sessionScope.loggedUser.username eq requestScope.sound.soundAuthor.username}">
+				<td>
+				<b class="by">by</b><b class="sound_autor"
+					onclick="loadJSP('profile')"
+					style="cursor: pointer"><c:out
+							value="${requestScope.sound.soundAuthor.username}" /></b>
+				</td>
+				</c:if>
+				
 				<td>
 					<button id="wLike${requestScope.sound.getSoundId()}" class="like"
 						onclick="like('${requestScope.sound.getSoundId()}')">Like
@@ -101,11 +115,24 @@
 
 			<c:forEach var="comment" items="${requestScope.sound.soundComments}">
 				<tr>
+				<c:if test="${sessionScope.loggedUser.username ne comment.commentAuthor.username}">
 					<td><a id="commenter_avatar"
 						onclick="loadJSP('otherUser?username=${comment.commentAuthor.username}')"
 						style="cursor: pointer"><img class="commenter_avatar" alt=""
 							src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
 					</td>
+					</c:if>
+					<c:if test="${sessionScope.loggedUser.username eq comment.commentAuthor.username}">
+					
+					<td><a id="commenter_avatar"
+						onclick="loadJSP('profile')"
+						style="cursor: pointer"><img class="commenter_avatar" alt=""
+							src="<c:url value="/covers/${comment.commentAuthor.avatarName}.jpg"/>"></a>
+					</td>
+					
+					</c:if>
+					
+					
 					<td><b class="commenter_name"><c:out
 								value="${comment.commentAuthor.username}" /></b></td>
 					<td><b class="comment_posting_time"><c:out
