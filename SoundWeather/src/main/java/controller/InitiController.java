@@ -56,7 +56,11 @@ public class InitiController {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String initIndexPage(HttpServletRequest request) {
 		initGenres();
-		request.setAttribute(LOG_STATUS, false);
+		if(request.getSession().getAttribute(LOGGED_USER)== null) {
+			request.setAttribute(LOG_STATUS, false);
+		} else {
+			request.setAttribute(LOG_STATUS, true);
+		}
 		return "index";
 	}
 
